@@ -7,6 +7,12 @@ import json
 from moviepy.editor import *
 from AudioAnalyzer import AudioAnalyzer
 
+storagePath = "src/python/storage/"
+modelPath = "src/python/models/vosk-model-small-en-us-0.15"
+
+# Falcon resource for recieving audio/video and processing into json list of words
+# sessionKey - Unix timestamp from client. Used to name folder for files
+# isVideo - boolean string
 class Source(object):
     def on_put(self, req, resp):
         sessionKey = req.get_param("key")
@@ -17,7 +23,7 @@ class Source(object):
         fileObj = req.get_param("file")
         raw = fileObj.file.read()
 
-        path = "src/python/storage/" + sessionKey
+        path = storagePath + sessionKey
         wordsJson = ""
         if not os.path.exists(path):
             os.makedirs(path)
@@ -38,10 +44,12 @@ class Source(object):
         resp.text = json.dumps({'wordsJson' : wordsJson})
         resp.status = falcon.HTTP_200
 
-class SourceVideo(object):
-    def on_put(self, req, resp):
-        resp.status = falcon.HTTP_200
-
+# Falcon resource for generating audio/video output
+# sessionKey - Unix timestamp from client. Used to name folder for files
+# isVideo - boolean string
+# audioOnly - boolean string, true for audio, true or false for video
+# chosenWords - json list of word objects: {"id" : String, "end" : String, "word" : String}
+# "id" alias for start time
 class Generate(object):
     def on_put(self, req, resp):
         mediaObj = req.get_media()
@@ -52,10 +60,10 @@ class Generate(object):
 
         path = ""
         if isVideo and not audioOnly:
-            path = "src/python/storage/" + str(sessionKey) + "/concat.mp4"
+            path = storagePath + str(sessionKey) + "/concat.mp4"
             generateVideo(sessionKey, chosenWords)
         else:
-            path = "src/python/storage/" + str(sessionKey) + "/concat.wav"
+            path = storagePath + str(sessionKey) + "/concat.wav"
             generateAudio(sessionKey, chosenWords)
 
         
@@ -67,39 +75,40 @@ class Generate(object):
         resp.content_length = content_length
         resp.status = falcon.HTTP_200
 
+# Takes audio file and returns json list of word objects
 def processAudio(sessionKey):
-    audioFile = "src/python/storage/" + str(sessionKey) + "/audio.wav"
-    audioAnalyzer = AudioAnalyzer("/Users/stephenswetonic/Documents/projects/sentencemixing/sentencemixing/src/python/models/vosk-model-small-en-us-0.15", audioFile)
+    audioFile = storagePath + str(sessionKey) + "/audio.wav"
+    audioAnalyzer = AudioAnalyzer(modelPath, audioFile)
     audioAnalyzer.analyze()
     return audioAnalyzer.getWordsJson()
 
+# Takes json word objects and appends sublcips into video
 def generateVideo(sessionKey, wordsJson):
     words = json.loads(wordsJson)
     subclips = []
-    fullVideoClip = VideoFileClip("src/python/storage/" + str(sessionKey) + "/video.mp4")
+    fullVideoClip = VideoFileClip(storagePath + str(sessionKey) + "/video.mp4")
 
     for i in range(len(words)):
         subclips.append(fullVideoClip.subclip(float(words[i]["id"]), float(words[i]["end"])))
     concatClip = concatenate_videoclips(subclips)
-    concatClip.write_videofile("src/python/storage/" + str(sessionKey) + "/concat.mp4")
+    concatClip.write_videofile(storagePath + str(sessionKey) + "/concat.mp4")
 
+# Takes json word objects and appends sublcips into audio
 def generateAudio(sessionKey, wordsJson):
     words = json.loads(wordsJson)
     subclips = []
-    fullAudioClip = AudioFileClip("src/python/storage/" + str(sessionKey) + "/audio.wav")
+    fullAudioClip = AudioFileClip(storagePath + str(sessionKey) + "/audio.wav")
 
     for i in range(len(words)):
         subclips.append(fullAudioClip.subclip(float(words[i]['id']), float(words[i]['end'])))
 
     concatClip = concatenate_audioclips(subclips)
-    concatClip.write_audiofile('src/python/storage/' + str(sessionKey) + "/concat.wav", codec="pcm_s16le")
+    concatClip.write_audiofile(storagePath + str(sessionKey) + "/concat.wav", codec="pcm_s16le")
 
-
-
+# Falcon app
 app = falcon.App(middleware=[falcon.CORSMiddleware(
     allow_origins='*', allow_credentials='*'), MultipartMiddleware()])
 app.add_route("/source", Source())
-app.add_route("/sourcevideo", SourceVideo())
 app.add_route("/generate", Generate())
 
 if __name__ == '__main__':
