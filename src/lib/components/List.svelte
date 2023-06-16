@@ -10,6 +10,7 @@
 	let zoneId = `zone-${Math.floor(Math.random() * 1000000)}`;
 	let dropTargetStyle = {outline: 'rgba(0, 0, 255, 1) solid 2px'};
 	let morphDisabled = true;
+	let autoAriaDisabled = true;
 	
 	function transformDraggedElement(el) {
 		if (!el.getAttribute("data-selected-items-count") && Object.keys($selectedItems).length) {
@@ -71,9 +72,9 @@
 	}
 </script>
 
-<section class="rounded-lg" use:dndzone={{items, flipDurationMs, morphDisabled, dropTargetStyle, transformDraggedElement}} on:consider={handleConsider} on:finalize={handleFinalize}>
+<section class="rounded-lg" use:dndzone={{items, flipDurationMs, morphDisabled, dropTargetStyle, autoAriaDisabled, transformDraggedElement}} on:consider={handleConsider} on:finalize={handleFinalize}>
 	{#each items as item(item.id)}
-		<div class="rounded" animate:flip={{duration:flipDurationMs}} class:selected={Object.keys($selectedItems).includes(item.id)} on:mousedown={(e) => handleMaybeSelect(item.id, e)} on:keydown={(e) => handleMaybeSelect(item.id, e)}>
+		<div class="rounded align-middle" animate:flip={{duration:flipDurationMs}} class:selected={Object.keys($selectedItems).includes(item.id)} on:mousedown={(e) => handleMaybeSelect(item.id, e)} on:keydown={(e) => handleMaybeSelect(item.id, e)}>
 			{item.word}	
 		</div>
 	{/each}
@@ -81,10 +82,9 @@
 
 <style>
 	div {
-		height: 1.5em;
-		text-align: center;
-		margin: 0.2em;
-		padding: 0.3em;
+		display: inline-block;
+		padding: 0.3rem;
+		margin: 0.3rem;
 	}
 	section {
         display: flex;
@@ -98,8 +98,7 @@
 		min-height: 5vh;
 	}
 	.selected {
-		border-color: blue;
-		opacity: 0.6;
+		background-color: darkslategrey;
 	}
 	:global([data-selected-items-count]::after) {
 		position: absolute;

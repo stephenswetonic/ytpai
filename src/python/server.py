@@ -17,7 +17,7 @@ class Source(object):
         fileObj = req.get_param("file")
         raw = fileObj.file.read()
 
-        path = "sentencemixing/src/python/storage/" + sessionKey
+        path = "src/python/storage/" + sessionKey
         wordsJson = ""
         if not os.path.exists(path):
             os.makedirs(path)
@@ -52,10 +52,10 @@ class Generate(object):
 
         path = ""
         if isVideo and not audioOnly:
-            path = "sentencemixing/src/python/storage/" + str(sessionKey) + "/concat.mp4"
+            path = "src/python/storage/" + str(sessionKey) + "/concat.mp4"
             generateVideo(sessionKey, chosenWords)
         else:
-            path = "sentencemixing/src/python/storage/" + str(sessionKey) + "/concat.wav"
+            path = "src/python/storage/" + str(sessionKey) + "/concat.wav"
             generateAudio(sessionKey, chosenWords)
 
         
@@ -68,7 +68,7 @@ class Generate(object):
         resp.status = falcon.HTTP_200
 
 def processAudio(sessionKey):
-    audioFile = "sentencemixing/src/python/storage/" + str(sessionKey) + "/audio.wav"
+    audioFile = "src/python/storage/" + str(sessionKey) + "/audio.wav"
     audioAnalyzer = AudioAnalyzer("/Users/stephenswetonic/Documents/projects/sentencemixing/sentencemixing/src/python/models/vosk-model-small-en-us-0.15", audioFile)
     audioAnalyzer.analyze()
     return audioAnalyzer.getWordsJson()
@@ -76,23 +76,23 @@ def processAudio(sessionKey):
 def generateVideo(sessionKey, wordsJson):
     words = json.loads(wordsJson)
     subclips = []
-    fullVideoClip = VideoFileClip("sentencemixing/src/python/storage/" + str(sessionKey) + "/video.mp4")
+    fullVideoClip = VideoFileClip("src/python/storage/" + str(sessionKey) + "/video.mp4")
 
     for i in range(len(words)):
         subclips.append(fullVideoClip.subclip(float(words[i]["id"]), float(words[i]["end"])))
     concatClip = concatenate_videoclips(subclips)
-    concatClip.write_videofile("sentencemixing/src/python/storage/" + str(sessionKey) + "/concat.mp4")
+    concatClip.write_videofile("src/python/storage/" + str(sessionKey) + "/concat.mp4")
 
 def generateAudio(sessionKey, wordsJson):
     words = json.loads(wordsJson)
     subclips = []
-    fullAudioClip = AudioFileClip("sentencemixing/src/python/storage/" + str(sessionKey) + "/audio.wav")
+    fullAudioClip = AudioFileClip("src/python/storage/" + str(sessionKey) + "/audio.wav")
 
     for i in range(len(words)):
         subclips.append(fullAudioClip.subclip(float(words[i]['id']), float(words[i]['end'])))
 
     concatClip = concatenate_audioclips(subclips)
-    concatClip.write_audiofile('sentencemixing/src/python/storage/' + str(sessionKey) + "/concat.wav", codec="pcm_s16le")
+    concatClip.write_audiofile('src/python/storage/' + str(sessionKey) + "/concat.wav", codec="pcm_s16le")
 
 
 

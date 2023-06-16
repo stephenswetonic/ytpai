@@ -1,6 +1,5 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import HorizontalList from "$lib/components/HorizontalList.svelte";
     import List from "$lib/components/List.svelte";
 
     let files;
@@ -47,7 +46,7 @@
 			props: {items : matchedWords }
 		})
 
-        chosenWordList = new HorizontalList({
+        chosenWordList = new List({
 			target: document.getElementById('chosenWordList'),
 			props: {items : wordsToCombine}
 		})
@@ -116,9 +115,37 @@
             const result = await response.json();
             generatedWordList.items = JSON.parse(result.wordsJson);
             wordDataOriginal = JSON.parse(result.wordsJson);
+            await addTimestamps();
             loading = false;
         } catch (error) {
             console.error("Error:", error);
+        }
+    }
+
+    async function addTimestamps() {
+        let seconds = 0;
+        let minutes = 0;
+        let pointer;
+        let step = 10; 
+        let threshold = step;
+        
+        //debugger;
+        for (let i = 0; i < generatedWordList.items.length; i++) {
+            pointer = generatedWordList.items[i];
+            if (Number(pointer["id"]) > threshold) {
+                //add
+                seconds += step;
+                if (seconds == 60) {
+                    seconds = 0;
+                    minutes += 1
+                }
+                generatedWordList.items.splice(i, 0, {"id" : String(threshold), "end" : "xyz", "word" : (minutes + ":" + String(seconds).padStart(2, "0"))});
+                generatedWordList.items = generatedWordList.items;
+                threshold += step;
+                
+                
+            }
+            //console.log(generatedWordList.items);
         }
     }
 
@@ -166,7 +193,10 @@
 {/if}
 <div>Supports audio (.wav) or video (.mp4)</div>
 
-
+<ul>
+	<li>To multi drag with the mouse use <code>ctrl + click</code> or <code>cmd + click</code> to add items before dragging.</li>
+	<li>To multi drag with keyboard, tab to items and use <code>ctrl + shift</code> or <code>cmd + shift</code> to add items before entering "drag mode" by hitting <code>space</code></li>
+</ul>
 
 <h1 class="mt-2 text-3xl font-bold tracking-light text-base-content">Generated Words</h1>
 <div id="generatedWordList"></div>
