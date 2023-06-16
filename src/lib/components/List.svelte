@@ -1,3 +1,4 @@
+<svelte:options accessors />
 <script>
 	import {dndzone, TRIGGERS, SOURCES, DRAGGED_ELEMENT_ID} from 'svelte-dnd-action';
 	import {flip} from 'svelte/animate';
@@ -7,6 +8,8 @@
 	
 	export let items = [];
 	let zoneId = `zone-${Math.floor(Math.random() * 1000000)}`;
+	let dropTargetStyle = {outline: 'rgba(0, 0, 255, 1) solid 2px'};
+	let morphDisabled = true;
 	
 	function transformDraggedElement(el) {
 		if (!el.getAttribute("data-selected-items-count") && Object.keys($selectedItems).length) {
@@ -68,9 +71,9 @@
 	}
 </script>
 
-<section use:dndzone={{items, flipDurationMs, transformDraggedElement}} on:consider={handleConsider} on:finalize={handleFinalize}>
+<section class="rounded-lg" use:dndzone={{items, flipDurationMs, morphDisabled, dropTargetStyle, transformDraggedElement}} on:consider={handleConsider} on:finalize={handleFinalize}>
 	{#each items as item(item.id)}
-		<div animate:flip={{duration:flipDurationMs}} class:selected={Object.keys($selectedItems).includes(item.id)} on:mousedown={(e) => handleMaybeSelect(item.id, e)} on:keydown={(e) => handleMaybeSelect(item.id, e)}>
+		<div class="rounded" animate:flip={{duration:flipDurationMs}} class:selected={Object.keys($selectedItems).includes(item.id)} on:mousedown={(e) => handleMaybeSelect(item.id, e)} on:keydown={(e) => handleMaybeSelect(item.id, e)}>
 			{item.word}	
 		</div>
 	{/each}
@@ -79,16 +82,20 @@
 <style>
 	div {
 		height: 1.5em;
-		width: 10em;
 		text-align: center;
-		border: 1px solid black;
 		margin: 0.2em;
 		padding: 0.3em;
 	}
 	section {
         display: flex;
         flex-wrap: wrap;
-		min-height: 12em
+		margin-left: auto;
+		margin-right: auto;
+		padding: 0.3em;
+		border: 1px solid white;
+		overflow-y: auto;
+		max-height: 45vh;
+		min-height: 5vh;
 	}
 	.selected {
 		border-color: blue;

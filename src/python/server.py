@@ -69,7 +69,7 @@ class Generate(object):
 
 def processAudio(sessionKey):
     audioFile = "sentencemixing/src/python/storage/" + str(sessionKey) + "/audio.wav"
-    audioAnalyzer = AudioAnalyzer("/Users/stephenswetonic/Documents/projects/sentencemixing/sentencemixing/src/python/vosk-model-small-en-us-0.15", audioFile)
+    audioAnalyzer = AudioAnalyzer("/Users/stephenswetonic/Documents/projects/sentencemixing/sentencemixing/src/python/models/vosk-model-small-en-us-0.15", audioFile)
     audioAnalyzer.analyze()
     return audioAnalyzer.getWordsJson()
 
@@ -79,7 +79,7 @@ def generateVideo(sessionKey, wordsJson):
     fullVideoClip = VideoFileClip("sentencemixing/src/python/storage/" + str(sessionKey) + "/video.mp4")
 
     for i in range(len(words)):
-        subclips.append(fullVideoClip.subclip(words[i]["id"], words[i]["end"]))
+        subclips.append(fullVideoClip.subclip(float(words[i]["id"]), float(words[i]["end"])))
     concatClip = concatenate_videoclips(subclips)
     concatClip.write_videofile("sentencemixing/src/python/storage/" + str(sessionKey) + "/concat.mp4")
 
@@ -89,7 +89,7 @@ def generateAudio(sessionKey, wordsJson):
     fullAudioClip = AudioFileClip("sentencemixing/src/python/storage/" + str(sessionKey) + "/audio.wav")
 
     for i in range(len(words)):
-        subclips.append(fullAudioClip.subclip(words[i]['id'], words[i]['end']))
+        subclips.append(fullAudioClip.subclip(float(words[i]['id']), float(words[i]['end'])))
 
     concatClip = concatenate_audioclips(subclips)
     concatClip.write_audiofile('sentencemixing/src/python/storage/' + str(sessionKey) + "/concat.wav", codec="pcm_s16le")

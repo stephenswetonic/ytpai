@@ -37,19 +37,19 @@
         {id : 2, end : 3, word : "word3"}
     ]
 
-        generatedWordList = new HorizontalList({
+        generatedWordList = new List({
 			target: document.getElementById('generatedWordList'),
-			props: {items : wordData, containerWidth: "100%"}
+			props: {items : wordData}
 		})
 
-        matchedWordList = new HorizontalList({
+        matchedWordList = new List({
 			target: document.getElementById('matchedWordList'),
-			props: {items : matchedWords, containerWidth: "100%"}
+			props: {items : matchedWords }
 		})
 
         chosenWordList = new HorizontalList({
 			target: document.getElementById('chosenWordList'),
-			props: {items : wordsToCombine, containerWidth: "100%"}
+			props: {items : wordsToCombine}
 		})
 
     })
@@ -170,7 +170,6 @@
 
 <h1 class="mt-2 text-3xl font-bold tracking-light text-base-content">Generated Words</h1>
 <div id="generatedWordList"></div>
-<List items={testItems}/>
 
 <h1 class="mt-2 text-3xl font-bold tracking-light text-base-content">Type A Sentence</h1>
 <input class="input w-full max-w-xl bg-base-200 mt-2"  bind:value={inputText} type="text" placeholder="Type here" />
