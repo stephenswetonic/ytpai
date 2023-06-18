@@ -13,6 +13,7 @@ modelPath = "src/python/models/vosk-model-small-en-us-0.15"
 # Falcon resource for recieving audio/video and processing into json list of words
 # sessionKey - Unix timestamp from client. Used to name folder for files
 # isVideo - boolean string
+# Response - json list of words
 class Source(object):
     def on_put(self, req, resp):
         sessionKey = req.get_param("key")
@@ -50,6 +51,7 @@ class Source(object):
 # audioOnly - boolean string, true for audio, true or false for video
 # chosenWords - json list of word objects: {"id" : String, "end" : String, "word" : String}
 # "id" alias for start time
+# Response - wav audio or mp4 video
 class Generate(object):
     def on_put(self, req, resp):
         mediaObj = req.get_media()

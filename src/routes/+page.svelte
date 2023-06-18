@@ -129,11 +129,9 @@
         let step = 10; 
         let threshold = step;
         
-        //debugger;
         for (let i = 0; i < generatedWordList.items.length; i++) {
             pointer = generatedWordList.items[i];
             if (Number(pointer["id"]) > threshold) {
-                //add
                 seconds += step;
                 if (seconds == 60) {
                     seconds = 0;
@@ -141,11 +139,8 @@
                 }
                 generatedWordList.items.splice(i, 0, {"id" : String(threshold), "end" : "xyz", "word" : (minutes + ":" + String(seconds).padStart(2, "0"))});
                 generatedWordList.items = generatedWordList.items;
-                threshold += step;
-                
-                
+                threshold += step;                
             }
-            //console.log(generatedWordList.items);
         }
     }
 
