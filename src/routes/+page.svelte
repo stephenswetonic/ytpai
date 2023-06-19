@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import List from "$lib/components/List.svelte";
+    import { PUBLIC_BACKEND_URL } from '$env/static/public';
 
     let files;
     let sessionKey;
@@ -73,7 +74,7 @@
     async function sendChosenWords(chosenWords) {
         try {
             loadingGenerate = true;
-            const response = await fetch("http://localhost:8000/generate", {
+            const response = await fetch(PUBLIC_BACKEND_URL + "/generate", {
                 method: "PUT",
                 mode: "cors",
                 headers: {
@@ -106,7 +107,7 @@
     async function upload(formData) {
         try {
             loading = true;
-            const response = await fetch("http://localhost:8000/source", {
+            const response = await fetch(PUBLIC_BACKEND_URL + "/source", {
             method: "PUT",
             mode: "cors",
             body: formData
