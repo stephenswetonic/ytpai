@@ -74,7 +74,7 @@
 
 <section class="rounded-lg" use:dndzone={{items, flipDurationMs, morphDisabled, dropTargetStyle, autoAriaDisabled, transformDraggedElement}} on:consider={handleConsider} on:finalize={handleFinalize}>
 	{#each items as item(item.id)}
-		<div class="rounded align-middle" animate:flip={{duration:flipDurationMs}} class:selected={Object.keys($selectedItems).includes(item.id)} on:mousedown={(e) => handleMaybeSelect(item.id, e)} on:keydown={(e) => handleMaybeSelect(item.id, e)}>
+		<div class="rounded align-middle bg-base-200" animate:flip={{duration:flipDurationMs}} class:selected={Object.keys($selectedItems).includes(item.id)} on:mousedown={(e) => handleMaybeSelect(item.id, e)} on:keydown={(e) => handleMaybeSelect(item.id, e)}>
 			{item.word}	
 		</div>
 	{/each}

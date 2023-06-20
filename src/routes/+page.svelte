@@ -200,22 +200,22 @@
 	<li>To multi drag with keyboard, tab to items and use <code>ctrl + shift</code> or <code>cmd + shift</code> to add items before entering "drag mode" by hitting <code>space</code></li>
 </ul>
 
-<h1 class="mt-2 text-3xl font-bold tracking-light text-base-content">Generated Words</h1>
+<h1 class="mt-2 text-xl font-bold tracking-light text-base-content">Generated Words</h1>
 <div id="generatedWordList"></div>
 
-<h1 class="mt-2 text-3xl font-bold tracking-light text-base-content">Type A Sentence</h1>
+<h1 class="mt-2 text-xl font-bold tracking-light text-base-content">Filter Words</h1>
 <input class="input w-full max-w-xl bg-base-200 mt-2"  bind:value={inputText} type="text" placeholder="Type here" />
 <button class="btn btn-primary" on:click={addWordsFromInput}>Submit</button>
 
-<h1 class="mt-2 text-3xl font-bold tracking-light text-base-content">Matched Words</h1>
+<h1 class="mt-2 text-xl font-bold tracking-light text-base-content">Matched Words</h1>
 <div id="matchedWordList"></div>
 
 
-<h1 class="mt-2 text-3xl font-bold tracking-light text-base-content inline-block">Words To Combine</h1>
-<button class="btn btn-primary inline-flex" on:click={clearCombined}>clear</button>
+<h1 class="mt-2 text-xl font-bold tracking-light text-base-content inline-block">Words To Combine</h1>
+<button class="btn btn-sm btn-primary inline-flex m-1" on:click={clearCombined}>clear</button>
 <div id="chosenWordList"></div>
 
-<button class="btn btn-primary" on:click={generate}>Generate</button>
+<button class="btn btn-primary btn-wide mt-4" on:click={generate}>Generate</button>
 {#if loadingGenerate}
     <span class="loading loading-spinner loading-lg my-auto"></span>
 {/if}
