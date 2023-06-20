@@ -166,10 +166,10 @@
     }
 </script>
 
-
+<div class="logotext text-3xl my-6">SentenceMixer AI</div>
 
 <input 
-    class="file-input w-full max-w-sm mt-6"
+    class="file-input w-full max-w-sm mt-2"
     accept="audio/wav, video/mp4"
     bind:files
     id="source"
@@ -193,9 +193,9 @@
     <span class="loading loading-spinner loading-lg"></span>
 </div>
 {/if}
-<div>Supports audio (.wav) or video (.mp4)</div>
+<div class="text-sm">Supports audio (.wav) or video (.mp4) under 100MB</div>
 
-<ul>
+<ul class="text-sm">
 	<li>To multi drag with the mouse use <code>ctrl + click</code> or <code>cmd + click</code> to add items before dragging.</li>
 	<li>To multi drag with keyboard, tab to items and use <code>ctrl + shift</code> or <code>cmd + shift</code> to add items before entering "drag mode" by hitting <code>space</code></li>
 </ul>
@@ -231,6 +231,12 @@
 
 <!-- svelte-ignore a11y-media-has-caption -->
 <video src="" id="generatedVideo" controls hidden={hideVideo}></video>
+
+<style>
+    .logotext {
+        font-family: 'Audiowide', cursive;
+    }
+</style>
 
 
 
