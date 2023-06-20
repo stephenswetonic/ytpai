@@ -8,7 +8,8 @@ from moviepy.editor import *
 from AudioAnalyzer import AudioAnalyzer
 
 storagePath = "storage/"
-modelPath = "models/vosk-model-small-en-us-0.15"
+smallModelPath = "models/vosk-model-small-en-us-0.15"
+bigModelPath = "models/vosk-model-en-us-0.22"
 
 # Falcon resource for recieving audio/video and processing into json list of words
 # sessionKey - Unix timestamp from client. Used to name folder for files
@@ -20,6 +21,9 @@ class Source(object):
         
         isVideo = req.get_param("isVideo")
         isVideo = True if isVideo == "true" else False
+
+        useBigModel = req.get_param("useBigModel")
+        useBigModel = True if useBigModel == "true" else False
 
         fileObj = req.get_param("file")
         raw = fileObj.file.read()
@@ -35,12 +39,12 @@ class Source(object):
                 f.write(raw)
             fullClip = VideoFileClip((path + "/video.mp4"))
             fullClip.audio.write_audiofile((path + "/audio.wav"), ffmpeg_params=["-ac", "1"], codec="pcm_s16le")
-            wordsJson = processAudio(sessionKey)
+            wordsJson = processAudio(sessionKey, useBigModel)
         else:
             #save audio
             with open((path + "/audio.wav"), 'wb') as f:
                 f.write(raw)
-            wordsJson = processAudio(sessionKey)
+            wordsJson = processAudio(sessionKey, useBigModel)
         
         resp.text = json.dumps({'wordsJson' : wordsJson})
         resp.status = falcon.HTTP_200
@@ -78,8 +82,11 @@ class Generate(object):
         resp.status = falcon.HTTP_200
 
 # Takes audio file and returns json list of word objects
-def processAudio(sessionKey):
+def processAudio(sessionKey, useBigModel):
     audioFile = storagePath + str(sessionKey) + "/audio.wav"
+
+    modelPath = bigModelPath if useBigModel else smallModelPath
+
     audioAnalyzer = AudioAnalyzer(modelPath, audioFile)
     audioAnalyzer.analyze()
     return audioAnalyzer.getWordsJson()

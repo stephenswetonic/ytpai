@@ -15,6 +15,7 @@
     let audioOnly = true;
     let isVideo = false;
     let audioOnlyDisabled = false;
+    let useBigModel = false;
     let audioElement;
     let videoElement;
     let hideAudio = true
@@ -148,7 +149,8 @@
     function sendSource() {
         const formData = new FormData();
         formData.append("key", sessionKey);
-        formData.append("isVideo", String(isVideo))
+        formData.append("isVideo", String(isVideo));
+        formData.append("useBigModel", String(useBigModel));
         formData.append("file", files[0]);
         upload(formData);
     }
@@ -179,6 +181,10 @@
 <div class="inline-flex">
     <div class="my-auto mx-1">Audio Only</div>
     <input type="checkbox" class="toggle toggle-lg inline-flex" bind:checked={audioOnly} disabled={audioOnlyDisabled} />
+</div>
+<div class="inline-flex">
+    <div class="my-auto mx-1">Big Model</div>
+    <input type="checkbox" class="toggle toggle-lg inline-flex" bind:checked={useBigModel}/>
 </div>
 <button class="btn btn-primary" on:click|preventDefault={sendSource}>Analyze</button>
 
