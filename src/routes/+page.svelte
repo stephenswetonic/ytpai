@@ -166,7 +166,7 @@
     }
 </script>
 
-<div class="logotext text-3xl my-4">SentenceMixer AI</div>
+<div class="logotext text-3xl mt-4">SentenceMixer AI</div>
 
 <input 
     class="file-input w-full max-w-sm mt-2"
@@ -232,7 +232,7 @@
 
 
 <!-- svelte-ignore a11y-media-has-caption -->
-<video src="my-2" id="generatedVideo" controls hidden={hideVideo}></video>
+<video class="my-2" src="" id="generatedVideo" controls hidden={hideVideo}></video>
 {#if !hideVideo}
     <a href={videoElement?.src} download class="btn btn-primary inline-flex mb-4">Download</a>
 {/if}
