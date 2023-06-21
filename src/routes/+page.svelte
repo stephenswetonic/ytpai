@@ -147,12 +147,17 @@
     }
 
     function sendSource() {
-        const formData = new FormData();
-        formData.append("key", sessionKey);
-        formData.append("isVideo", String(isVideo));
-        formData.append("useBigModel", String(useBigModel));
-        formData.append("file", files[0]);
-        upload(formData);
+        try {
+            const formData = new FormData();
+            formData.append("key", sessionKey);
+            formData.append("isVideo", String(isVideo));
+            formData.append("useBigModel", String(useBigModel));
+            formData.append("file", files[0]);
+            upload(formData);
+        } catch(err) {
+            console.log(err);
+        }
+        
     }
 
     function checkInput() {
@@ -165,8 +170,6 @@
         }
     }
 </script>
-
-<div class="logotext text-3xl mt-4">SentenceMixer AI</div>
 
 <input 
     class="file-input w-full max-w-sm mt-2"
@@ -236,12 +239,6 @@
 {#if !hideVideo}
     <a href={videoElement?.src} download class="btn btn-primary inline-flex mb-4">Download</a>
 {/if}
-
-<style>
-    .logotext {
-        font-family: 'Audiowide', cursive;
-    }
-</style>
 
 
 
