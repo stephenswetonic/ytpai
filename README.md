@@ -22,5 +22,10 @@ Output after analysis:
 ![Main page](static/mainpage.png)
 
 
-Generated Clip:
+Generating Clip:
 ![Generated](static/generate.png)
+
+Final Clip:
+![](static/sampleclip.mp4)
+
+
