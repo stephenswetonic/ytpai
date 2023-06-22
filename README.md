@@ -18,6 +18,9 @@ Drag on drop doesn't really work on mobile. I may create a different UI for mobi
 
 ## Examples
 
-![Main page](src/static/mainpage.png)
+Output after analysis:
+![Main page](static/mainpage.png)
 
-![Generated](src/static/generate.png)
+
+Generated Clip:
+![Generated](static/generate.png)
