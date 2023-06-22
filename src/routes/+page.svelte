@@ -10,8 +10,8 @@
     let matchedWords = [];
     let wordsToCombine = [];
     let inputText = "";
-    let loading;
-    let loadingGenerate;
+    let loading = false;
+    let loadingGenerate = false;
     let audioOnly = true;
     let isVideo = false;
     let audioOnlyDisabled = false;
@@ -25,18 +25,11 @@
     let matchedWordList;
     let chosenWordList;
 
-    let testItems;
 
     onMount(() => {
         sessionKey = Date.now();
         audioElement = document.getElementById("generatedAudio");
         videoElement = document.getElementById("generatedVideo");
-
-        testItems = [
-        {id : 0, end : 1, word : "word"},
-        {id : 1, end : 2, word : "word2"},
-        {id : 2, end : 3, word : "word3"}
-    ]
 
         generatedWordList = new List({
 			target: document.getElementById('generatedWordList'),
