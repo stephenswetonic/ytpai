@@ -1,7 +1,7 @@
 import os, time
 import shutil
 
-storagePath = "/Users/stephenswetonic/Documents/projects/ytpai/python/backend/storage"
+storagePath = "python/backend/storage"
 cutoffTime = int(time.time() * 1000) - 3_600_000
 
 if os.path.exists(storagePath):
