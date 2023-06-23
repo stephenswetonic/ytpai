@@ -26,6 +26,6 @@ Generating Clip:
 ![Generated](static/generate.png)
 
 Final Clip:
-![](static/sampleclip.mp4)
+[Download](static/sampleclip.mp4)
 
 
