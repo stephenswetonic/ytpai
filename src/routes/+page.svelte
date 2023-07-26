@@ -216,6 +216,7 @@
 </div>
 {/if}
 <div class="text-sm">Supports audio (.wav) or video (.mp4) under 100MB</div>
+<div class="text-sm">Long videos may time out!</div>
 
 <ul class="text-sm">
 	<li>To multi drag with the mouse use <code>ctrl + click</code> or <code>cmd + click</code> to add items before dragging.</li>
