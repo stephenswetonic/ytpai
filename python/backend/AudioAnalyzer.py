@@ -47,6 +47,3 @@ class AudioAnalyzer:
     
     def getWordsJson(self):
         return self.wordsJson
-
-# model_path = "/Users/stephenswetonic/Documents/projects/sentencemixing/sentencemixing/src/python/vosk-model-en-us-0.22"
-# audio_filename = "/Users/stephenswetonic/Documents/projects/sentencemixing/sentencemixing/src/python/phil.wav"

@@ -20,6 +20,7 @@
     let videoElement;
     let hideAudio = true
     let hideVideo = true
+    let selectedLanguage = "en";
 
     let generatedWordList;
     let matchedWordList;
@@ -146,6 +147,7 @@
             formData.append("isVideo", String(isVideo));
             formData.append("useBigModel", String(useBigModel));
             formData.append("file", files[0]);
+            formData.append("lang", selectedLanguage);
             upload(formData);
         } catch(err) {
             console.log(err);
@@ -190,7 +192,7 @@
     <div class="my-auto mx-1">Big Model</div>
     <input type="checkbox" class="toggle toggle-lg inline-flex" bind:checked={useBigModel}/>
 
-    <div class="my-auto mx-1 tooltip" data-tip="More accurate speech recognition model at the cost of speed">
+    <div class="my-auto mx-1 tooltip" data-tip="More accurate speech recognition model at the cost of speed (English only)">
         <svg class="my-auto mx-1" width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
             <g id="SVGRepo_bgCarrier" stroke-width="0"/>
             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
@@ -198,7 +200,15 @@
         </svg>
     </div>
 </div>
+<select bind:value={selectedLanguage} class="select select-primary w-full max-w-xs">
+    <option selected value="en">English</option>
+    <option value="es">Spanish</option>
+    <option value="fr">French</option>
+    <option value="ru">Russian</option>
+    <option value="de">German</option>
+</select>
 <button class="btn btn-primary" on:click|preventDefault={sendSource}>Analyze</button>
+
 
 {#if loading}
 <div class="inline-flex h-full align-middle">
