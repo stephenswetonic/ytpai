@@ -16,6 +16,9 @@ Drag on drop doesn't really work on mobile. I may create a different UI for mobi
 6. Hit generate
 7. Preview or download the clip
 
+## Change Log
+- 7/26/23: Added multi language support, only small models for Spanish, French, Russian, and German.
+
 ## Examples
 
 Output after analysis:
