@@ -15,6 +15,7 @@ frModelPath = "models/vosk-model-small-fr-0.22"
 ruModelPath = "models/vosk-model-small-ru-0.22"
 deModelPath = "models/vosk-model-small-de-0.15"
 
+
 # Falcon resource for recieving audio/video and processing into json list of words
 # sessionKey - Unix timestamp from client. Used to name folder for files
 # isVideo - boolean string
@@ -22,7 +23,7 @@ deModelPath = "models/vosk-model-small-de-0.15"
 class Source(object):
     def on_put(self, req, resp):
         sessionKey = req.get_param("key")
-        
+
         isVideo = req.get_param("isVideo")
         isVideo = True if isVideo == "true" else False
 
@@ -40,20 +41,23 @@ class Source(object):
             os.makedirs(path)
 
         if isVideo:
-            #save video
-            with open((path + "/video.mp4"), 'wb') as f:
+            # save video
+            with open((path + "/video.mp4"), "wb") as f:
                 f.write(raw)
             fullClip = VideoFileClip((path + "/video.mp4"))
-            fullClip.audio.write_audiofile((path + "/audio.wav"), ffmpeg_params=["-ac", "1"], codec="pcm_s16le")
+            fullClip.audio.write_audiofile(
+                (path + "/audio.wav"), ffmpeg_params=["-ac", "1"], codec="pcm_s16le"
+            )
             wordsJson = processAudio(sessionKey, useBigModel, lang)
         else:
-            #save audio
-            with open((path + "/audio.wav"), 'wb') as f:
+            # save audio
+            with open((path + "/audio.wav"), "wb") as f:
                 f.write(raw)
             wordsJson = processAudio(sessionKey, useBigModel, lang)
-        
-        resp.text = json.dumps({'wordsJson' : wordsJson})
+
+        resp.text = json.dumps({"wordsJson": wordsJson})
         resp.status = falcon.HTTP_200
+
 
 # Falcon resource for generating audio/video output
 # sessionKey - Unix timestamp from client. Used to name folder for files
@@ -78,7 +82,6 @@ class Generate(object):
             path = storagePath + str(sessionKey) + "/concat.wav"
             generateAudio(sessionKey, chosenWords)
 
-        
         generatedFile = open(path, "rb")
         content_length = os.path.getsize(path)
 
@@ -86,6 +89,7 @@ class Generate(object):
         resp.stream = generatedFile
         resp.content_length = content_length
         resp.status = falcon.HTTP_200
+
 
 # Takes audio file and returns json list of word objects
 def processAudio(sessionKey, useBigModel, lang):
@@ -107,6 +111,7 @@ def processAudio(sessionKey, useBigModel, lang):
     audioAnalyzer.analyze()
     return audioAnalyzer.getWordsJson()
 
+
 # Takes json word objects and appends sublcips into video
 def generateVideo(sessionKey, wordsJson):
     words = json.loads(wordsJson)
@@ -114,9 +119,12 @@ def generateVideo(sessionKey, wordsJson):
     fullVideoClip = VideoFileClip(storagePath + str(sessionKey) + "/video.mp4")
 
     for i in range(len(words)):
-        subclips.append(fullVideoClip.subclip(float(words[i]["id"]), float(words[i]["end"])))
+        subclips.append(
+            fullVideoClip.subclip(float(words[i]["id"]), float(words[i]["end"]))
+        )
     concatClip = concatenate_videoclips(subclips)
     concatClip.write_videofile(storagePath + str(sessionKey) + "/concat.mp4")
+
 
 # Takes json word objects and appends sublcips into audio
 def generateAudio(sessionKey, wordsJson):
@@ -125,14 +133,22 @@ def generateAudio(sessionKey, wordsJson):
     fullAudioClip = AudioFileClip(storagePath + str(sessionKey) + "/audio.wav")
 
     for i in range(len(words)):
-        subclips.append(fullAudioClip.subclip(float(words[i]['id']), float(words[i]['end'])))
+        subclips.append(
+            fullAudioClip.subclip(float(words[i]["id"]), float(words[i]["end"]))
+        )
 
     concatClip = concatenate_audioclips(subclips)
-    concatClip.write_audiofile(storagePath + str(sessionKey) + "/concat.wav", codec="pcm_s16le")
+    concatClip.write_audiofile(
+        storagePath + str(sessionKey) + "/concat.wav", codec="pcm_s16le"
+    )
+
 
 # Falcon app
-app = application = falcon.App(middleware=[falcon.CORSMiddleware(
-    allow_origins='*', allow_credentials='*'), MultipartMiddleware()])
+app = application = falcon.App(
+    middleware=[
+        falcon.CORSMiddleware(allow_origins="*", allow_credentials="*"),
+        MultipartMiddleware(),
+    ]
+)
 app.add_route("/source", Source())
 app.add_route("/generate", Generate())
-
