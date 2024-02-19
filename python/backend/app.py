@@ -15,8 +15,7 @@ frModelPath = "models/vosk-model-small-fr-0.22"
 ruModelPath = "models/vosk-model-small-ru-0.22"
 deModelPath = "models/vosk-model-small-de-0.15"
 
-
-# Falcon resource for recieving audio/video and processing into json list of words
+# Falcon resource for receiving audio/video and processing into json list of words
 # sessionKey - Unix timestamp from client. Used to name folder for files
 # isVideo - boolean string
 # Response - json list of words
