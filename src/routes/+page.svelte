@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import List from "$lib/components/List.svelte";
-    import { PUBLIC_BACKEND_URL } from '$env/static/public';
+    //import { PUBLIC_BACKEND_URL } from '$env/static/public';
 
     let files;
     let sessionKey;
@@ -49,12 +49,10 @@
 
     })
 
-    // Clears UI list of chosen words
-    function clearChosenWords() {
+    function clearCombined() {
         chosenWordList.items = [];
     }
 
-    // Adds words to the UI based on a sentence
     function addWordsFromInput() {
         generatedWordList.items = wordDataOriginal;
         const wordArray = inputText.split(" ");
@@ -63,13 +61,11 @@
         matchedWordList.items = intersection;
     }
 
-    // Converts chosen words in the UI to JSON and sends to backend
     function generate() {
         const wordsToCombineJson = JSON.stringify(chosenWordList.items);
         sendChosenWords(wordsToCombineJson);
     }
 
-    // Sends the chosen words to the backend. Receives an audio or video file in response.
     async function sendChosenWords(chosenWords) {
         try {
             loadingGenerate = true;
@@ -103,27 +99,72 @@
         }
     }
 
-    // Uploads the audio/video to the backend. Receives the parsed words and timestamps in response.
+    async function getSignedUrl() {
+        const API_ENDPOINT = 'https://o3dmvj0dij.execute-api.us-east-1.amazonaws.com/uploads'
+        const response = await fetch(API_ENDPOINT, {
+            method: "GET",
+        });
+        const result = await response.json();
+        return result;
+    }
+
+    async function uploadFile(file) {
+        const API_ENDPOINT = 'https://o3dmvj0dij.execute-api.us-east-1.amazonaws.com/uploads'
+
+        // Get the presigned URL
+        const response = await fetch({
+          method: 'GET',
+          url: API_ENDPOINT
+        })
+        console.log('Response: ', response);
+        let binary = atob(this.image.split(',')[1])
+        let array = []
+        for (var i = 0; i < binary.length; i++) {
+          array.push(binary.charCodeAt(i))
+        }
+        let blobData = new Blob([new Uint8Array(array)], {type: 'image/jpeg'})
+        console.log("response: ", response);
+        console.log('Uploading to: ', response.uploadURL)
+        const result = await fetch(response.uploadURL, {
+          method: 'PUT',
+          body: blobData
+        })
+        console.log('Result: ', result)
+        // Final URL for the user doesn't need the query string params
+        this.uploadURL = response.uploadURL.split('?')[0]
+    }
+
+    async function createFile(file) {
+        let reader = new FileReader()
+        const signedUrlResult = await getSignedUrl();
+
+        reader.onload = (e) => {
+            let binary = atob(e.target.result.split(',')[1]);
+            let array = []
+            for (var i = 0; i < binary.length; i++) {
+                array.push(binary.charCodeAt(i))
+            }
+            let blobData = new Blob([new Uint8Array(array)])
+            const uploadResult = fetch(signedUrlResult.uploadURL, {
+              method: 'PUT',
+              body: blobData
+            });
+            console.log(uploadResult);
+        }
+        reader.readAsDataURL(file)
+    }
+
     async function upload(formData) {
+        let file = formData.get('file');
+        console.log("calling createFile");
+        const createdFile = await createFile(file);
         try {
             loading = true;
-            const response = await fetch(PUBLIC_BACKEND_URL + "/source", {
-            method: "PUT",
-            mode: "cors",
-            body: formData
-            });
-            
-            const result = await response.json();
-            generatedWordList.items = JSON.parse(result.wordsJson);
-            wordDataOriginal = JSON.parse(result.wordsJson);
-            await addTimestamps();
-            loading = false;
         } catch (error) {
             console.error("Error:", error);
         }
     }
 
-    // Adds timestamp placeholders to the UI
     async function addTimestamps() {
         let seconds = 0;
         let minutes = 0;
@@ -146,7 +187,6 @@
         }
     }
 
-    // Send audio/video etc as form data to the backend
     function sendSource() {
         try {
             const formData = new FormData();
@@ -162,7 +202,6 @@
         
     }
 
-    // Check is selected file is audio or video
     function checkInput() {
         if (files[0].type == "video/mp4") {
             audioOnly = false;
@@ -243,7 +282,7 @@
 
 
 <h1 class="mt-2 text-xl font-bold tracking-light text-base-content inline-block">Words To Combine</h1>
-<button class="btn btn-sm btn-primary inline-flex m-1" on:click={clearChosenWords}>clear</button>
+<button class="btn btn-sm btn-primary inline-flex m-1" on:click={clearCombined}>clear</button>
 <div id="chosenWordList"></div>
 
 <button class="btn btn-primary btn-wide mt-4" on:click={generate}>Generate</button>
