@@ -108,50 +108,52 @@
         return result;
     }
 
-    async function uploadFile(file) {
-        const API_ENDPOINT = 'https://o3dmvj0dij.execute-api.us-east-1.amazonaws.com/uploads'
+    // async function uploadFile(file) {
+    //     const API_ENDPOINT = 'https://o3dmvj0dij.execute-api.us-east-1.amazonaws.com/uploads'
 
-        // Get the presigned URL
-        const response = await fetch({
-          method: 'GET',
-          url: API_ENDPOINT
-        })
-        console.log('Response: ', response);
-        let binary = atob(this.image.split(',')[1])
-        let array = []
-        for (var i = 0; i < binary.length; i++) {
-          array.push(binary.charCodeAt(i))
-        }
-        let blobData = new Blob([new Uint8Array(array)], {type: 'image/jpeg'})
-        console.log("response: ", response);
-        console.log('Uploading to: ', response.uploadURL)
-        const result = await fetch(response.uploadURL, {
-          method: 'PUT',
-          body: blobData
-        })
-        console.log('Result: ', result)
-        // Final URL for the user doesn't need the query string params
-        this.uploadURL = response.uploadURL.split('?')[0]
-    }
+    //     // Get the presigned URL
+    //     const response = await fetch({
+    //       method: 'GET',
+    //       url: API_ENDPOINT
+    //     })
+    //     console.log('Response: ', response);
+    //     let binary = atob(this.image.split(',')[1])
+    //     let array = []
+    //     for (var i = 0; i < binary.length; i++) {
+    //       array.push(binary.charCodeAt(i))
+    //     }
+    //     let blobData = new Blob([new Uint8Array(array)], {type: 'image/jpeg'})
+    //     console.log("response: ", response);
+    //     console.log('Uploading to: ', response.uploadURL)
+    //     const result = await fetch(response.uploadURL, {
+    //       method: 'PUT',
+    //       body: blobData
+    //     })
+    //     console.log('Result: ', result)
+    //     // Final URL for the user doesn't need the query string params
+    //     this.uploadURL = response.uploadURL.split('?')[0]
+    // }
 
     async function createFile(file) {
         let reader = new FileReader()
         const signedUrlResult = await getSignedUrl();
 
         reader.onload = (e) => {
-            let binary = atob(e.target.result.split(',')[1]);
-            let array = []
-            for (var i = 0; i < binary.length; i++) {
-                array.push(binary.charCodeAt(i))
-            }
-            let blobData = new Blob([new Uint8Array(array)])
+
             const uploadResult = fetch(signedUrlResult.uploadURL, {
               method: 'PUT',
-              body: blobData
-            });
-            console.log(uploadResult);
+              body: e.target.result
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to upload file');
+                }
+                console.log('File uploaded successfully.');
+            }).catch(error => {
+                console.error('Error uploading file: ', error);
+            })
         }
-        reader.readAsDataURL(file)
+
+        reader.readAsArrayBuffer(file);
     }
 
     async function upload(formData) {
