@@ -99,8 +99,8 @@
         }
     }
 
-    async function getSignedUrl() {
-        const API_ENDPOINT = 'https://o3dmvj0dij.execute-api.us-east-1.amazonaws.com/uploads'
+    async function getSignedUrl(key) {
+        const API_ENDPOINT = 'https://o3dmvj0dij.execute-api.us-east-1.amazonaws.com/uploads?key=' + key;
         const response = await fetch(API_ENDPOINT, {
             method: "GET",
         });
@@ -134,15 +134,14 @@
     //     this.uploadURL = response.uploadURL.split('?')[0]
     // }
 
-    async function createFile(file) {
+    async function createFile(file, key) {
         let reader = new FileReader()
-        const signedUrlResult = await getSignedUrl();
+        const signedUrlResult = await getSignedUrl(key);
 
         reader.onload = (e) => {
-
             const uploadResult = fetch(signedUrlResult.uploadURL, {
-              method: 'PUT',
-              body: e.target.result
+            method: 'PUT',
+            body: e.target.result
             }).then(response => {
                 if (!response.ok) {
                     throw new Error('Failed to upload file');
@@ -152,14 +151,14 @@
                 console.error('Error uploading file: ', error);
             })
         }
-
         reader.readAsArrayBuffer(file);
     }
 
     async function upload(formData) {
         let file = formData.get('file');
         console.log("calling createFile");
-        const createdFile = await createFile(file);
+        const manualKey = "manualkey"
+        const createdFile = await createFile(file, manualKey);
         try {
             loading = true;
         } catch (error) {
