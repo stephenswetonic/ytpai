@@ -157,13 +157,26 @@
     async function upload(formData) {
         let file = formData.get('file');
         console.log("calling createFile");
-        const manualKey = "manualkey"
-        const createdFile = await createFile(file, manualKey);
+        const createdFile = await createFile(file, sessionKey);
         try {
             loading = true;
         } catch (error) {
             console.error("Error:", error);
         }
+        startAudioProcessing();
+    }
+
+    async function startAudioProcessing() {
+        const postResponse = await fetch("https://o3dmvj0dij.execute-api.us-east-1.amazonaws.com/audioanalyzer", {
+            method: "POST",
+            headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+            },
+            body: JSON.stringify( {"sessionKey" : sessionKey, "isVideo" : isVideo, "audioOnly" : audioOnly, "useBigModel": useBigModel, "lang": selectedLanguage})
+        });
+        const result = await postResponse;
+        return result;
     }
 
     async function addTimestamps() {

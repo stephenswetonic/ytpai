@@ -17,9 +17,9 @@ class AudioAnalyzer:
         rec = KaldiRecognizer(model, wf.getframerate())
         rec.SetWords(True)
 
-        # get the list of JSON dictionaries
+        # Get the list of JSON dictionaries
         results = []
-        # recognize speech using vosk model
+        # Recognize speech using vosk model
         while True:
             data = wf.readframes(4000)
             if len(data) == 0:
