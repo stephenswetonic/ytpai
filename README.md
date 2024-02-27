@@ -1,3 +1,6 @@
+### Please Read
+The backend for this project has been offline for a while. I ran out of credit! But I rewrote everything for AWS Lambda and it will be back soon!
+
 # SentenceMixer AI
 
 A free, anonymous tool for sentence mixing audio and video! Think Youtube poop or SFM style without manual editing.
