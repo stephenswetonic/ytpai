@@ -69,8 +69,8 @@
     async function sendChosenWords(chosenWords) {
         try {
             loadingGenerate = true;
-            const response = await fetch(PUBLIC_BACKEND_URL + "/generate", {
-                method: "PUT",
+            const response = await fetch("https://o3dmvj0dij.execute-api.us-east-1.amazonaws.com/generate", {
+                method: "POST",
                 mode: "cors",
                 headers: {
                     'Accept': 'application/json',
@@ -108,32 +108,6 @@
         return result;
     }
 
-    // async function uploadFile(file) {
-    //     const API_ENDPOINT = 'https://o3dmvj0dij.execute-api.us-east-1.amazonaws.com/uploads'
-
-    //     // Get the presigned URL
-    //     const response = await fetch({
-    //       method: 'GET',
-    //       url: API_ENDPOINT
-    //     })
-    //     console.log('Response: ', response);
-    //     let binary = atob(this.image.split(',')[1])
-    //     let array = []
-    //     for (var i = 0; i < binary.length; i++) {
-    //       array.push(binary.charCodeAt(i))
-    //     }
-    //     let blobData = new Blob([new Uint8Array(array)], {type: 'image/jpeg'})
-    //     console.log("response: ", response);
-    //     console.log('Uploading to: ', response.uploadURL)
-    //     const result = await fetch(response.uploadURL, {
-    //       method: 'PUT',
-    //       body: blobData
-    //     })
-    //     console.log('Result: ', result)
-    //     // Final URL for the user doesn't need the query string params
-    //     this.uploadURL = response.uploadURL.split('?')[0]
-    // }
-
     async function createFile(file, key) {
         let reader = new FileReader()
         const signedUrlResult = await getSignedUrl(key);
@@ -154,30 +128,54 @@
         reader.readAsArrayBuffer(file);
     }
 
-    async function upload(formData) {
-        let file = formData.get('file');
-        console.log("calling createFile");
+    async function upload() {
+        let file = files[0];
+        console.log(file);
+        console.log(sessionKey);
+        console.log("Uploading file...");
         const createdFile = await createFile(file, sessionKey);
         try {
             loading = true;
+            startAudioProcessing();
         } catch (error) {
             console.error("Error:", error);
         }
-        startAudioProcessing();
+        
     }
 
     async function startAudioProcessing() {
-        const postResponse = await fetch("https://o3dmvj0dij.execute-api.us-east-1.amazonaws.com/audioanalyzer", {
-            method: "POST",
-            headers: {
+        try {
+            console.log("Starting audio processing...");
+
+            const postResponse = await fetch("https://o3dmvj0dij.execute-api.us-east-1.amazonaws.com/audioanalyzer", {
+                method: "POST",
+                headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
-            },
-            body: JSON.stringify( {"sessionKey" : sessionKey, "isVideo" : isVideo, "audioOnly" : audioOnly, "useBigModel": useBigModel, "lang": selectedLanguage})
-        });
-        const result = await postResponse;
-        return result;
+                },
+                body: JSON.stringify({
+                    "sessionKey": sessionKey,
+                    "isVideo": isVideo,
+                    "audioOnly": audioOnly,
+                    "useBigModel": useBigModel,
+                    "lang": selectedLanguage
+                })
+            });
+
+            if (!postResponse.ok) {
+                throw new Error(`HTTP error! Status: ${postResponse.status}`);
+            }
+
+            const result = await postResponse.json();
+            generatedWordList.items = result;
+            wordDataOriginal = result;
+            await addTimestamps();
+            loading = false;
+        } catch (error) {
+            console.error("Error during audio processing:", error);
+        }
     }
+
 
     async function addTimestamps() {
         let seconds = 0;
@@ -199,21 +197,6 @@
                 threshold += step;                
             }
         }
-    }
-
-    function sendSource() {
-        try {
-            const formData = new FormData();
-            formData.append("key", sessionKey);
-            formData.append("isVideo", String(isVideo));
-            formData.append("useBigModel", String(useBigModel));
-            formData.append("file", files[0]);
-            formData.append("lang", selectedLanguage);
-            upload(formData);
-        } catch(err) {
-            console.log(err);
-        }
-        
     }
 
     function checkInput() {
@@ -268,7 +251,7 @@
     <option value="ru">Russian</option>
     <option value="de">German</option>
 </select>
-<button class="btn btn-primary" on:click|preventDefault={sendSource}>Analyze</button>
+<button class="btn btn-primary" on:click|preventDefault={upload}>Analyze</button>
 
 
 {#if loading}
