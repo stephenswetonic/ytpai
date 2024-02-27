@@ -113,7 +113,7 @@
         const signedUrlResult = await getSignedUrl(key);
 
         reader.onload = (e) => {
-            const uploadResult = fetch(signedUrlResult.uploadURL, {
+            fetch(signedUrlResult.uploadURL, {
             method: 'PUT',
             body: e.target.result
             }).then(response => {
