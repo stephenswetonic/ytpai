@@ -1,3 +1,6 @@
+### Please Read
+The backend for this project has been offline for a while. I ran out of credit! But I rewrote everything for AWS Lambda and it will be back soon!
+
 # SentenceMixer AI
 
 A free, anonymous tool for sentence mixing audio and video! Think Youtube poop or SFM style without manual editing.
@@ -18,6 +21,7 @@ Drag on drop doesn't really work on mobile. I may create a different UI for mobi
 
 ## Change Log
 - 7/26/23: Added multi language support, only small models for Spanish, French, Russian, and German.
+- 2/26/24: AWS Lambda backend testing
 
 ## Examples
 
