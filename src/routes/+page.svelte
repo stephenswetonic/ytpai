@@ -61,6 +61,7 @@
         matchedWordList.items = intersection;
     }
 
+    // Basically a proxy for sendChosenWords()
     function generate() {
         const wordsToCombineJson = JSON.stringify(chosenWordList.items);
         sendChosenWords(wordsToCombineJson);
@@ -69,6 +70,7 @@
     async function sendChosenWords(chosenWords) {
         try {
             loadingGenerate = true;
+            // yptaiGenerate lambda function
             const response = await fetch("https://o3dmvj0dij.execute-api.us-east-1.amazonaws.com/generate", {
                 method: "POST",
                 mode: "cors",
@@ -79,6 +81,7 @@
                 body: JSON.stringify( {"chosenWords": chosenWords, "sessionKey" : sessionKey, "isVideo" : isVideo, "audioOnly" : audioOnly})
             });
             
+            // Turn response into a blob and add to page
             let buffer = await response.arrayBuffer();
             let blob;
             let url;
@@ -99,54 +102,76 @@
         }
     }
 
+    // Get signed url for uploading to S3
     async function getSignedUrl(key) {
-        const API_ENDPOINT = 'https://o3dmvj0dij.execute-api.us-east-1.amazonaws.com/uploads?key=' + key;
-        const response = await fetch(API_ENDPOINT, {
-            method: "GET",
-        });
-        const result = await response.json();
-        return result;
-    }
-
-    async function createFile(file, key) {
-        let reader = new FileReader()
-        const signedUrlResult = await getSignedUrl(key);
-
-        reader.onload = (e) => {
-            fetch(signedUrlResult.uploadURL, {
-            method: 'PUT',
-            body: e.target.result
-            }).then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to upload file');
-                }
-                console.log('File uploaded successfully.');
-            }).catch(error => {
-                console.error('Error uploading file: ', error);
-            })
+        try {
+            const API_ENDPOINT = 'https://o3dmvj0dij.execute-api.us-east-1.amazonaws.com/uploads?key=' + key;
+            const response = await fetch(API_ENDPOINT, {
+                method: "GET",
+            });
+            const result = await response.json();
+            return result;
+        } catch (error) {
+            console.error("Error getting signed url: ", error);
         }
-        reader.readAsArrayBuffer(file);
     }
 
+    // Send file to upload to S3
+    async function createFile(file, key) {
+        // Wrapped in a promise so this can be awaited
+        return new Promise<void>(async (resolve, reject) => {
+            try {
+                // Get signed url
+                const signedUrlResult = await getSignedUrl(key);
+
+                let reader = new FileReader();
+                reader.readAsArrayBuffer(file); // This triggers reader.onload
+
+                reader.onload = async (e) => {
+                    try {
+                        const response = await fetch(signedUrlResult.uploadURL, {
+                            method: 'PUT',
+                            body: e.target.result
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Failed to upload file');
+                        }
+
+                        console.log('File uploaded successfully.');
+                        resolve(); // Resolve the promise when the upload is successful
+                    } catch (error) {
+                        console.error('Error uploading file: ', error);
+                        reject(error); // Reject the promise if there's an error during upload
+                    }
+                };
+
+                
+            } catch (error) {
+                console.error('Error getting signed URL: ', error);
+                reject(error); // Reject the promise if there's an error getting the signed URL
+            }
+        });
+    }
+
+    // Uploads file to S3 and starts processing audio
     async function upload() {
         let file = files[0];
-        console.log(file);
-        console.log(sessionKey);
         console.log("Uploading file...");
-        const createdFile = await createFile(file, sessionKey);
         try {
+            await createFile(file, sessionKey);
             loading = true;
             startAudioProcessing();
         } catch (error) {
             console.error("Error:", error);
         }
-        
     }
 
+    // Signal lambda audio analyzer to start processing
     async function startAudioProcessing() {
         try {
             console.log("Starting audio processing...");
-
+            // yptaiBackend lambda function
             const postResponse = await fetch("https://o3dmvj0dij.execute-api.us-east-1.amazonaws.com/audioanalyzer", {
                 method: "POST",
                 headers: {
@@ -166,10 +191,13 @@
                 throw new Error(`HTTP error! Status: ${postResponse.status}`);
             }
 
+            console.log("Audio processing complete.")
+
+            // Add results to the UI
             const result = await postResponse.json();
             generatedWordList.items = result;
             wordDataOriginal = result;
-            await addTimestamps();
+            addTimestamps();
             loading = false;
         } catch (error) {
             console.error("Error during audio processing:", error);
@@ -177,7 +205,9 @@
     }
 
 
-    async function addTimestamps() {
+    // Adds placeholders in the word list to give reference to time
+    // The 'end' value is set to 'xyz' to discriminate them
+    function addTimestamps() {
         let seconds = 0;
         let minutes = 0;
         let pointer;
@@ -199,11 +229,13 @@
         }
     }
 
+    // Check if input is video/audio and set accordingly
     function checkInput() {
         if (files[0].type == "video/mp4") {
             audioOnly = false;
             isVideo = true;
         } else {
+            // If file is audio, disable the switch
             audioOnly = true;
             audioOnlyDisabled = true;
         }
