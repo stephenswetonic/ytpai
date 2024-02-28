@@ -38,16 +38,31 @@ def lambda_handler(event, context):
         )
     
     # Get the vosk model from s3
-    tempModelDir = '/tmp/model/'
+    modelPath = ''
+
+    if lang == "en":
+        modelPath = 'vosk-model-en-us-0.22/' if useBigModel else 'vosk-model-small-en-us-0.15/'
+    elif lang == "es":
+        modelPath = 'vosk-model-small-es-0.42/'
+    elif lang == "fr":
+        modelPath = 'vosk-model-small-fr-0.22/'
+    elif lang == "ru":
+        modelPath = 'vosk-model-small-ru-0.22/'
+    elif lang == "de":
+        modelPath = 'vosk-model-small-de-0.15/'
+    
+    print(useBigModel)
+    print(modelPath)
+
     try:
-        download_objects_from_s3('swetonic-vosk-models', 'vosk-model-small-en-us-0.15/', tempModelDir)
+        download_objects_from_s3('swetonic-vosk-models', modelPath, '/tmp/model/')
     except Exception as e:
         print("Error downloading model...")
         raise e
     
     try:
         # Process the audio
-        wordsJson = processAudio(sessionKey, useBigModel, lang)
+        wordsJson = processAudio(sessionKey, '/tmp/model/' )
         print(wordsJson)
     
         # Return a success response
@@ -90,24 +105,9 @@ def download_objects_from_s3(bucket_name, prefix, local_dir):
                 # Download the object
                 s3.download_file(bucket_name, key, local_file_path)
     
-# TODO support all models
 # Takes audio file and returns json list of word objects
-def processAudio(sessionKey, useBigModel, lang):
-    audioFile = '/tmp/' + str(sessionKey) + ".wav"
-    modelPath = '/tmp/model/'
-
-    # modelPath = ""
-    # if lang == "en":
-    #     modelPath = bigModelPath if useBigModel else smallModelPath
-    # elif lang == "es":
-    #     modelPath = esModelPath
-    # elif lang == "fr":
-    #     modelPath = frModelPath
-    # elif lang == "ru":
-    #     modelPath = ruModelPath
-    # elif lang == "de":
-    #     modelPath = deModelPath
-
+def processAudio(sessionKey, modelPath):
+    audioFile = '/tmp/' + sessionKey + ".wav"
     audioAnalyzer = AudioAnalyzer(modelPath, audioFile)
     audioAnalyzer.analyze()
     return audioAnalyzer.getWordsJson()
