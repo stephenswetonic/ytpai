@@ -5,7 +5,7 @@ from wsgiref.simple_server import make_server
 from falcon_multipart.middleware import MultipartMiddleware
 import json
 from moviepy.editor import *
-from AudioAnalyzer import AudioAnalyzer
+from python.lambda.AudioAnalyzer import AudioAnalyzer
 
 storagePath = "storage/"
 smallModelPath = "models/vosk-model-small-en-us-0.15"
