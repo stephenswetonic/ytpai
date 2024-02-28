@@ -1,4 +1,3 @@
-from vosk import Model, KaldiRecognizer, SetLogLevel
 from moviepy.editor import *
 from AudioAnalyzer import AudioAnalyzer
 import boto3
@@ -41,7 +40,8 @@ def lambda_handler(event, context):
     modelPath = ''
 
     if lang == "en":
-        modelPath = 'vosk-model-en-us-0.22/' if useBigModel else 'vosk-model-small-en-us-0.15/'
+        # Big model appears to max out memory for now...
+        modelPath = 'vosk-model-small-en-us-0.15/'
     elif lang == "es":
         modelPath = 'vosk-model-small-es-0.42/'
     elif lang == "fr":
@@ -51,9 +51,6 @@ def lambda_handler(event, context):
     elif lang == "de":
         modelPath = 'vosk-model-small-de-0.15/'
     
-    print(useBigModel)
-    print(modelPath)
-
     try:
         download_objects_from_s3('swetonic-vosk-models', modelPath, '/tmp/model/')
     except Exception as e:
