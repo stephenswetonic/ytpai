@@ -169,8 +169,8 @@
         let file = files[0];
         console.log("Uploading file...");
         try {
-            loading = true;
             await createFile(file, sessionKey);
+            loading = true;
             startAudioProcessing();
         } catch (error) {
             console.error("Error:", error);
@@ -258,240 +258,99 @@
     }
 </script>
 
-<input
-    class="file-input w-full max-w-sm mt-2"
-    accept="audio/wav, video/mp4"
-    bind:files
-    id="source"
-    name="source"
-    type="file"
-    on:change={checkInput}
-/>
-
-<div class="inline-flex">
-    <div class="my-auto mx-1">Audio Only</div>
-    <input
-        type="checkbox"
-        class="toggle toggle-lg inline-flex"
-        bind:checked={audioOnly}
-        disabled={audioOnlyDisabled}
-    />
-
+<div class="flex flex-col md:flex-row h-screen">
+    <!-- Sidebar -->
     <div
-        class="my-auto ml-1 mr-3 tooltip"
-        data-tip="Generate final clip as audio only"
+        class="sidebar bg-gray-800 text-white w-full md:w-64 md:sticky top-0 h-screen"
     >
-        <svg
-            class="my-auto mx-1"
-            width="20px"
-            height="20px"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            stroke="#ffffff"
-        >
-            <g id="SVGRepo_bgCarrier" stroke-width="0" />
-            <g
-                id="SVGRepo_tracerCarrier"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+        <div class="p-4">
+            <h1 class="text-2xl font-bold">Sidebar</h1>
+
+            <input
+                class="file-input w-full max-w-sm mt-2"
+                accept="audio/wav, video/mp4"
+                bind:files
+                id="source"
+                name="source"
+                type="file"
+                on:change={checkInput}
             />
-            <g id="SVGRepo_iconCarrier">
-                <g clip-path="url(#clip0_429_11043)">
-                    <circle
-                        cx="12"
-                        cy="11.9999"
-                        r="9"
+
+            <div class="inline-flex">
+                <div class="my-auto mx-1">Audio Only</div>
+                <input
+                    type="checkbox"
+                    class="toggle toggle-lg inline-flex"
+                    bind:checked={audioOnly}
+                    disabled={audioOnlyDisabled}
+                />
+
+                <div
+                    class="my-auto ml-1 mr-3 tooltip"
+                    data-tip="Generate final clip as audio only"
+                >
+                    <svg
+                        class="my-auto mx-1"
+                        width="20px"
+                        height="20px"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
                         stroke="#ffffff"
-                        stroke-width="2.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    />
-                    <rect
-                        x="12"
-                        y="16"
-                        width="0.01"
-                        height="0.01"
-                        stroke="#ffffff"
-                        stroke-width="3.75"
-                        stroke-linejoin="round"
-                    />
-                    <path
-                        d="M10.5858 7.58572C10.9754 7.1961 11.4858 7.00083 11.9965 6.99994C12.5095 6.99904 13.0228 7.1943 13.4142 7.58572C13.8047 7.97625 14 8.48809 14 8.99994C14 9.51178 13.8047 10.0236 13.4142 10.4141C13.0228 10.8056 12.5095 11.0008 11.9965 10.9999L12 11.9999"
-                        stroke="#ffffff"
-                        stroke-width="2.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    />
-                </g>
-                <defs>
-                    <clipPath id="clip0_429_11043">
-                        <rect width="24" height="24" fill="white" />
-                    </clipPath>
-                </defs>
-            </g>
-        </svg>
+                    >
+                        <g id="SVGRepo_bgCarrier" stroke-width="0" />
+                        <g
+                            id="SVGRepo_tracerCarrier"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+                        <g id="SVGRepo_iconCarrier">
+                            <g clip-path="url(#clip0_429_11043)">
+                                <circle
+                                    cx="12"
+                                    cy="11.9999"
+                                    r="9"
+                                    stroke="#ffffff"
+                                    stroke-width="2.5"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                />
+                                <rect
+                                    x="12"
+                                    y="16"
+                                    width="0.01"
+                                    height="0.01"
+                                    stroke="#ffffff"
+                                    stroke-width="3.75"
+                                    stroke-linejoin="round"
+                                />
+                                <path
+                                    d="M10.5858 7.58572C10.9754 7.1961 11.4858 7.00083 11.9965 6.99994C12.5095 6.99904 13.0228 7.1943 13.4142 7.58572C13.8047 7.97625 14 8.48809 14 8.99994C14 9.51178 13.8047 10.0236 13.4142 10.4141C13.0228 10.8056 12.5095 11.0008 11.9965 10.9999L12 11.9999"
+                                    stroke="#ffffff"
+                                    stroke-width="2.5"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                />
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_429_11043">
+                                    <rect width="24" height="24" fill="white" />
+                                </clipPath>
+                            </defs>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 p-6">
+        <h1 class="text-3xl font-bold mb-4">Main Content</h1>
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
+            scelerisque mauris id velit feugiat, sed suscipit arcu viverra. Duis
+            aliquet euismod leo id facilisis. Duis dictum mauris a vestibulum.
+        </p>
     </div>
 </div>
-
-<div class="inline-flex">
-    
-    <div class="my-auto mx-1">Big Model</div>
-    <input
-        type="checkbox"
-        class="toggle toggle-lg inline-flex"
-        bind:checked={useBigModel}
-    />
-
-    <div
-        class="my-auto mx-1 tooltip"
-        data-tip="More accurate speech recognition model at the cost of speed (English only)"
-    >
-        <svg
-            class="my-auto mx-1"
-            width="20px"
-            height="20px"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            stroke="#ffffff"
-        >
-            <g id="SVGRepo_bgCarrier" stroke-width="0" />
-            <g
-                id="SVGRepo_tracerCarrier"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            />
-            <g id="SVGRepo_iconCarrier">
-                <g clip-path="url(#clip0_429_11043)">
-                    <circle
-                        cx="12"
-                        cy="11.9999"
-                        r="9"
-                        stroke="#ffffff"
-                        stroke-width="2.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    />
-                    <rect
-                        x="12"
-                        y="16"
-                        width="0.01"
-                        height="0.01"
-                        stroke="#ffffff"
-                        stroke-width="3.75"
-                        stroke-linejoin="round"
-                    />
-                    <path
-                        d="M10.5858 7.58572C10.9754 7.1961 11.4858 7.00083 11.9965 6.99994C12.5095 6.99904 13.0228 7.1943 13.4142 7.58572C13.8047 7.97625 14 8.48809 14 8.99994C14 9.51178 13.8047 10.0236 13.4142 10.4141C13.0228 10.8056 12.5095 11.0008 11.9965 10.9999L12 11.9999"
-                        stroke="#ffffff"
-                        stroke-width="2.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    />
-                </g>
-                <defs>
-                    <clipPath id="clip0_429_11043">
-                        <rect width="24" height="24" fill="white" />
-                    </clipPath>
-                </defs>
-            </g>
-        </svg>
-    </div>
-</div>
-
-<select
-    bind:value={selectedLanguage}
-    class="select select-primary w-full max-w-xs"
->
-    <option selected value="en">English</option>
-    <option value="es">Spanish</option>
-    <option value="fr">French</option>
-    <option value="ru">Russian</option>
-    <option value="de">German</option>
-</select>
-<button class="btn btn-primary" on:click|preventDefault={upload}>Analyze</button
->
-
-{#if loading}
-    <div class="inline-flex h-full align-middle">
-        <span class="loading loading-spinner loading-lg"></span>
-    </div>
-{/if}
-<div class="text-sm">Supports audio (.wav) or video (.mp4) under 100MB</div>
-<div class="text-sm">Long videos may time out!</div>
-
-<ul class="text-sm">
-    <li>
-        To multi drag with the mouse use <code>ctrl + click</code> or
-        <code>cmd + click</code> to add items before dragging.
-    </li>
-    <li>
-        To multi drag with keyboard, tab to items and use <code
-            >ctrl + shift</code
-        >
-        or <code>cmd + shift</code> to add items before entering "drag mode" by
-        hitting <code>space</code>
-    </li>
-</ul>
-
-<h1 class="mt-2 text-xl font-bold tracking-light text-base-content">
-    Generated Words
-</h1>
-<div id="generatedWordList"></div>
-
-<h1 class="mt-2 text-xl font-bold tracking-light text-base-content">
-    Filter Words
-</h1>
-<input
-    class="input w-full max-w-xl bg-base-200 mt-2"
-    bind:value={inputText}
-    type="text"
-    placeholder="Type here"
-/>
-<button class="btn btn-primary" on:click={addWordsFromInput}>Submit</button>
-
-<h1 class="mt-2 text-xl font-bold tracking-light text-base-content">
-    Matched Words
-</h1>
-<div id="matchedWordList"></div>
-
-<h1
-    class="mt-2 text-xl font-bold tracking-light text-base-content inline-block"
->
-    Words To Combine
-</h1>
-<button class="btn btn-sm btn-primary inline-flex m-1" on:click={clearCombined}
-    >clear</button
->
-<div id="chosenWordList"></div>
-
-<button class="btn btn-primary btn-wide mt-4" on:click={generate}
-    >Generate</button
->
-{#if loadingGenerate}
-    <div class="inline-flex h-full align-middle">
-        <span class="loading loading-spinner loading-lg"></span>
-    </div>
-{/if}
-
-<audio class="my-2" controls src="" id="generatedAudio" hidden={hideAudio}>
-</audio>
-{#if !hideAudio}
-    <a
-        href={audioElement?.src}
-        download
-        class="btn btn-primary inline-flex mb-4">Download</a
-    >
-{/if}
-
-<!-- svelte-ignore a11y-media-has-caption -->
-<video class="my-2" src="" id="generatedVideo" controls hidden={hideVideo}
-></video>
-{#if !hideVideo}
-    <a
-        href={videoElement?.src}
-        download
-        class="btn btn-primary inline-flex mb-4">Download</a
-    >
-{/if}
