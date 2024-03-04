@@ -2,6 +2,7 @@ from moviepy.editor import *
 from AudioAnalyzer import AudioAnalyzer
 import boto3
 import json
+import os
 
 s3 = boto3.client('s3')
 
@@ -41,7 +42,7 @@ def lambda_handler(event, context):
 
     if lang == "en":
         # Big model appears to max out memory for now...
-        modelPath = 'vosk-model-small-en-us-0.15/'
+        modelPath = 'vosk-model-en-us-daanzu/' if useBigModel else 'vosk-model-small-en-us-0.15/'
     elif lang == "es":
         modelPath = 'vosk-model-small-es-0.42/'
     elif lang == "fr":
@@ -59,7 +60,7 @@ def lambda_handler(event, context):
     
     try:
         # Process the audio
-        wordsJson = processAudio(sessionKey, '/tmp/model/' )
+        wordsJson = processAudio(sessionKey, '/tmp/model' )
         print(wordsJson)
     
         # Return a success response
