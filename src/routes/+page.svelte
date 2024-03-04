@@ -339,7 +339,7 @@
     </div>
 </div>
 
-<div class="inline-flex">
+<!-- <div class="inline-flex">
     
     <div class="my-auto mx-1">Big Model</div>
     <input
@@ -403,7 +403,7 @@
             </g>
         </svg>
     </div>
-</div>
+</div> -->
 
 <select
     bind:value={selectedLanguage}
