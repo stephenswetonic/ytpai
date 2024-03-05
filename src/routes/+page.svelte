@@ -56,6 +56,10 @@
         }
     };
 
+    const clearToastMessages = () => {
+        toastMessages.set([]); // Clear the toast messages
+    };
+
     function clearCombined() {
         chosenWordList.items = [];
     }
@@ -79,6 +83,7 @@
     async function sendChosenWords(chosenWords) {
         try {
             loadingGenerate = true;
+            showToastAlert("Generating clip...")
             // yptaiGenerate lambda function
             const response = await fetch(
                 "https://o3dmvj0dij.execute-api.us-east-1.amazonaws.com/generate",
@@ -114,6 +119,7 @@
                 hideAudio = false;
             }
             loadingGenerate = false;
+            clearToastMessages();
         } catch (error) {
             console.log(error);
         }
@@ -223,7 +229,7 @@
             wordDataOriginal = resultJson;
             addTimestamps();
             loading = false;
-            toastMessages;
+            clearToastMessages();
         } catch (error) {
             console.error("Error during audio processing:", error);
         }
