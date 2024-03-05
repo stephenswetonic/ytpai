@@ -223,30 +223,19 @@
         async function ping() {
             attempts++;
 
-            try {
-                const response = await fetch('https://sam-app-s3uploadbucket-qkgqfgtltuzq.s3.amazonaws.com/' + sessionKey + '.json');
-                if (response.ok) {
-                    return response; // File successfully received
-                } else if (attempts < maxAttempts) {
-                    await new Promise(resolve => setTimeout(resolve, delay)); // Retry after delay
-                    return await ping();
-                } else {
-                    throw new Error(`Failed to retrieve file after ${maxAttempts} attempts`);
-                }
-            } catch (error) {
-                if (attempts < maxAttempts) {
-                    await new Promise(resolve => setTimeout(resolve, delay)); // Retry after delay
-                    return await ping();
-                } else {
-                    console.log("File not found, pinging again.");
-                    return null;
-                }
+            const response = await fetch('https://sam-app-s3uploadbucket-qkgqfgtltuzq.s3.amazonaws.com/' + sessionKey + '.json');
+            if (response.ok) {
+                return response; // File successfully received
+            } else if (attempts < maxAttempts) {
+                await new Promise(resolve => setTimeout(resolve, delay)); // Retry after delay
+                return await ping();
+            } else {
+                return null;
             }
         }
-
         return await ping(); // Start the initial ping
     }
-    
+
     // Adds placeholders in the word list to give reference to time
     // The 'end' value is set to 'xyz' to discriminate them
     function addTimestamps() {
@@ -288,14 +277,9 @@
     }
 </script>
 
-<div role="alert" class="alert alert-warning">
-    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-    <span>Undergoing server work. Uploads will likely time out.</span>
-  </div>
-
 <div role="alert" class="alert">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-    <span>The more accurate "Big Model" for English is still under development. Files that take longer than 30 seconds to process will time out for now.</span>
+    <span>The more accurate "Big Model" for English is now working! Files that take longer than 2 minutes to process will time out for now.</span>
   </div>
 
 <input
@@ -374,7 +358,7 @@
     </div>
 </div>
 
-<!-- <div class="inline-flex">
+<div class="inline-flex">
     
     <div class="my-auto mx-1">Big Model</div>
     <input
@@ -438,7 +422,7 @@
             </g>
         </svg>
     </div>
-</div> -->
+</div>
 
 <select
     bind:value={selectedLanguage}
