@@ -1,6 +1,10 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import List from "$lib/components/List.svelte";
+    import { writable } from 'svelte/store';
+    import Toast from '$lib/components/Toast.svelte';
+
+    const toastMessages = writable([]);
 
     let files;
     let sessionKey;
@@ -45,6 +49,12 @@
             props: { items: wordsToCombine },
         });
     });
+
+    const showToastAlert = (msg) => {
+        if (msg.trim() !== '') {
+        toastMessages.update(messages => [...messages, msg]);
+        }
+    };
 
     function clearCombined() {
         chosenWordList.items = [];
@@ -151,6 +161,7 @@
                         }
 
                         console.log("File uploaded successfully.");
+                        showToastAlert("File uploaded successfully.");
                         resolve(); // Resolve the promise when the upload is successful
                     } catch (error) {
                         console.error("Error uploading file: ", error);
@@ -168,6 +179,7 @@
     async function upload() {
         let file = files[0];
         console.log("Uploading file...");
+        showToastAlert("Uploading file...");
         try {
             loading = true;
             await createFile(file, sessionKey);
@@ -181,6 +193,7 @@
     async function startAudioProcessing() {
         try {
             console.log("Starting audio processing...");
+            showToastAlert("Starting audio processing...");
             // yptaiBackend lambda function
             const postResponse = await fetch(
                 "https://o3dmvj0dij.execute-api.us-east-1.amazonaws.com/audioanalyzer",
@@ -210,6 +223,7 @@
             wordDataOriginal = resultJson;
             addTimestamps();
             loading = false;
+            toastMessages;
         } catch (error) {
             console.error("Error during audio processing:", error);
         }
@@ -280,7 +294,9 @@
 <div role="alert" class="alert">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
     <span>The more accurate "Big Model" for English is now working! Files that take longer than 2 minutes to process will time out for now.</span>
-  </div>
+</div>
+
+<Toast bind:messages={$toastMessages} duration={3000} />
 
 <input
     class="file-input w-full max-w-sm mt-2"
