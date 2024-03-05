@@ -20,9 +20,10 @@ Drag on drop doesn't really work on mobile. I may create a different UI for mobi
 - 7/26/23: Added multi language support, only small models for Spanish, French, Russian, and German.
 - 2/26/24: AWS Lambda backend testing
 - 2/28/24: AWS lambda backend online
+- 3/4/24: Big model for English enabled
 
 ## Language Models
-- English (Big model disabled for now)
+- English
 - Spanish
 - French
 - Russian
