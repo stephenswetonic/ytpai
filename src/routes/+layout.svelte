@@ -5,8 +5,6 @@
     inject({ mode: dev ? 'development' : 'production' });
 </script>
 
-
-
 <div class="min-h-screen bg-base-100">
     <div class="navbar bg-base-100 border-b mx-auto max-w-8xl sm:px-6 lg:px-8">
         <a class="logotext btn btn-ghost text-3xl" href="/">SentenceMixer AI</a>

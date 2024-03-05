@@ -186,10 +186,6 @@
                 "https://o3dmvj0dij.execute-api.us-east-1.amazonaws.com/audioanalyzer",
                 {
                     method: "POST",
-                    headers: {
-                        Accept: "application/json",
-                        "Content-Type": "application/json",
-                    },
                     body: JSON.stringify({
                         sessionKey: sessionKey,
                         isVideo: isVideo,
@@ -204,12 +200,14 @@
                 throw new Error(`HTTP error! Status: ${postResponse.status}`);
             }
 
-            console.log("Audio processing complete.");
-
-            // Add results to the UI
-            const result = await postResponse.json();
-            generatedWordList.items = result;
-            wordDataOriginal = result;
+            // Ping S3 until the results are retrieved or timeout
+            // Set at 2 min timeout
+            const result = await pingWordsJson(sessionKey, 24, 5000);
+            const resultJson = await result.json();
+            
+            // Add words to the UI
+            generatedWordList.items = resultJson;
+            wordDataOriginal = resultJson;
             addTimestamps();
             loading = false;
         } catch (error) {
@@ -217,6 +215,38 @@
         }
     }
 
+    // Try to get processed words from s3
+    // delay in ms
+    async function pingWordsJson(sessionKey, maxAttempts, delay) {
+        let attempts = 0;
+
+        async function ping() {
+            attempts++;
+
+            try {
+                const response = await fetch('https://sam-app-s3uploadbucket-qkgqfgtltuzq.s3.amazonaws.com/' + sessionKey + '.json');
+                if (response.ok) {
+                    return response; // File successfully received
+                } else if (attempts < maxAttempts) {
+                    await new Promise(resolve => setTimeout(resolve, delay)); // Retry after delay
+                    return await ping();
+                } else {
+                    throw new Error(`Failed to retrieve file after ${maxAttempts} attempts`);
+                }
+            } catch (error) {
+                if (attempts < maxAttempts) {
+                    await new Promise(resolve => setTimeout(resolve, delay)); // Retry after delay
+                    return await ping();
+                } else {
+                    console.log("File not found, pinging again.");
+                    return null;
+                }
+            }
+        }
+
+        return await ping(); // Start the initial ping
+    }
+    
     // Adds placeholders in the word list to give reference to time
     // The 'end' value is set to 'xyz' to discriminate them
     function addTimestamps() {
