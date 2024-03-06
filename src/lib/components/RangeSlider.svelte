@@ -5,7 +5,7 @@
     import "video.js/dist/video-js.css";
 
     export let start = 0;
-    export let end = 100;
+    export let end = 10;
 
     let canvas;
     let ctx;
@@ -92,7 +92,11 @@
 
 <div>
     <!-- svelte-ignore a11y-media-has-caption -->
-    <video id="my-video" class="video-js" src="https://sam-app-s3uploadbucket-qkgqfgtltuzq.s3.amazonaws.com/1709666227219.mp4"></video>
+    <video
+        id="my-video"
+        class="video-js"
+        src="https://sam-app-s3uploadbucket-qkgqfgtltuzq.s3.amazonaws.com/1709666227219.mp4"
+    ></video>
 </div>
 
 <canvas
