@@ -26,6 +26,8 @@
 	"type": "module",
 	"dependencies": {
 		"@aws-sdk/client-s3": "^3.515.0",
+		"@ffmpeg/ffmpeg": "^0.12.10",
+		"@ffmpeg/util": "^0.12.1",
 		"@types/video.js": "^7.3.57",
 		"@vercel/analytics": "^1.2.2"
 	}

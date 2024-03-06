@@ -3,13 +3,14 @@
     import List from "$lib/components/List.svelte";
     import { writable } from 'svelte/store';
     import Toast from '$lib/components/Toast.svelte';
-    import RangeSlider from "$lib/components/RangeSlider.svelte";
-    import Video from "$lib/components/Video.svelte";
+    import { FFmpeg } from "@ffmpeg/ffmpeg"
+    //import { fetchFile, toBlobURL } from '@ffmpeg/util';
+    //import RangeSlider from "$lib/components/RangeSlider.svelte";
+    //import Video from "$lib/components/Video.svelte";
 
     const toastMessages = writable([]);
 
-    let start = 0;
-    let end = 100;
+    let ffmpeg;
 
     let files;
     let sessionKey;
@@ -35,7 +36,7 @@
     let chosenWordList;
 
     onMount(() => {
-        sessionKey = Date.now();
+        loadFFmpeg();
         audioElement = document.getElementById("generatedAudio");
         videoElement = document.getElementById("generatedVideo");
 
@@ -77,6 +78,19 @@
             wordArray.includes(x.word),
         );
         matchedWordList.items = intersection;
+    }
+
+    async function loadFFmpeg() {
+        const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm'
+        ffmpeg = new FFmpeg();
+
+        // toBlobURL is used to bypass CORS issue, urls with the same
+        // domain can be used directly.
+        await ffmpeg.load({
+            coreURL: `${baseURL}/ffmpeg-core.js`,
+            wasmURL: `${baseURL}/ffmpeg-core.wasm`
+        });
+        console.log("ffmpeg loaded");
     }
 
     // Basically a proxy for sendChosenWords()
@@ -188,6 +202,9 @@
 
     // Uploads file to S3 and starts processing audio
     async function upload() {
+        // Create new session key to match this upload to the file in s3
+        sessionKey = Date.now();
+
         let file = files[0];
         console.log("Uploading file...");
         showToastAlert("Uploading file...");
@@ -225,8 +242,8 @@
             }
 
             // Ping S3 until the results are retrieved or timeout
-            // Set at 2 min timeout
-            const result = await pingWordsJson(sessionKey, 24, 5000);
+            // Set at 5 min timeout
+            const result = await pingWordsJson(sessionKey, 60, 5000);
             const resultJson = await result.json();
             
             // Add words to the UI
@@ -304,14 +321,8 @@
 
 <div role="alert" class="alert">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-    <span>The more accurate "Big Model" for English is now working! Files that take longer than 2 minutes to process will time out for now.</span>
+    <span>The more accurate "Big Model" for English is now working! Files that take longer than 5 minutes to process will time out for now.</span>
 </div>
-
-
-<RangeSlider bind:start bind:end/>
-
-<p>Start: {start}</p>
-<p>End: {end}</p>
 
 <Toast bind:messages={$toastMessages} duration={3000} />
 
