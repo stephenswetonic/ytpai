@@ -1,6 +1,15 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import List from "$lib/components/List.svelte";
+    import { writable } from 'svelte/store';
+    import Toast from '$lib/components/Toast.svelte';
+    import RangeSlider from "$lib/components/RangeSlider.svelte";
+    import Video from "$lib/components/Video.svelte";
+
+    const toastMessages = writable([]);
+
+    let start = 0;
+    let end = 100;
 
     let files;
     let sessionKey;
@@ -46,6 +55,16 @@
         });
     });
 
+    const showToastAlert = (msg) => {
+        if (msg.trim() !== '') {
+        toastMessages.update(messages => [...messages, msg]);
+        }
+    };
+
+    const clearToastMessages = () => {
+        toastMessages.set([]); // Clear the toast messages
+    };
+
     function clearCombined() {
         chosenWordList.items = [];
     }
@@ -69,6 +88,7 @@
     async function sendChosenWords(chosenWords) {
         try {
             loadingGenerate = true;
+            showToastAlert("Generating clip...")
             // yptaiGenerate lambda function
             const response = await fetch(
                 "https://o3dmvj0dij.execute-api.us-east-1.amazonaws.com/generate",
@@ -104,6 +124,7 @@
                 hideAudio = false;
             }
             loadingGenerate = false;
+            clearToastMessages();
         } catch (error) {
             console.log(error);
         }
@@ -151,6 +172,7 @@
                         }
 
                         console.log("File uploaded successfully.");
+                        showToastAlert("File uploaded successfully.");
                         resolve(); // Resolve the promise when the upload is successful
                     } catch (error) {
                         console.error("Error uploading file: ", error);
@@ -168,9 +190,10 @@
     async function upload() {
         let file = files[0];
         console.log("Uploading file...");
+        showToastAlert("Uploading file...");
         try {
-            await createFile(file, sessionKey);
             loading = true;
+            await createFile(file, sessionKey);
             startAudioProcessing();
         } catch (error) {
             console.error("Error:", error);
@@ -181,15 +204,12 @@
     async function startAudioProcessing() {
         try {
             console.log("Starting audio processing...");
+            showToastAlert("Processing audio...");
             // yptaiBackend lambda function
             const postResponse = await fetch(
                 "https://o3dmvj0dij.execute-api.us-east-1.amazonaws.com/audioanalyzer",
                 {
                     method: "POST",
-                    headers: {
-                        Accept: "application/json",
-                        "Content-Type": "application/json",
-                    },
                     body: JSON.stringify({
                         sessionKey: sessionKey,
                         isVideo: isVideo,
@@ -204,17 +224,41 @@
                 throw new Error(`HTTP error! Status: ${postResponse.status}`);
             }
 
-            console.log("Audio processing complete.");
-
-            // Add results to the UI
-            const result = await postResponse.json();
-            generatedWordList.items = result;
-            wordDataOriginal = result;
+            // Ping S3 until the results are retrieved or timeout
+            // Set at 2 min timeout
+            const result = await pingWordsJson(sessionKey, 24, 5000);
+            const resultJson = await result.json();
+            
+            // Add words to the UI
+            generatedWordList.items = resultJson;
+            wordDataOriginal = resultJson;
             addTimestamps();
             loading = false;
+            clearToastMessages();
         } catch (error) {
             console.error("Error during audio processing:", error);
         }
+    }
+
+    // Try to get processed words from s3
+    // delay in ms
+    async function pingWordsJson(sessionKey, maxAttempts, delay) {
+        let attempts = 0;
+
+        async function ping() {
+            attempts++;
+
+            const response = await fetch('https://sam-app-s3uploadbucket-qkgqfgtltuzq.s3.amazonaws.com/' + sessionKey + '.json');
+            if (response.ok) {
+                return response; // File successfully received
+            } else if (attempts < maxAttempts) {
+                await new Promise(resolve => setTimeout(resolve, delay)); // Retry after delay
+                return await ping();
+            } else {
+                return null;
+            }
+        }
+        return await ping(); // Start the initial ping
     }
 
     // Adds placeholders in the word list to give reference to time
@@ -258,99 +302,252 @@
     }
 </script>
 
-<div class="flex flex-col md:flex-row h-screen">
-    <!-- Sidebar -->
+<div role="alert" class="alert">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+    <span>The more accurate "Big Model" for English is now working! Files that take longer than 2 minutes to process will time out for now.</span>
+</div>
+
+
+<RangeSlider bind:start bind:end/>
+
+<p>Start: {start}</p>
+<p>End: {end}</p>
+
+<Toast bind:messages={$toastMessages} duration={3000} />
+
+<input
+    class="file-input w-full max-w-sm mt-2"
+    accept="audio/wav, video/mp4"
+    bind:files
+    id="source"
+    name="source"
+    type="file"
+    on:change={checkInput}
+/>
+
+<div class="inline-flex">
+    <div class="my-auto mx-1">Audio Only</div>
+    <input
+        type="checkbox"
+        class="toggle toggle-lg inline-flex"
+        bind:checked={audioOnly}
+        disabled={audioOnlyDisabled}
+    />
+
     <div
-        class="sidebar bg-gray-800 text-white w-full md:w-64 md:sticky top-0 h-screen"
+        class="my-auto ml-1 mr-3 tooltip"
+        data-tip="Generate final clip as audio only"
     >
-        <div class="p-4">
-            <h1 class="text-2xl font-bold">Sidebar</h1>
-
-            <input
-                class="file-input w-full max-w-sm mt-2"
-                accept="audio/wav, video/mp4"
-                bind:files
-                id="source"
-                name="source"
-                type="file"
-                on:change={checkInput}
+        <svg
+            class="my-auto mx-1"
+            width="20px"
+            height="20px"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            stroke="#ffffff"
+        >
+            <g id="SVGRepo_bgCarrier" stroke-width="0" />
+            <g
+                id="SVGRepo_tracerCarrier"
+                stroke-linecap="round"
+                stroke-linejoin="round"
             />
-
-            <div class="inline-flex">
-                <div class="my-auto mx-1">Audio Only</div>
-                <input
-                    type="checkbox"
-                    class="toggle toggle-lg inline-flex"
-                    bind:checked={audioOnly}
-                    disabled={audioOnlyDisabled}
-                />
-
-                <div
-                    class="my-auto ml-1 mr-3 tooltip"
-                    data-tip="Generate final clip as audio only"
-                >
-                    <svg
-                        class="my-auto mx-1"
-                        width="20px"
-                        height="20px"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
+            <g id="SVGRepo_iconCarrier">
+                <g clip-path="url(#clip0_429_11043)">
+                    <circle
+                        cx="12"
+                        cy="11.9999"
+                        r="9"
                         stroke="#ffffff"
-                    >
-                        <g id="SVGRepo_bgCarrier" stroke-width="0" />
-                        <g
-                            id="SVGRepo_tracerCarrier"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        />
-                        <g id="SVGRepo_iconCarrier">
-                            <g clip-path="url(#clip0_429_11043)">
-                                <circle
-                                    cx="12"
-                                    cy="11.9999"
-                                    r="9"
-                                    stroke="#ffffff"
-                                    stroke-width="2.5"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                />
-                                <rect
-                                    x="12"
-                                    y="16"
-                                    width="0.01"
-                                    height="0.01"
-                                    stroke="#ffffff"
-                                    stroke-width="3.75"
-                                    stroke-linejoin="round"
-                                />
-                                <path
-                                    d="M10.5858 7.58572C10.9754 7.1961 11.4858 7.00083 11.9965 6.99994C12.5095 6.99904 13.0228 7.1943 13.4142 7.58572C13.8047 7.97625 14 8.48809 14 8.99994C14 9.51178 13.8047 10.0236 13.4142 10.4141C13.0228 10.8056 12.5095 11.0008 11.9965 10.9999L12 11.9999"
-                                    stroke="#ffffff"
-                                    stroke-width="2.5"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                />
-                            </g>
-                            <defs>
-                                <clipPath id="clip0_429_11043">
-                                    <rect width="24" height="24" fill="white" />
-                                </clipPath>
-                            </defs>
-                        </g>
-                    </svg>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Content -->
-    <div class="flex-1 p-6">
-        <h1 class="text-3xl font-bold mb-4">Main Content</h1>
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
-            scelerisque mauris id velit feugiat, sed suscipit arcu viverra. Duis
-            aliquet euismod leo id facilisis. Duis dictum mauris a vestibulum.
-        </p>
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                    <rect
+                        x="12"
+                        y="16"
+                        width="0.01"
+                        height="0.01"
+                        stroke="#ffffff"
+                        stroke-width="3.75"
+                        stroke-linejoin="round"
+                    />
+                    <path
+                        d="M10.5858 7.58572C10.9754 7.1961 11.4858 7.00083 11.9965 6.99994C12.5095 6.99904 13.0228 7.1943 13.4142 7.58572C13.8047 7.97625 14 8.48809 14 8.99994C14 9.51178 13.8047 10.0236 13.4142 10.4141C13.0228 10.8056 12.5095 11.0008 11.9965 10.9999L12 11.9999"
+                        stroke="#ffffff"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                </g>
+                <defs>
+                    <clipPath id="clip0_429_11043">
+                        <rect width="24" height="24" fill="white" />
+                    </clipPath>
+                </defs>
+            </g>
+        </svg>
     </div>
 </div>
+
+<div class="inline-flex">
+    
+    <div class="my-auto mx-1">Big Model</div>
+    <input
+        type="checkbox"
+        class="toggle toggle-lg inline-flex"
+        bind:checked={useBigModel}
+    />
+
+    <div
+        class="my-auto mx-1 tooltip"
+        data-tip="More accurate speech recognition model at the cost of speed (English only)"
+    >
+        <svg
+            class="my-auto mx-1"
+            width="20px"
+            height="20px"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            stroke="#ffffff"
+        >
+            <g id="SVGRepo_bgCarrier" stroke-width="0" />
+            <g
+                id="SVGRepo_tracerCarrier"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+            <g id="SVGRepo_iconCarrier">
+                <g clip-path="url(#clip0_429_11043)">
+                    <circle
+                        cx="12"
+                        cy="11.9999"
+                        r="9"
+                        stroke="#ffffff"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                    <rect
+                        x="12"
+                        y="16"
+                        width="0.01"
+                        height="0.01"
+                        stroke="#ffffff"
+                        stroke-width="3.75"
+                        stroke-linejoin="round"
+                    />
+                    <path
+                        d="M10.5858 7.58572C10.9754 7.1961 11.4858 7.00083 11.9965 6.99994C12.5095 6.99904 13.0228 7.1943 13.4142 7.58572C13.8047 7.97625 14 8.48809 14 8.99994C14 9.51178 13.8047 10.0236 13.4142 10.4141C13.0228 10.8056 12.5095 11.0008 11.9965 10.9999L12 11.9999"
+                        stroke="#ffffff"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                </g>
+                <defs>
+                    <clipPath id="clip0_429_11043">
+                        <rect width="24" height="24" fill="white" />
+                    </clipPath>
+                </defs>
+            </g>
+        </svg>
+    </div>
+</div>
+
+<select
+    bind:value={selectedLanguage}
+    class="select select-primary w-full max-w-xs"
+>
+    <option selected value="en">English</option>
+    <option value="es">Spanish</option>
+    <option value="fr">French</option>
+    <option value="ru">Russian</option>
+    <option value="de">German</option>
+</select>
+<button class="btn btn-primary" on:click|preventDefault={upload}>Analyze</button
+>
+
+{#if loading}
+    <div class="inline-flex h-full align-middle">
+        <span class="loading loading-spinner loading-lg"></span>
+    </div>
+{/if}
+<div class="text-sm">Supports audio (.wav) or video (.mp4)</div>
+
+<ul class="text-sm">
+    <li>
+        To multi drag with the mouse use <code>ctrl + click</code> or
+        <code>cmd + click</code> to add items before dragging.
+    </li>
+    <li>
+        To multi drag with keyboard, tab to items and use <code
+            >ctrl + shift</code
+        >
+        or <code>cmd + shift</code> to add items before entering "drag mode" by
+        hitting <code>space</code>
+    </li>
+</ul>
+
+<h1 class="mt-2 text-xl font-bold tracking-light text-base-content">
+    Generated Words
+</h1>
+<div id="generatedWordList"></div>
+
+<h1 class="mt-2 text-xl font-bold tracking-light text-base-content">
+    Filter Words
+</h1>
+<input
+    class="input w-full max-w-xl bg-base-200 mt-2"
+    bind:value={inputText}
+    type="text"
+    placeholder="Type here"
+/>
+<button class="btn btn-primary" on:click={addWordsFromInput}>Submit</button>
+
+<h1 class="mt-2 text-xl font-bold tracking-light text-base-content">
+    Matched Words
+</h1>
+<div id="matchedWordList"></div>
+
+<h1
+    class="mt-2 text-xl font-bold tracking-light text-base-content inline-block"
+>
+    Words To Combine
+</h1>
+<button class="btn btn-sm btn-primary inline-flex m-1" on:click={clearCombined}
+    >clear</button
+>
+<div id="chosenWordList"></div>
+
+<button class="btn btn-primary btn-wide mt-4" on:click={generate}
+    >Generate</button
+>
+{#if loadingGenerate}
+    <div class="inline-flex h-full align-middle">
+        <span class="loading loading-spinner loading-lg"></span>
+    </div>
+{/if}
+
+<audio class="my-2" controls src="" id="generatedAudio" hidden={hideAudio}>
+</audio>
+{#if !hideAudio}
+    <a
+        href={audioElement?.src}
+        download
+        class="btn btn-primary inline-flex mb-4">Download</a
+    >
+{/if}
+
+<!-- svelte-ignore a11y-media-has-caption -->
+<video class="my-2" src="" id="generatedVideo" controls hidden={hideVideo}
+></video>
+{#if !hideVideo}
+    <a
+        href={videoElement?.src}
+        download
+        class="btn btn-primary inline-flex mb-4">Download</a
+    >
+{/if}

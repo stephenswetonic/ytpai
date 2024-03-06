@@ -3,8 +3,13 @@
     import List from "$lib/components/List.svelte";
     import { writable } from 'svelte/store';
     import Toast from '$lib/components/Toast.svelte';
+    import RangeSlider from "$lib/components/RangeSlider.svelte";
+    import Video from "$lib/components/Video.svelte";
 
     const toastMessages = writable([]);
+
+    let start = 0;
+    let end = 100;
 
     let files;
     let sessionKey;
@@ -199,7 +204,7 @@
     async function startAudioProcessing() {
         try {
             console.log("Starting audio processing...");
-            showToastAlert("Starting audio processing...");
+            showToastAlert("Processing audio...");
             // yptaiBackend lambda function
             const postResponse = await fetch(
                 "https://o3dmvj0dij.execute-api.us-east-1.amazonaws.com/audioanalyzer",
