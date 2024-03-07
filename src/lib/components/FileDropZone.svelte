@@ -40,7 +40,7 @@
     }
 
     async function loadFFmpeg() {
-        const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm";
+        const baseURL = "https://unpkg.com/@ffmpeg/core-mt@0.12.6/dist/esm";
         ffmpeg = new FFmpeg();
 
         ffmpeg.on('progress', event => {
@@ -55,6 +55,7 @@
         await ffmpeg.load({
             coreURL: `${baseURL}/ffmpeg-core.js`,
             wasmURL: `${baseURL}/ffmpeg-core.wasm`,
+            workerURL: `${baseURL}/ffmpeg-core.worker.js`
         });
         state = 'loaded';
         console.log("ffmpeg loaded");
