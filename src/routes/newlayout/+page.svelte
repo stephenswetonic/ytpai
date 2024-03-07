@@ -1,9 +1,9 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import List from "$lib/components/List.svelte";
-    import { writable } from 'svelte/store';
-    import Toast from '$lib/components/Toast.svelte';
-    import { FFmpeg } from "@ffmpeg/ffmpeg"
+    import { writable } from "svelte/store";
+    import Toast from "$lib/components/Toast.svelte";
+    import { FFmpeg } from "@ffmpeg/ffmpeg";
     //import RangeSlider from "$lib/components/RangeSlider.svelte";
     //import Video from "$lib/components/Video.svelte";
 
@@ -56,8 +56,8 @@
     });
 
     const showToastAlert = (msg) => {
-        if (msg.trim() !== '') {
-        toastMessages.update(messages => [...messages, msg]);
+        if (msg.trim() !== "") {
+            toastMessages.update((messages) => [...messages, msg]);
         }
     };
 
@@ -80,32 +80,32 @@
     }
 
     async function loadFFmpeg() {
-        const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm'
+        const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm";
         ffmpeg = new FFmpeg();
         await ffmpeg.load({
             coreURL: `${baseURL}/ffmpeg-core.js`,
-            wasmURL: `${baseURL}/ffmpeg-core.wasm`
+            wasmURL: `${baseURL}/ffmpeg-core.wasm`,
         });
         console.log("ffmpeg loaded");
     }
 
-async function readFile(file) {
-    return new Promise(resolve => {
-        const fileReader = new FileReader();
-        
-        fileReader.onload = () => {
-            const {result} = fileReader;
-            if (result instanceof ArrayBuffer) {
-                resolve(new Uint8Array(result));
-            }
-        }
-        fileReader.readAsArrayBuffer(file);
-    })
-}
+    async function readFile(file) {
+        return new Promise((resolve) => {
+            const fileReader = new FileReader();
+
+            fileReader.onload = () => {
+                const { result } = fileReader;
+                if (result instanceof ArrayBuffer) {
+                    resolve(new Uint8Array(result));
+                }
+            };
+            fileReader.readAsArrayBuffer(file);
+        });
+    }
 
     async function trimVideo(video) {
         const videoData = await readFile(video);
-        await ffmpeg.writeFile('input.mp4', videoData);
+        await ffmpeg.writeFile("input.mp4", videoData);
         //await ffmpeg.exec();
     }
 
@@ -118,7 +118,7 @@ async function readFile(file) {
     async function sendChosenWords(chosenWords) {
         try {
             loadingGenerate = true;
-            showToastAlert("Generating clip...")
+            showToastAlert("Generating clip...");
             // yptaiGenerate lambda function
             const response = await fetch(
                 "https://o3dmvj0dij.execute-api.us-east-1.amazonaws.com/generate",
@@ -261,7 +261,7 @@ async function readFile(file) {
             // Set at 5 min timeout
             const result = await pingWordsJson(sessionKey, 60, 5000);
             const resultJson = await result.json();
-            
+
             // Add words to the UI
             generatedWordList.items = resultJson;
             wordDataOriginal = resultJson;
@@ -281,11 +281,15 @@ async function readFile(file) {
         async function ping() {
             attempts++;
 
-            const response = await fetch('https://sam-app-s3uploadbucket-qkgqfgtltuzq.s3.amazonaws.com/' + sessionKey + '.json');
+            const response = await fetch(
+                "https://sam-app-s3uploadbucket-qkgqfgtltuzq.s3.amazonaws.com/" +
+                    sessionKey +
+                    ".json",
+            );
             if (response.ok) {
                 return response; // File successfully received
             } else if (attempts < maxAttempts) {
-                await new Promise(resolve => setTimeout(resolve, delay)); // Retry after delay
+                await new Promise((resolve) => setTimeout(resolve, delay)); // Retry after delay
                 return await ping();
             } else {
                 return null;
@@ -336,8 +340,22 @@ async function readFile(file) {
 </script>
 
 <div role="alert" class="alert">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-    <span>The more accurate "Big Model" for English is now working! Files that take longer than 5 minutes to process will time out for now.</span>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        class="stroke-info shrink-0 w-6 h-6"
+        ><path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        ></path></svg
+    >
+    <span
+        >The more accurate "Big Model" for English is now working! Files that
+        take longer than 5 minutes to process will time out for now.</span
+    >
 </div>
 
 <Toast bind:messages={$toastMessages} duration={3000} />
@@ -419,7 +437,6 @@ async function readFile(file) {
 </div>
 
 <div class="inline-flex">
-    
     <div class="my-auto mx-1">Big Model</div>
     <input
         type="checkbox"
