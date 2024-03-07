@@ -4,7 +4,6 @@
     import { writable } from 'svelte/store';
     import Toast from '$lib/components/Toast.svelte';
     import { FFmpeg } from "@ffmpeg/ffmpeg"
-    //import { fetchFile, toBlobURL } from '@ffmpeg/util';
     //import RangeSlider from "$lib/components/RangeSlider.svelte";
     //import Video from "$lib/components/Video.svelte";
 
@@ -83,14 +82,31 @@
     async function loadFFmpeg() {
         const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm'
         ffmpeg = new FFmpeg();
-
-        // toBlobURL is used to bypass CORS issue, urls with the same
-        // domain can be used directly.
         await ffmpeg.load({
             coreURL: `${baseURL}/ffmpeg-core.js`,
             wasmURL: `${baseURL}/ffmpeg-core.wasm`
         });
         console.log("ffmpeg loaded");
+    }
+
+async function readFile(file) {
+    return new Promise(resolve => {
+        const fileReader = new FileReader();
+        
+        fileReader.onload = () => {
+            const {result} = fileReader;
+            if (result instanceof ArrayBuffer) {
+                resolve(new Uint8Array(result));
+            }
+        }
+        fileReader.readAsArrayBuffer(file);
+    })
+}
+
+    async function trimVideo(video) {
+        const videoData = await readFile(video);
+        await ffmpeg.writeFile('input.mp4', videoData);
+        //await ffmpeg.exec();
     }
 
     // Basically a proxy for sendChosenWords()
