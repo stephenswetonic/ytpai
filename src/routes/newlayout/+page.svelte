@@ -35,9 +35,9 @@
     let chosenWordList;
 
     onMount(() => {
-        loadFFmpeg();
         audioElement = document.getElementById("generatedAudio");
         videoElement = document.getElementById("generatedVideo");
+        
 
         generatedWordList = new List({
             target: document.getElementById("generatedWordList"),

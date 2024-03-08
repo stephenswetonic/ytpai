@@ -1,63 +1,102 @@
 <script lang="ts">
-    //import type { FFmpeg } from "@ffmpeg/ffmpeg";
     import { onMount } from "svelte";
     import { tweened } from "svelte/motion";
     import { fade } from "svelte/transition";
     import { FFmpeg } from "@ffmpeg/ffmpeg";
-    //import { writable } from 'svelte/store';
 
     type State =
         | "loading"
         | "loaded"
+        | "placed"
         | "convert.start"
         | "convert.error"
         | "convert.done";
     let state: State = "loading";
+
     let error = "";
     let ffmpeg: FFmpeg;
     let progress = tweened(0);
+    let videoElement;
+    let fileInputElement;
+    let sourceFile;
+    let hideVideo = true;
+    let dragging = false;
 
     onMount(() => {
+        videoElement = document.getElementById("sourceVideo");
+        fileInputElement = document.getElementById("fileInput");
+        fileInputElement.addEventListener("change", function (event) {
+            
+            // Will need to allow for audio later
+            sourceFile = event.target.files[0];
+            setVideoSource(sourceFile);
+        });
         loadFFmpeg();
-    })
+    });
 
     async function handleDrop(event: DragEvent) {
+        dragging = false;
         if (!event.dataTransfer) return;
 
         if (event.dataTransfer.files.length > 1) {
             error = "Upload 1 file";
         }
-        //debugger;
-        // Can check for file type here
-        if (event.dataTransfer.files[0].type == "video/webm") {
-            error = '';
+
+        if (event.dataTransfer.files[0].type == "video/mp4") {
+            error = "";
+            // Will need to allow for audio later
             const [file] = event.dataTransfer.files;
-            const data = await convertWebm(file);
+            sourceFile = file;
+            setVideoSource(file);
         } else {
-            error = 'Only webm is supported.'
+            error = "Only mp4 is supported.";
         }
-        
+    }
+
+    function setVideoSource(video: File) {
+        const fileURL = URL.createObjectURL(video);
+        videoElement.src = fileURL;
+        hideVideo = false;
+    }
+
+    function handleClick(event) {
+        fileInputElement.click();
+    }
+
+    function handleDragenter() {
+        dragging = true;
+    }
+
+    function handleDragleave() {
+        dragging = false;
+    }
+
+    function handleMouseover() {
+        dragging = true;
+    }
+
+    function handleMouseleave() {
+        dragging = false;
     }
 
     async function loadFFmpeg() {
         const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm";
         ffmpeg = new FFmpeg();
 
-        ffmpeg.on('progress', event => {
+        ffmpeg.on("progress", (event) => {
             $progress = event.progress * 100;
         });
 
         // ffmpeg.on('log', ({ message }) => {
         //     console.log(message);
-            
+
         // })
 
         await ffmpeg.load({
             coreURL: `${baseURL}/ffmpeg-core.js`,
             wasmURL: `${baseURL}/ffmpeg-core.wasm`,
         });
-        state = 'loaded';
-        console.log("ffmpeg loaded");
+        state = "loaded";
     }
 
     async function readFile(file: File): Promise<Uint8Array> {
@@ -72,66 +111,98 @@
             };
 
             fileReader.onerror = () => {
-                error = 'Could not read file';
+                error = "Could not read file";
             };
             fileReader.readAsArrayBuffer(file);
         });
     }
 
     async function trimVideo(video: File) {
-        state = 'convert.start';
+        state = "convert.start";
         const videoData = await readFile(video);
         await ffmpeg.writeFile("input.mp4", videoData);
-        await ffmpeg.exec(['-i', 'input.mp4', '-ss', '00:00:10', '-to', '00:00:25', '-c:v', 'copy', '-c:a', 'copy', 'output.mp4']);
-        const data = await ffmpeg.readFile('output.mp4');
-        state = 'convert.done';
+        await ffmpeg.exec([
+            "-i",
+            "input.mp4",
+            "-ss",
+            "00:00:10",
+            "-to",
+            "00:00:25",
+            "-c:v",
+            "copy",
+            "-c:a",
+            "copy",
+            "output.mp4",
+        ]);
+        const data = await ffmpeg.readFile("output.mp4");
+        state = "convert.done";
         return data as Uint8Array;
     }
 
     async function convertWebm(video: File) {
-        state = 'convert.start';
+        state = "convert.start";
         const videoData = await readFile(video);
         await ffmpeg.writeFile("input.webm", videoData);
-        await ffmpeg.exec(['-i', 'input.webm', 'output.mp4']);
-        const data = await ffmpeg.readFile('output.mp4');
-        state = 'convert.done';
+        await ffmpeg.exec(["-i", "input.webm", "output.mp4"]);
+        const data = await ffmpeg.readFile("output.mp4");
+        state = "convert.done";
         return data as Uint8Array;
     }
-
-    $: console.log(state);
 </script>
 
-<div
-    on:drop|preventDefault={handleDrop}
-    on:dragover|preventDefault={() => {}}
-    data-state={state}
-    class="drop"
->
-    {#if state == "loading"}
-        <p in:fade>Loading FFmpeg...</p>
-    {/if}
-
-    {#if state == "loaded"}
-        <p in:fade>Drag video here</p>
-    {/if}
-
-    {#if state == "convert.start"}
-        <p in:fade>Converting video...</p>
-        <div class="progress-bar">
-            <div class="progress" style:--progress="{$progress}%">
-                {$progress.toFixed(0)}%
-            </div>
+<!-- svelte-ignore a11y-media-has-caption -->
+<video
+    class=" max-w-screen-sm mx-auto my-2"
+    src=""
+    id="sourceVideo"
+    controls
+    hidden={hideVideo}
+></video>
+{#if state == "convert.start"}
+    <p in:fade>Converting video...</p>
+    <div class="progress-bar">
+        <div class="progress" style:--progress="{$progress}%">
+            {$progress.toFixed(0)}%
         </div>
-    {/if}
+    </div>
+{/if}
 
-    {#if state == "convert.done"}
-        <p in:fade>Done</p>
-    {/if}
+<input
+    accept="audio/wav, video/mp4"
+    id="fileInput"
+    type="file"
+    style="display: none;"
+/>
 
-    {#if error}
-        <p in:fade class="error">{error}</p>
-    {/if}
-</div>
+{#if hideVideo}
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-mouse-events-have-key-events -->
+    <div
+        on:drop|preventDefault={handleDrop}
+        on:dragenter={handleDragenter}
+        on:dragleave={handleDragleave}
+        on:mouseover={handleMouseover}
+        on:mouseleave={handleMouseleave}
+        on:click={handleClick}
+        on:dragover|preventDefault={() => {}}
+        data-state={state}
+        class={dragging
+            ? "dropdrag hover:cursor-pointer"
+            : "drop hover:cursor-pointer"}
+    >
+        {#if state == "loading"}
+            <p in:fade>Loading FFmpeg...</p>
+        {/if}
+
+        {#if state == "loaded"}
+            <p in:fade>Drag video or click here</p>
+        {/if}
+
+        {#if error}
+            <p in:fade class="error">{error}</p>
+        {/if}
+    </div>
+{/if}
 
 <style>
     .drop {
@@ -140,15 +211,21 @@
         display: grid;
         place-content: center;
         border: 10px dashed hsl(220, 10%, 20%);
+    }
 
+    .dropdrag {
+        width: 600px;
+        height: 400px;
+        display: grid;
+        place-content: center;
+        border: 10px dashed hsl(222, 22%, 67%);
     }
 
     .drop p {
         text-align: center;
-
     }
 
-    .drop p .error {
+    .error {
         color: red;
     }
 
@@ -175,5 +252,4 @@
         color: var(--progress-txt-clr);
         border-radius: 8px;
     }
-
 </style>
