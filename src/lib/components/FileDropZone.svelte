@@ -3,6 +3,7 @@
     import { tweened } from "svelte/motion";
     import { fade } from "svelte/transition";
     import { FFmpeg } from "@ffmpeg/ffmpeg";
+    import RangeSlider from "$lib/components/RangeSlider.svelte";
 
     type State =
         | "loading"
@@ -21,15 +22,30 @@
     let sourceFile;
     let hideVideo = true;
     let dragging = false;
+    let start = 0;
+    let end = 100;
+    let width = "400px";
+
+
+    function logWidth() {
+        
+
+        console.log(width);
+    }
 
     onMount(() => {
         videoElement = document.getElementById("sourceVideo");
         fileInputElement = document.getElementById("fileInput");
+
         fileInputElement.addEventListener("change", function (event) {
-            
             // Will need to allow for audio later
-            sourceFile = event.target.files[0];
-            setVideoSource(sourceFile);
+            if (event.target.files[0].type == "video/mp4") {
+                error = "";
+                sourceFile = event.target.files[0];
+                setVideoSource(sourceFile);
+            } else {
+                error = "Only mp4 is supported";
+            }
         });
         loadFFmpeg();
     });
@@ -57,9 +73,16 @@
         const fileURL = URL.createObjectURL(video);
         videoElement.src = fileURL;
         hideVideo = false;
+        //width = `${videoElement.offsetWidth}px`;
     }
 
-    function handleClick(event) {
+    function handleLoadMetaData() {
+        if (videoElement) {
+            width = `${videoElement.offsetWidth}px`;
+        }
+    }
+
+    function handleClick() {
         fileInputElement.click();
     }
 
@@ -157,7 +180,15 @@
     id="sourceVideo"
     controls
     hidden={hideVideo}
+    on:loadedmetadata={handleLoadMetaData}
 ></video>
+
+{#if !hideVideo}
+    <RangeSlider {start} {end} {width} />
+{/if}
+
+<button on:click={logWidth}>Log</button>
+
 {#if state == "convert.start"}
     <p in:fade>Converting video...</p>
     <div class="progress-bar">
