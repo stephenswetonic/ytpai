@@ -4,7 +4,6 @@
 
     export let start = 0;
     export let end = 100;
-    export let width = ""
 
     let canvas;
     let ctx;
@@ -12,6 +11,8 @@
     let activeHandle = null;
 
     function drawSlider() {
+        canvas.width = canvas.parentElement.clientWidth;
+
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         // Calculate handle positions
@@ -23,12 +24,16 @@
         ctx.fillRect(10, canvas.height / 2 - 5, canvas.width - 20, 10);
 
         // Draw start handle
+        ctx.strokeStyle = "#000"; // Border color
+        ctx.lineWidth = 1; // Border width
         ctx.fillStyle = activeHandle === "start" ? "#007bff" : "#666";
         ctx.fillRect(startHandleX - 5, canvas.height / 2 - 20, 10, 40);
+        ctx.strokeRect(startHandleX - 5, canvas.height / 2 - 20, 10, 40); // Draw border
 
         // Draw end handle
         ctx.fillStyle = activeHandle === "end" ? "#007bff" : "#666";
         ctx.fillRect(endHandleX - 5, canvas.height / 2 - 20, 10, 40);
+        ctx.strokeRect(endHandleX - 5, canvas.height / 2 - 20, 10, 40); // Draw border
     }
 
     function handleMouseDown(event) {
@@ -62,7 +67,6 @@
                 end = (newPosition / (canvas.width - 20)) * 100;
                 if (end < start) start = end;
             }
-
             drawSlider();
         }
     }
@@ -80,8 +84,8 @@
 
 <canvas
     bind:this={canvas}
-    width={width}
-    height="50"
+    width="100%"
+    height="50px"
     style="cursor: pointer;"
     on:mousedown={handleMouseDown}
     on:mousemove={handleMouseMove}
@@ -92,5 +96,6 @@
     canvas {
         display: block;
         margin: 20px auto;
+        image-rendering: pixelated;
     }
 </style>

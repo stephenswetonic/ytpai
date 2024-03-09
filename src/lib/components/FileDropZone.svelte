@@ -26,13 +26,6 @@
     let end = 100;
     let width = "400px";
 
-
-    function logWidth() {
-        
-
-        console.log(width);
-    }
-
     onMount(() => {
         videoElement = document.getElementById("sourceVideo");
         fileInputElement = document.getElementById("fileInput");
@@ -175,7 +168,7 @@
 
 <!-- svelte-ignore a11y-media-has-caption -->
 <video
-    class=" max-w-screen-sm mx-auto my-2"
+    class=" max-w-lg mx-auto mt-2"
     src=""
     id="sourceVideo"
     controls
@@ -184,10 +177,26 @@
 ></video>
 
 {#if !hideVideo}
-    <RangeSlider {start} {end} {width} />
+<div class="max-w-lg mx-auto">
+    <div class="flex justify-between items-center">
+        <!-- First element: RangeSlider -->
+        <div class="w-full max-w-full">
+            <RangeSlider bind:start={start} bind:end={end} />
+        </div>
+
+        <input type="text" class="input input-sm w-10" bind:value={start} />
+
+        <!-- Second value field -->
+        <input type="text" class="input input-sm w-10" bind:value={end} />
+        <!-- Second element: Trim button -->
+        <button class="btn btn-sm btn-primary">Trim</button>
+    </div>
+</div>
+
+
 {/if}
 
-<button on:click={logWidth}>Log</button>
+<!-- <button on:click={logWidth}>Log</button> -->
 
 {#if state == "convert.start"}
     <p in:fade>Converting video...</p>
