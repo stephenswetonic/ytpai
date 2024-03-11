@@ -82,7 +82,6 @@
             error = "Upload 1 file";
         }
 
-        //console.log(event.dataTransfer.files[0].type);
         checkInputFile(event.dataTransfer.files[0]);
 
         // if (event.dataTransfer.files[0].type == "video/mp4") {
@@ -111,9 +110,7 @@
     function setAudioSource(audio: File) {
         const fileUrl = URL.createObjectURL(audio);
         audioElement.src = fileUrl;
-        hideAudio = false;
-        console.log(audioElement.duration);
-        
+        hideAudio = false;        
     }
 
     // Load ffmpeg asm module
@@ -158,44 +155,44 @@
         });
     }
 
-    // Trims the source video for previewing on the page
-    async function trimVideo() {
+    // Called by the trim button
+    function trimMedia() {
+        // Bad way of doing this
+        if (!hideVideo) {
+            trimSource(".mp4", true);
+        } else {
+            trimSource(".wav", false);
+        }
+    }
+
+    // Trims the source media for previewing on the page
+    async function trimSource(fileExtension: String, isVideo: boolean) {
         state = "convert.start";
         const videoData = await readFile(sourceFile);
-        await ffmpeg.writeFile("input.mp4", videoData);
-        //console.log(formatTime(startTime));
-
-        // Something is causing first few seconds to freeze
-        // or maybe ignore the start time?
+        await ffmpeg.writeFile("input" + fileExtension, videoData);
         await ffmpeg.exec([
             "-ss",
             formatTimeFfmpeg(startTime),
             "-t",
             formatTimeFfmpeg(endTime),
             "-i",
-            "input.mp4",
+            "input" + fileExtension,
             "-c",
             "copy",
             "-avoid_negative_ts",
             "make_zero",
-            "output.mp4",
+            "output" + fileExtension,
         ]);
-        const data = await ffmpeg.readFile("output.mp4");
-        const file = new File([data], "output.mp4", { type: "video/mp4" });
-        setVideoSource(file);
+        const data = await ffmpeg.readFile("output" + fileExtension);
+        const file = new File([data], "output" + fileExtension);
+
+        if (isVideo) {
+            setVideoSource(file); 
+        } else {
+            setAudioSource(file);
+        }
         state = "convert.done";
         progress = tweened(0);
-    }
-
-    // Old conversion testing
-    async function convertWebm(video: File) {
-        state = "convert.start";
-        const videoData = await readFile(video);
-        await ffmpeg.writeFile("input.webm", videoData);
-        await ffmpeg.exec(["-i", "input.webm", "output.mp4"]);
-        const data = await ffmpeg.readFile("output.mp4");
-        state = "convert.done";
-        return data as Uint8Array;
     }
 
     // Convert duration in seconds to MM:SS
@@ -220,11 +217,10 @@
         return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`;
     }
 
-    // Called when video element finishes loading video
+    // Called when video/audio element finishes loading
     function handleLoadMetaData(htmlMediaElement) {
-        // If videoElement is showing and totalDuration not set
+        // If htmlElement is showing and totalDuration not set
         // If totalduration is set, we don't want to set again
-        console.log(htmlMediaElement);
         
         if (htmlMediaElement && !totalDuration) {
             totalDuration = parseFloat(htmlMediaElement.duration);
@@ -317,7 +313,7 @@
             </label>
 
             <!-- Trim button -->
-            <button class="btn btn-sm btn-primary ml-1" on:click={trimVideo}
+            <button class="btn btn-sm btn-primary ml-1" on:click={trimMedia}
                 >Trim</button
             >
         </div>
