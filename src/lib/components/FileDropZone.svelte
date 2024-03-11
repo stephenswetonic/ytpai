@@ -19,7 +19,10 @@
     let progress = tweened(0);
     let videoElement;
     let fileInputElement;
+
+    // The original untrimmed file
     let sourceFile;
+
     let hideVideo = true;
     let dragging = false;
     let rangeSliderComponent;
@@ -33,6 +36,7 @@
         videoElement = document.getElementById("sourceVideo");
         fileInputElement = document.getElementById("fileInput");
 
+        // Handles click to upload file
         fileInputElement.addEventListener("change", function (event) {
             // Will need to allow for audio later
             if (event.target.files[0].type == "video/mp4") {
@@ -46,6 +50,7 @@
         loadFFmpeg();
     });
 
+    // Handle drag and drop into drop zone
     async function handleDrop(event: DragEvent) {
         dragging = false;
         if (!event.dataTransfer) return;
@@ -65,15 +70,102 @@
         }
     }
 
+    // Sets the src attribute of the video element for preview
     function setVideoSource(video: File) {
         const fileURL = URL.createObjectURL(video);
         videoElement.src = fileURL;
         hideVideo = false;
     }
 
+    // Load ffmpeg asm module
+    async function loadFFmpeg() {
+        const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm";
+        ffmpeg = new FFmpeg();
+
+        // Update progress bar
+        ffmpeg.on("progress", (event) => {
+            $progress = event.progress * 100;
+        });
+
+        // ffmpeg.on('log', ({ message }) => {
+        //     console.log(message);
+
+        // })
+
+        await ffmpeg.load({
+            coreURL: `${baseURL}/ffmpeg-core.js`,
+            wasmURL: `${baseURL}/ffmpeg-core.wasm`,
+        });
+        state = "loaded";
+    }
+
+    // Reads a js File into a Uint8Array for ffmpeg
+    async function readFile(file: File): Promise<Uint8Array> {
+        return new Promise((resolve) => {
+            const fileReader = new FileReader();
+
+            fileReader.onload = () => {
+                const { result } = fileReader;
+                if (result instanceof ArrayBuffer) {
+                    resolve(new Uint8Array(result));
+                }
+            };
+
+            fileReader.onerror = () => {
+                error = "Could not read file";
+            };
+            fileReader.readAsArrayBuffer(file);
+        });
+    }
+
+    // Trims the source video for previewing on the page
+    async function trimVideo() {
+        state = "convert.start";
+        const videoData = await readFile(sourceFile);
+        await ffmpeg.writeFile("input.mp4", videoData);
+        await ffmpeg.exec([
+            "-i",
+            "input.mp4",
+            "-ss",
+            formatTime(startTime),
+            "-to",
+            formatTime(endTime),
+            "-c:v",
+            "copy",
+            "-c:a",
+            "copy",
+            "output.mp4",
+        ]);
+        const data = await ffmpeg.readFile("output.mp4");
+        const file = new File([data], "output.mp4", { type: "video/mp4" });
+        setVideoSource(file);
+        state = "convert.done";
+        progress = tweened(0);
+    }
+
+    // Old conversion testing
+    async function convertWebm(video: File) {
+        state = "convert.start";
+        const videoData = await readFile(video);
+        await ffmpeg.writeFile("input.webm", videoData);
+        await ffmpeg.exec(["-i", "input.webm", "output.mp4"]);
+        const data = await ffmpeg.readFile("output.mp4");
+        state = "convert.done";
+        return data as Uint8Array;
+    }
+
+    // Convert duration in seconds to MM:SS
+    function formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = Math.floor(seconds % 60);
+        return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
+    }
+
+    // Called when video element finishes loading video
     function handleLoadMetaData() {
-        if (videoElement) {
-            endTime = parseFloat(videoElement.duration);
+        // If videoElement is showing and totalDuration not set
+        // If totalduration is set, we don't want to set again
+        if (videoElement && !totalDuration) {
             totalDuration = parseFloat(videoElement.duration);
         }
     }
@@ -98,88 +190,7 @@
         dragging = false;
     }
 
-    async function loadFFmpeg() {
-        const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm";
-        ffmpeg = new FFmpeg();
-
-        ffmpeg.on("progress", (event) => {
-            $progress = event.progress * 100;
-        });
-
-        // ffmpeg.on('log', ({ message }) => {
-        //     console.log(message);
-
-        // })
-
-        await ffmpeg.load({
-            coreURL: `${baseURL}/ffmpeg-core.js`,
-            wasmURL: `${baseURL}/ffmpeg-core.wasm`,
-        });
-        state = "loaded";
-    }
-
-    async function readFile(file: File): Promise<Uint8Array> {
-        return new Promise((resolve) => {
-            const fileReader = new FileReader();
-
-            fileReader.onload = () => {
-                const { result } = fileReader;
-                if (result instanceof ArrayBuffer) {
-                    resolve(new Uint8Array(result));
-                }
-            };
-
-            fileReader.onerror = () => {
-                error = "Could not read file";
-            };
-            fileReader.readAsArrayBuffer(file);
-        });
-    }
-
-    async function trimVideo() {
-        state = "convert.start";
-        const videoData = await readFile(sourceFile);
-        await ffmpeg.writeFile("input.mp4", videoData);
-        await ffmpeg.exec([
-            "-i",
-            "input.mp4",
-            "-ss",
-            formatTime(startTime),
-            "-to",
-            formatTime(endTime),
-            "-c:v",
-            "copy",
-            "-c:a",
-            "copy",
-            "output.mp4",
-        ]);
-        const data = await ffmpeg.readFile("output.mp4");
-        // set source?
-        const file = new File([data], "output.mp4", { type: "video/mp4" });
-        setVideoSource(file);
-        state = "convert.done";
-        //return data as Uint8Array;
-    }
-
-    async function convertWebm(video: File) {
-        state = "convert.start";
-        const videoData = await readFile(video);
-        await ffmpeg.writeFile("input.webm", videoData);
-        await ffmpeg.exec(["-i", "input.webm", "output.mp4"]);
-        const data = await ffmpeg.readFile("output.mp4");
-        state = "convert.done";
-        return data as Uint8Array;
-    }
-
-    function formatTime(seconds) {
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = Math.floor(seconds % 60);
-        return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
-    }
-
     function updateStartHandle(event) {
-        //console.log(event.target.value);
-
         rangeSliderComponent.updateStartHandle(event.target.value);
     }
 
@@ -236,7 +247,9 @@
             </label>
 
             <!-- Trim button -->
-            <button class="btn btn-sm btn-primary" on:click={trimVideo}>Trim</button>
+            <button class="btn btn-sm btn-primary" on:click={trimVideo}
+                >Trim</button
+            >
         </div>
     </div>
 {/if}
