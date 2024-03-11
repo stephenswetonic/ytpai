@@ -83,7 +83,6 @@
 
     function handleMouseDown(event) {
         const mouseX = event.clientX - canvas.getBoundingClientRect().left;
-        //const mouseY = event.clientY - canvas.getBoundingClientRect().top;
 
         const startHandleX = (start / 100) * (canvas.width - 20) + 10;
         const endHandleX = (end / 100) * (canvas.width - 20) + 10;
@@ -145,7 +144,6 @@
 <style>
     canvas {
         display: block;
-        margin: 20px auto;
         image-rendering: pixelated;
     }
 </style>

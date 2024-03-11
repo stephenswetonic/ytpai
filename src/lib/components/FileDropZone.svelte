@@ -100,6 +100,7 @@
     }
 
     // Reads a js File into a Uint8Array for ffmpeg
+    // Mainly needed to access ffmpeg
     async function readFile(file: File): Promise<Uint8Array> {
         return new Promise((resolve) => {
             const fileReader = new FileReader();
@@ -123,6 +124,10 @@
         state = "convert.start";
         const videoData = await readFile(sourceFile);
         await ffmpeg.writeFile("input.mp4", videoData);
+        //console.log(formatTime(startTime));
+        
+        // Something is causing first few seconds to freeze
+        // or maybe ignore the start time?
         await ffmpeg.exec([
             "-i",
             "input.mp4",
@@ -222,7 +227,6 @@
             </div>
 
             <!-- Start value field -->
-
             <label class="input input-bordered flex items-center gap-2 p-1">
                 Start
                 <input
@@ -255,10 +259,14 @@
 {/if}
 
 {#if state == "convert.start"}
-    <p in:fade>Converting video...</p>
-    <div class="progress-bar">
-        <div class="progress" style:--progress="{$progress}%">
-            {$progress.toFixed(0)}%
+    <div class="container">
+        <div class="text-container">
+            <p id="processing-text">Processing...</p>
+        </div>
+        <div class="progress-bar">
+            <div class="progress" style:--progress="{$progress}%">
+                {$progress.toFixed(0)}%
+            </div>
         </div>
     </div>
 {/if}
@@ -325,13 +333,23 @@
         color: red;
     }
 
+    .container {
+        width: 300px;
+        margin: 0 auto;
+    }
+    .text-container {
+        margin-bottom: 2px; /* Adjust margin between text and progress bar */
+    }
+
+    #processing-text {
+        margin: 0; /* Remove default margin */
+    }
+
     .progress-bar {
         --progress-bar-clr: hsl(180, 100%, 50%);
         --progress-txt-clr: hsl(0, 0%, 0%);
-
         width: 300px;
         height: 40px;
-        position: relative;
         font-weight: 700;
         background-color: hsl(200, 10%, 14%);
         border-radius: 8px;
@@ -340,10 +358,6 @@
     .progress-bar .progress {
         width: var(--progress);
         height: 100%;
-        position: absolute;
-        left: 0px;
-        display: grid;
-        place-content: center;
         background-color: var(--progress-bar-clr);
         color: var(--progress-txt-clr);
         border-radius: 8px;
