@@ -136,17 +136,17 @@
         });
     }
 
-    async function trimVideo(video: File) {
+    async function trimVideo() {
         state = "convert.start";
-        const videoData = await readFile(video);
+        const videoData = await readFile(sourceFile);
         await ffmpeg.writeFile("input.mp4", videoData);
         await ffmpeg.exec([
             "-i",
             "input.mp4",
             "-ss",
-            "00:00:10",
+            formatTime(startTime),
             "-to",
-            "00:00:25",
+            formatTime(endTime),
             "-c:v",
             "copy",
             "-c:a",
@@ -154,8 +154,11 @@
             "output.mp4",
         ]);
         const data = await ffmpeg.readFile("output.mp4");
+        // set source?
+        const file = new File([data], "output.mp4", { type: "video/mp4" });
+        setVideoSource(file);
         state = "convert.done";
-        return data as Uint8Array;
+        //return data as Uint8Array;
     }
 
     async function convertWebm(video: File) {
@@ -233,7 +236,7 @@
             </label>
 
             <!-- Trim button -->
-            <button class="btn btn-sm btn-primary">Trim</button>
+            <button class="btn btn-sm btn-primary" on:click={trimVideo}>Trim</button>
         </div>
     </div>
 {/if}
