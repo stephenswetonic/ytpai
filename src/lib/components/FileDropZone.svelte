@@ -22,9 +22,12 @@
     let sourceFile;
     let hideVideo = true;
     let dragging = false;
-    let start = 0;
-    let end = 100;
-    let width = "400px";
+    let rangeSliderComponent;
+
+    // Real start and end values in seconds for slider
+    let startTime;
+    let endTime;
+    let totalDuration;
 
     onMount(() => {
         videoElement = document.getElementById("sourceVideo");
@@ -66,12 +69,13 @@
         const fileURL = URL.createObjectURL(video);
         videoElement.src = fileURL;
         hideVideo = false;
-        //width = `${videoElement.offsetWidth}px`;
     }
 
     function handleLoadMetaData() {
         if (videoElement) {
-            width = `${videoElement.offsetWidth}px`;
+            endTime = parseFloat(videoElement.duration);
+            totalDuration = parseFloat(videoElement.duration);
+            //rangeSliderComponent.updateEndHandle();
         }
     }
 
@@ -164,11 +168,27 @@
         state = "convert.done";
         return data as Uint8Array;
     }
+
+    function formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = Math.floor(seconds % 60);
+        return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
+    }
+
+    function updateStartHandle(event) {
+        //console.log(event.target.value);
+        
+        rangeSliderComponent.updateStartHandle(event.target.value);
+    }
+
+    function updateEndHandle(event) {
+        rangeSliderComponent.updateEndHandle(event.target.value);
+    }
 </script>
 
 <!-- svelte-ignore a11y-media-has-caption -->
 <video
-    class=" max-w-lg mx-auto mt-2"
+    class=" max-w-xl mx-auto mt-2"
     src=""
     id="sourceVideo"
     controls
@@ -177,26 +197,38 @@
 ></video>
 
 {#if !hideVideo}
-<div class="max-w-lg mx-auto">
-    <div class="flex justify-between items-center">
-        <!-- First element: RangeSlider -->
-        <div class="w-full max-w-full">
-            <RangeSlider bind:start={start} bind:end={end} />
+    <div class="max-w-xl mx-auto">
+        <div class="flex justify-between items-center">
+            <!-- First element: RangeSlider -->
+            <div class="w-full max-w-full">
+                <RangeSlider
+                    bind:startTime
+                    bind:endTime
+                    bind:totalDuration
+                    bind:this={rangeSliderComponent}
+                />
+            </div>
+
+            <input
+                type="text"
+                class="input input-sm w-10 p-0"
+                value={formatTime(startTime)}
+                on:change={(event) => updateStartHandle(event)}
+            />
+
+            <!-- Second value field -->
+            <input
+                type="text"
+                class="input input-sm w-10 p-0"
+                value={formatTime(endTime)}
+                on:change={(event) => updateEndHandle(event)}
+            />
+
+            <!-- Second element: Trim button -->
+            <button class="btn btn-sm btn-primary">Trim</button>
         </div>
-
-        <input type="text" class="input input-sm w-10" bind:value={start} />
-
-        <!-- Second value field -->
-        <input type="text" class="input input-sm w-10" bind:value={end} />
-        <!-- Second element: Trim button -->
-        <button class="btn btn-sm btn-primary">Trim</button>
     </div>
-</div>
-
-
 {/if}
-
-<!-- <button on:click={logWidth}>Log</button> -->
 
 {#if state == "convert.start"}
     <p in:fade>Converting video...</p>

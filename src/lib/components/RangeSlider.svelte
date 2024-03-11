@@ -2,13 +2,43 @@
 <script>
     import { onMount } from "svelte";
 
-    export let start = 0;
-    export let end = 100;
+    let start = 0;
+    let end = 100;
+
+    export let startTime;
+    export let endTime;
+    export let totalDuration;
+
+    $: {
+        startTime = totalDuration * (start / 100);
+    }
+    $: {
+        endTime = totalDuration * (end / 100);
+    }
 
     let canvas;
     let ctx;
     let dragging = false;
     let activeHandle = null;
+
+    function timeToSeconds(timeString) {
+        const [minutes, seconds] = timeString.split(":").map(Number);
+        return minutes * 60 + seconds;
+    }
+
+    export function updateEndHandle(formattedTime) {
+        endTime = timeToSeconds(formattedTime);
+        const endTimePercent = endTime / totalDuration;
+        end = endTimePercent * 100;
+        drawSlider();
+    }
+
+    export function updateStartHandle(formattedTime) {
+        startTime = timeToSeconds(formattedTime);
+        const startTimePercent = startTime / totalDuration;
+        start = startTimePercent * 100;
+        drawSlider();
+    }
 
     function drawSlider() {
         canvas.width = canvas.parentElement.clientWidth;
