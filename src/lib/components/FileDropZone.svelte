@@ -125,21 +125,21 @@
         const videoData = await readFile(sourceFile);
         await ffmpeg.writeFile("input.mp4", videoData);
         //console.log(formatTime(startTime));
-        
+
         // Something is causing first few seconds to freeze
         // or maybe ignore the start time?
         await ffmpeg.exec([
+            "-ss",
+            formatTimeFfmpeg(startTime),
+            "-t",
+            formatTimeFfmpeg(endTime),
             "-i",
             "input.mp4",
-            "-ss",
-            formatTime(startTime),
-            "-to",
-            formatTime(endTime),
-            "-c:v",
+            "-c",
             "copy",
-            "-c:a",
-            "copy",
-            "output.mp4",
+            "-avoid_negative_ts",
+            "make_zero",
+            "output.mp4"
         ]);
         const data = await ffmpeg.readFile("output.mp4");
         const file = new File([data], "output.mp4", { type: "video/mp4" });
@@ -164,6 +164,22 @@
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = Math.floor(seconds % 60);
         return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
+    }
+
+    // Calculate hours, minutes, and remaining seconds for ffmpeg
+    function formatTimeFfmpeg(seconds) {
+        
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const remainingSeconds = seconds % 60;
+
+        // Pad single-digit values with leading zeros
+        const paddedHours = hours.toString().padStart(2, "0");
+        const paddedMinutes = minutes.toString().padStart(2, "0");
+        const paddedSeconds = remainingSeconds.toString().padStart(2, "0");
+
+        // Construct the time format HH:MM:SS
+        return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`;
     }
 
     // Called when video element finishes loading video
@@ -251,7 +267,7 @@
             </label>
 
             <!-- Trim button -->
-            <button class="btn btn-sm btn-primary" on:click={trimVideo}
+            <button class="btn btn-sm btn-primary ml-1" on:click={trimVideo}
                 >Trim</button
             >
         </div>
