@@ -75,7 +75,6 @@
         if (videoElement) {
             endTime = parseFloat(videoElement.duration);
             totalDuration = parseFloat(videoElement.duration);
-            //rangeSliderComponent.updateEndHandle();
         }
     }
 
@@ -177,7 +176,7 @@
 
     function updateStartHandle(event) {
         //console.log(event.target.value);
-        
+
         rangeSliderComponent.updateStartHandle(event.target.value);
     }
 
@@ -199,7 +198,6 @@
 {#if !hideVideo}
     <div class="max-w-xl mx-auto">
         <div class="flex justify-between items-center">
-            <!-- First element: RangeSlider -->
             <div class="w-full max-w-full">
                 <RangeSlider
                     bind:startTime
@@ -209,22 +207,32 @@
                 />
             </div>
 
-            <input
-                type="text"
-                class="input input-sm w-10 p-0"
-                value={formatTime(startTime)}
-                on:change={(event) => updateStartHandle(event)}
-            />
+            <!-- Start value field -->
 
-            <!-- Second value field -->
-            <input
-                type="text"
-                class="input input-sm w-10 p-0"
-                value={formatTime(endTime)}
-                on:change={(event) => updateEndHandle(event)}
-            />
+            <label class="input input-bordered flex items-center gap-2 p-1">
+                Start
+                <input
+                    type="text"
+                    class="grow w-12 p-1"
+                    placeholder="Daisy"
+                    value={formatTime(startTime)}
+                    on:change={(event) => updateStartHandle(event)}
+                />
+            </label>
 
-            <!-- Second element: Trim button -->
+            <!-- End value field -->
+            <label class="input input-bordered flex items-center gap-2 p-1">
+                End
+                <input
+                    type="text"
+                    class="grow w-12 p-1"
+                    placeholder="Daisy"
+                    value={formatTime(endTime)}
+                    on:change={(event) => updateEndHandle(event)}
+                />
+            </label>
+
+            <!-- Trim button -->
             <button class="btn btn-sm btn-primary">Trim</button>
         </div>
     </div>

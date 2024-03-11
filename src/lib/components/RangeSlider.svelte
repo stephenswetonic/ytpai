@@ -41,30 +41,38 @@
     }
 
     function drawSlider() {
-        canvas.width = canvas.parentElement.clientWidth;
+    canvas.width = canvas.parentElement.clientWidth;
 
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Calculate handle positions
-        const startHandleX = (start / 100) * (canvas.width - 20) + 10;
-        const endHandleX = (end / 100) * (canvas.width - 20) + 10;
+    // Calculate handle positions
+    const startHandleX = (start / 100) * (canvas.width - 20) + 10;
+    const endHandleX = (end / 100) * (canvas.width - 20) + 10;
 
-        // Draw track
-        ctx.fillStyle = "#fff";
-        ctx.fillRect(10, canvas.height / 2 - 5, canvas.width - 20, 10);
+    // Draw gray track covering the whole slider
+    ctx.fillStyle = "#333";
+    ctx.fillRect(10, canvas.height / 2 - 5, startHandleX - 10, 10);
+    ctx.fillRect(endHandleX, canvas.height / 2 - 5, canvas.width - endHandleX - 10, 10);
 
-        // Draw start handle
-        ctx.strokeStyle = "#000"; // Border color
-        ctx.lineWidth = 1; // Border width
-        ctx.fillStyle = activeHandle === "start" ? "#007bff" : "#666";
-        ctx.fillRect(startHandleX - 5, canvas.height / 2 - 20, 10, 40);
-        ctx.strokeRect(startHandleX - 5, canvas.height / 2 - 20, 10, 40); // Draw border
+    // Draw white track between the handles
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(startHandleX, canvas.height / 2 - 5, endHandleX - startHandleX, 10);
 
-        // Draw end handle
-        ctx.fillStyle = activeHandle === "end" ? "#007bff" : "#666";
-        ctx.fillRect(endHandleX - 5, canvas.height / 2 - 20, 10, 40);
-        ctx.strokeRect(endHandleX - 5, canvas.height / 2 - 20, 10, 40); // Draw border
-    }
+    // Draw start handle
+    ctx.strokeStyle = "#000"; // Border color
+    ctx.lineWidth = 1; // Border width
+    ctx.fillStyle = activeHandle === "start" ? "#007bff" : "#666";
+    ctx.fillRect(startHandleX - 5, canvas.height / 2 - 20, 10, 40);
+    ctx.strokeRect(startHandleX - 5, canvas.height / 2 - 20, 10, 40); // Draw border
+
+    // Draw end handle
+    ctx.fillStyle = activeHandle === "end" ? "#007bff" : "#666";
+    ctx.fillRect(endHandleX - 5, canvas.height / 2 - 20, 10, 40);
+    ctx.strokeRect(endHandleX - 5, canvas.height / 2 - 20, 10, 40); // Draw border
+}
+
+
+
 
     function handleMouseDown(event) {
         const mouseX = event.clientX - canvas.getBoundingClientRect().left;
