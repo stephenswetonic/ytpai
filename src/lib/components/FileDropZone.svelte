@@ -18,12 +18,14 @@
     let ffmpeg: FFmpeg;
     let progress = tweened(0);
     let videoElement;
+    let audioElement;
     let fileInputElement;
 
     // The original untrimmed file
     let sourceFile;
 
     let hideVideo = true;
+    let hideAudio = true;
     let dragging = false;
     let rangeSliderComponent;
 
@@ -34,21 +36,42 @@
 
     onMount(() => {
         videoElement = document.getElementById("sourceVideo");
+        audioElement = document.getElementById("sourceAudio");
         fileInputElement = document.getElementById("fileInput");
 
         // Handles click to upload file
         fileInputElement.addEventListener("change", function (event) {
+            checkInputFile(event.target.files[0]);
             // Will need to allow for audio later
-            if (event.target.files[0].type == "video/mp4") {
-                error = "";
-                sourceFile = event.target.files[0];
-                setVideoSource(sourceFile);
-            } else {
-                error = "Only mp4 is supported";
-            }
+            // if (event.target.files[0].type == "video/mp4") {
+            //     error = "";
+            //     sourceFile = event.target.files[0];
+            //     setVideoSource(sourceFile);
+            // } else if (event.target.files[0].type == "audio/wav") {
+            //     error = "";
+            //     const [file] = event.target.files;
+            //     sourceFile = file;
+            //     setAudioSource(file);
+            // } else {
+            //     error = "Only mp4 is supported";
+            // }
         });
         loadFFmpeg();
     });
+
+    function checkInputFile(file: File) {
+        if (file.type == "video/mp4") {
+            error = "";
+            sourceFile = file;
+            setVideoSource(file);
+        } else if (file.type == "audio/wav") {
+            error = "";
+            sourceFile = file;
+            setAudioSource(file);
+        } else {
+            error = "Only mp4 or wav is supported.";
+        }
+    }
 
     // Handle drag and drop into drop zone
     async function handleDrop(event: DragEvent) {
@@ -59,15 +82,23 @@
             error = "Upload 1 file";
         }
 
-        if (event.dataTransfer.files[0].type == "video/mp4") {
-            error = "";
-            // Will need to allow for audio later
-            const [file] = event.dataTransfer.files;
-            sourceFile = file;
-            setVideoSource(file);
-        } else {
-            error = "Only mp4 is supported.";
-        }
+        //console.log(event.dataTransfer.files[0].type);
+        checkInputFile(event.dataTransfer.files[0]);
+
+        // if (event.dataTransfer.files[0].type == "video/mp4") {
+        //     error = "";
+        //     // Will need to allow for audio later
+        //     const [file] = event.dataTransfer.files;
+        //     sourceFile = file;
+        //     setVideoSource(file);
+        // } else if (event.dataTransfer.files[0].type == "audio/wav") {
+        //     error = "";
+        //     const [file] = event.dataTransfer.files;
+        //     sourceFile = file;
+        //     setAudioSource(file);
+        // } else {
+        //     error = "Only mp4 is supported.";
+        // }
     }
 
     // Sets the src attribute of the video element for preview
@@ -75,6 +106,14 @@
         const fileURL = URL.createObjectURL(video);
         videoElement.src = fileURL;
         hideVideo = false;
+    }
+
+    function setAudioSource(audio: File) {
+        const fileUrl = URL.createObjectURL(audio);
+        audioElement.src = fileUrl;
+        hideAudio = false;
+        console.log(audioElement.duration);
+        
     }
 
     // Load ffmpeg asm module
@@ -139,7 +178,7 @@
             "copy",
             "-avoid_negative_ts",
             "make_zero",
-            "output.mp4"
+            "output.mp4",
         ]);
         const data = await ffmpeg.readFile("output.mp4");
         const file = new File([data], "output.mp4", { type: "video/mp4" });
@@ -168,7 +207,6 @@
 
     // Calculate hours, minutes, and remaining seconds for ffmpeg
     function formatTimeFfmpeg(seconds) {
-        
         const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
         const remainingSeconds = seconds % 60;
@@ -183,11 +221,13 @@
     }
 
     // Called when video element finishes loading video
-    function handleLoadMetaData() {
+    function handleLoadMetaData(htmlMediaElement) {
         // If videoElement is showing and totalDuration not set
         // If totalduration is set, we don't want to set again
-        if (videoElement && !totalDuration) {
-            totalDuration = parseFloat(videoElement.duration);
+        console.log(htmlMediaElement);
+        
+        if (htmlMediaElement && !totalDuration) {
+            totalDuration = parseFloat(htmlMediaElement.duration);
         }
     }
 
@@ -227,10 +267,20 @@
     id="sourceVideo"
     controls
     hidden={hideVideo}
-    on:loadedmetadata={handleLoadMetaData}
+    on:loadedmetadata={() => handleLoadMetaData(videoElement)}
 ></video>
 
-{#if !hideVideo}
+<audio
+    class="max-w-xl mx-auto mt-2"
+    id="sourceAudio"
+    controls
+    src=""
+    hidden={hideAudio}
+    on:loadedmetadata={() => handleLoadMetaData(audioElement)}
+>
+</audio>
+
+{#if !hideVideo || !hideAudio}
     <div class="max-w-xl mx-auto">
         <div class="flex justify-between items-center">
             <div class="w-full max-w-full">
@@ -294,7 +344,7 @@
     style="display: none;"
 />
 
-{#if hideVideo}
+{#if hideVideo && hideAudio}
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <!-- svelte-ignore a11y-mouse-events-have-key-events -->
     <div
