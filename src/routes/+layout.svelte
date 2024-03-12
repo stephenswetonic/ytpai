@@ -15,8 +15,16 @@
     </div>
 </div>
 
+<div class="layout-footer">
+
+</div>
+
 <style>
     .logotext {
         font-family: 'Audiowide', cursive;
+    }
+    .layout-footer {
+        width: 100%;
+        height: 100px;
     }
 </style>

@@ -34,7 +34,7 @@
     let chosenWordList;
 
     // Runs when sourceFile changes
-    $: if(sourceFile) {
+    $: if (sourceFile) {
         checkInput();
     }
 
@@ -335,72 +335,6 @@
 <FileDropZone bind:sourceFile bind:trimmedFile bind:startTime bind:endTime />
 
 <div class="inline-flex">
-    <div class="my-auto mx-1">Audio Only</div>
-    <input
-        type="checkbox"
-        class="toggle toggle-lg inline-flex"
-        bind:checked={audioOnly}
-        disabled={audioOnlyDisabled}
-    />
-
-    <div
-        class="my-auto ml-1 mr-3 tooltip"
-        data-tip="Generate final clip as audio only"
-    >
-        <svg
-            class="my-auto mx-1"
-            width="20px"
-            height="20px"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            stroke="#ffffff"
-        >
-            <g id="SVGRepo_bgCarrier" stroke-width="0" />
-            <g
-                id="SVGRepo_tracerCarrier"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            />
-            <g id="SVGRepo_iconCarrier">
-                <g clip-path="url(#clip0_429_11043)">
-                    <circle
-                        cx="12"
-                        cy="11.9999"
-                        r="9"
-                        stroke="#ffffff"
-                        stroke-width="2.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    />
-                    <rect
-                        x="12"
-                        y="16"
-                        width="0.01"
-                        height="0.01"
-                        stroke="#ffffff"
-                        stroke-width="3.75"
-                        stroke-linejoin="round"
-                    />
-                    <path
-                        d="M10.5858 7.58572C10.9754 7.1961 11.4858 7.00083 11.9965 6.99994C12.5095 6.99904 13.0228 7.1943 13.4142 7.58572C13.8047 7.97625 14 8.48809 14 8.99994C14 9.51178 13.8047 10.0236 13.4142 10.4141C13.0228 10.8056 12.5095 11.0008 11.9965 10.9999L12 11.9999"
-                        stroke="#ffffff"
-                        stroke-width="2.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    />
-                </g>
-                <defs>
-                    <clipPath id="clip0_429_11043">
-                        <rect width="24" height="24" fill="white" />
-                    </clipPath>
-                </defs>
-            </g>
-        </svg>
-    </div>
-</div>
-
-<div class="inline-flex">
     <div class="my-auto mx-1">Big Model</div>
     <input
         type="checkbox"
@@ -533,6 +467,71 @@
 <button class="btn btn-primary btn-wide mt-4" on:click={generate}
     >Generate</button
 >
+<div class="inline-flex">
+    <div class="my-auto mx-1">Audio Only</div>
+    <input
+        type="checkbox"
+        class="toggle toggle-lg inline-flex"
+        bind:checked={audioOnly}
+        disabled={audioOnlyDisabled}
+    />
+
+    <div
+        class="my-auto ml-1 mr-3 tooltip"
+        data-tip="Generate final clip as audio only"
+    >
+        <svg
+            class="my-auto mx-1"
+            width="20px"
+            height="20px"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            stroke="#ffffff"
+        >
+            <g id="SVGRepo_bgCarrier" stroke-width="0" />
+            <g
+                id="SVGRepo_tracerCarrier"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+            <g id="SVGRepo_iconCarrier">
+                <g clip-path="url(#clip0_429_11043)">
+                    <circle
+                        cx="12"
+                        cy="11.9999"
+                        r="9"
+                        stroke="#ffffff"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                    <rect
+                        x="12"
+                        y="16"
+                        width="0.01"
+                        height="0.01"
+                        stroke="#ffffff"
+                        stroke-width="3.75"
+                        stroke-linejoin="round"
+                    />
+                    <path
+                        d="M10.5858 7.58572C10.9754 7.1961 11.4858 7.00083 11.9965 6.99994C12.5095 6.99904 13.0228 7.1943 13.4142 7.58572C13.8047 7.97625 14 8.48809 14 8.99994C14 9.51178 13.8047 10.0236 13.4142 10.4141C13.0228 10.8056 12.5095 11.0008 11.9965 10.9999L12 11.9999"
+                        stroke="#ffffff"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                </g>
+                <defs>
+                    <clipPath id="clip0_429_11043">
+                        <rect width="24" height="24" fill="white" />
+                    </clipPath>
+                </defs>
+            </g>
+        </svg>
+    </div>
+</div>
 {#if loadingGenerate}
     <div class="inline-flex h-full align-middle">
         <span class="loading loading-spinner loading-lg"></span>

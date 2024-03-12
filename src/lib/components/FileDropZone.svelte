@@ -262,7 +262,7 @@
 
 <!-- svelte-ignore a11y-media-has-caption -->
 <video
-    class=" max-w-xl mx-auto mt-2"
+    class=" max-w-xl mt-2 mx-auto"
     src=""
     id="sourceVideo"
     controls
@@ -271,7 +271,7 @@
 ></video>
 
 <audio
-    class="max-w-xl mx-auto mt-2"
+    class="max-w-xl mt-2 mx-auto"
     id="sourceAudio"
     controls
     src=""
@@ -317,7 +317,7 @@
             </label>
 
             <!-- Trim button -->
-            <button class="btn btn-sm btn-primary ml-1" on:click={trimMedia}
+            <button class="btn btn-sm btn-primary ml-1" on:click={trimMedia} data-tooltip="Trim media to selected duration"
                 >Trim</button
             >
         </div>

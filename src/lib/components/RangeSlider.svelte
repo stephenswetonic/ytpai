@@ -145,5 +145,6 @@
     canvas {
         display: block;
         image-rendering: pixelated;
+        margin-bottom: 10px;
     }
 </style>
