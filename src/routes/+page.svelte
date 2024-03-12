@@ -1,16 +1,12 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import List from "$lib/components/List.svelte";
-    import { writable } from "svelte/store";
-    import Toast from "$lib/components/Toast.svelte";
-    import FileDropZone from "$lib/components/FileDropZone.svelte";
+    import { writable } from 'svelte/store';
+    import Toast from '$lib/components/Toast.svelte';
 
     const toastMessages = writable([]);
 
-    let sourceFile;
-    let trimmedFile;
-    let startTime;
-    let endTime;
+    let files;
     let sessionKey;
     let wordDataOriginal = [];
     let wordData = [];
@@ -33,11 +29,6 @@
     let matchedWordList;
     let chosenWordList;
 
-    // Runs when sourceFile changes
-    $: if (sourceFile) {
-        checkInput();
-    }
-
     onMount(() => {
         audioElement = document.getElementById("generatedAudio");
         videoElement = document.getElementById("generatedVideo");
@@ -59,8 +50,8 @@
     });
 
     const showToastAlert = (msg) => {
-        if (msg.trim() !== "") {
-            toastMessages.update((messages) => [...messages, msg]);
+        if (msg.trim() !== '') {
+        toastMessages.update(messages => [...messages, msg]);
         }
     };
 
@@ -91,7 +82,7 @@
     async function sendChosenWords(chosenWords) {
         try {
             loadingGenerate = true;
-            showToastAlert("Generating clip...");
+            showToastAlert("Generating clip...")
             // yptaiGenerate lambda function
             const response = await fetch(
                 "https://o3dmvj0dij.execute-api.us-east-1.amazonaws.com/generate",
@@ -194,11 +185,12 @@
         // Create new session key to match this upload to the file in s3
         sessionKey = Date.now();
 
+        let file = files[0];
         console.log("Uploading file...");
         showToastAlert("Uploading file...");
         try {
             loading = true;
-            await createFile(trimmedFile, sessionKey);
+            await createFile(file, sessionKey);
             startAudioProcessing();
         } catch (error) {
             console.error("Error:", error);
@@ -233,7 +225,7 @@
             // Set at 5 min timeout
             const result = await pingWordsJson(sessionKey, 60, 5000);
             const resultJson = await result.json();
-
+            
             // Add words to the UI
             generatedWordList.items = resultJson;
             wordDataOriginal = resultJson;
@@ -253,15 +245,11 @@
         async function ping() {
             attempts++;
 
-            const response = await fetch(
-                "https://sam-app-s3uploadbucket-qkgqfgtltuzq.s3.amazonaws.com/" +
-                    sessionKey +
-                    ".json",
-            );
+            const response = await fetch('https://sam-app-s3uploadbucket-qkgqfgtltuzq.s3.amazonaws.com/' + sessionKey + '.json');
             if (response.ok) {
                 return response; // File successfully received
             } else if (attempts < maxAttempts) {
-                await new Promise((resolve) => setTimeout(resolve, delay)); // Retry after delay
+                await new Promise(resolve => setTimeout(resolve, delay)); // Retry after delay
                 return await ping();
             } else {
                 return null;
@@ -300,7 +288,7 @@
 
     // Check if input is video/audio and set accordingly
     function checkInput() {
-        if (sourceFile.type == "video/mp4") {
+        if (files[0].type == "video/mp4") {
             audioOnly = false;
             isVideo = true;
         } else {
@@ -312,29 +300,90 @@
 </script>
 
 <div role="alert" class="alert">
-    <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        class="stroke-info shrink-0 w-6 h-6"
-        ><path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-        ></path></svg
-    >
-    <span
-        >The more accurate "Big Model" for English is now working! Files that
-        take longer than 5 minutes to process will time out for now.</span
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+    <span>The more accurate "Big Model" for English is now working! Files that take longer than 5 minutes to process will time out for now.</span>
 </div>
 
 <Toast bind:messages={$toastMessages} duration={3000} />
 
-<FileDropZone bind:sourceFile bind:trimmedFile bind:startTime bind:endTime />
+<input
+    class="file-input w-full max-w-sm mt-2"
+    accept="audio/wav, video/mp4"
+    bind:files
+    id="source"
+    name="source"
+    type="file"
+    on:change={checkInput}
+/>
 
 <div class="inline-flex">
+    <div class="my-auto mx-1">Audio Only</div>
+    <input
+        type="checkbox"
+        class="toggle toggle-lg inline-flex"
+        bind:checked={audioOnly}
+        disabled={audioOnlyDisabled}
+    />
+
+    <div
+        class="my-auto ml-1 mr-3 tooltip"
+        data-tip="Generate final clip as audio only"
+    >
+        <svg
+            class="my-auto mx-1"
+            width="20px"
+            height="20px"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            stroke="#ffffff"
+        >
+            <g id="SVGRepo_bgCarrier" stroke-width="0" />
+            <g
+                id="SVGRepo_tracerCarrier"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+            <g id="SVGRepo_iconCarrier">
+                <g clip-path="url(#clip0_429_11043)">
+                    <circle
+                        cx="12"
+                        cy="11.9999"
+                        r="9"
+                        stroke="#ffffff"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                    <rect
+                        x="12"
+                        y="16"
+                        width="0.01"
+                        height="0.01"
+                        stroke="#ffffff"
+                        stroke-width="3.75"
+                        stroke-linejoin="round"
+                    />
+                    <path
+                        d="M10.5858 7.58572C10.9754 7.1961 11.4858 7.00083 11.9965 6.99994C12.5095 6.99904 13.0228 7.1943 13.4142 7.58572C13.8047 7.97625 14 8.48809 14 8.99994C14 9.51178 13.8047 10.0236 13.4142 10.4141C13.0228 10.8056 12.5095 11.0008 11.9965 10.9999L12 11.9999"
+                        stroke="#ffffff"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                </g>
+                <defs>
+                    <clipPath id="clip0_429_11043">
+                        <rect width="24" height="24" fill="white" />
+                    </clipPath>
+                </defs>
+            </g>
+        </svg>
+    </div>
+</div>
+
+<div class="inline-flex">
+    
     <div class="my-auto mx-1">Big Model</div>
     <input
         type="checkbox"
@@ -467,71 +516,6 @@
 <button class="btn btn-primary btn-wide mt-4" on:click={generate}
     >Generate</button
 >
-<div class="inline-flex">
-    <div class="my-auto mx-1">Audio Only</div>
-    <input
-        type="checkbox"
-        class="toggle toggle-lg inline-flex"
-        bind:checked={audioOnly}
-        disabled={audioOnlyDisabled}
-    />
-
-    <div
-        class="my-auto ml-1 mr-3 tooltip"
-        data-tip="Generate final clip as audio only"
-    >
-        <svg
-            class="my-auto mx-1"
-            width="20px"
-            height="20px"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            stroke="#ffffff"
-        >
-            <g id="SVGRepo_bgCarrier" stroke-width="0" />
-            <g
-                id="SVGRepo_tracerCarrier"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            />
-            <g id="SVGRepo_iconCarrier">
-                <g clip-path="url(#clip0_429_11043)">
-                    <circle
-                        cx="12"
-                        cy="11.9999"
-                        r="9"
-                        stroke="#ffffff"
-                        stroke-width="2.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    />
-                    <rect
-                        x="12"
-                        y="16"
-                        width="0.01"
-                        height="0.01"
-                        stroke="#ffffff"
-                        stroke-width="3.75"
-                        stroke-linejoin="round"
-                    />
-                    <path
-                        d="M10.5858 7.58572C10.9754 7.1961 11.4858 7.00083 11.9965 6.99994C12.5095 6.99904 13.0228 7.1943 13.4142 7.58572C13.8047 7.97625 14 8.48809 14 8.99994C14 9.51178 13.8047 10.0236 13.4142 10.4141C13.0228 10.8056 12.5095 11.0008 11.9965 10.9999L12 11.9999"
-                        stroke="#ffffff"
-                        stroke-width="2.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    />
-                </g>
-                <defs>
-                    <clipPath id="clip0_429_11043">
-                        <rect width="24" height="24" fill="white" />
-                    </clipPath>
-                </defs>
-            </g>
-        </svg>
-    </div>
-</div>
 {#if loadingGenerate}
     <div class="inline-flex h-full align-middle">
         <span class="loading loading-spinner loading-lg"></span>
