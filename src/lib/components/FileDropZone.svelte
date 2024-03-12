@@ -22,7 +22,8 @@
     let fileInputElement;
 
     // The original untrimmed file
-    let sourceFile;
+    export let sourceFile;
+    export let trimmedFile;
 
     let hideVideo = true;
     let hideAudio = true;
@@ -30,8 +31,8 @@
     let rangeSliderComponent;
 
     // Real start and end values in seconds for slider
-    let startTime;
-    let endTime;
+    export let startTime;
+    export let endTime;
     let totalDuration;
 
     onMount(() => {
@@ -63,10 +64,12 @@
         if (file.type == "video/mp4") {
             error = "";
             sourceFile = file;
+            trimmedFile = file;
             setVideoSource(file);
         } else if (file.type == "audio/wav") {
             error = "";
             sourceFile = file;
+            trimmedFile = file;
             setAudioSource(file);
         } else {
             error = "Only mp4 or wav is supported.";
@@ -185,6 +188,7 @@
         ]);
         const data = await ffmpeg.readFile("output" + fileExtension);
         const file = new File([data], "output" + fileExtension);
+        trimmedFile = file;
 
         if (isVideo) {
             setVideoSource(file); 
@@ -361,7 +365,7 @@
         {/if}
 
         {#if state == "loaded"}
-            <p in:fade>Drag video or click here</p>
+            <p in:fade>Drag file or click here</p>
         {/if}
 
         {#if error}
@@ -372,16 +376,18 @@
 
 <style>
     .drop {
-        width: 600px;
-        height: 400px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 200px;
         display: grid;
         place-content: center;
         border: 10px dashed hsl(220, 10%, 20%);
     }
 
     .dropdrag {
-        width: 600px;
-        height: 400px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 200px;
         display: grid;
         place-content: center;
         border: 10px dashed hsl(222, 22%, 67%);

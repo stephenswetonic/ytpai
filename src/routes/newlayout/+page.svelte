@@ -3,15 +3,14 @@
     import List from "$lib/components/List.svelte";
     import { writable } from "svelte/store";
     import Toast from "$lib/components/Toast.svelte";
-    import { FFmpeg } from "@ffmpeg/ffmpeg";
-    //import RangeSlider from "$lib/components/RangeSlider.svelte";
-    //import Video from "$lib/components/Video.svelte";
+    import FileDropZone from "$lib/components/FileDropZone.svelte";
 
     const toastMessages = writable([]);
 
-    let ffmpeg;
-
-    let files;
+    let sourceFile;
+    let trimmedFile;
+    let startTime;
+    let endTime;
     let sessionKey;
     let wordDataOriginal = [];
     let wordData = [];
@@ -34,10 +33,14 @@
     let matchedWordList;
     let chosenWordList;
 
+    // Runs when sourceFile changes
+    $: if(sourceFile) {
+        checkInput();
+    }
+
     onMount(() => {
         audioElement = document.getElementById("generatedAudio");
         videoElement = document.getElementById("generatedVideo");
-        
 
         generatedWordList = new List({
             target: document.getElementById("generatedWordList"),
@@ -77,36 +80,6 @@
             wordArray.includes(x.word),
         );
         matchedWordList.items = intersection;
-    }
-
-    async function loadFFmpeg() {
-        const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm";
-        ffmpeg = new FFmpeg();
-        await ffmpeg.load({
-            coreURL: `${baseURL}/ffmpeg-core.js`,
-            wasmURL: `${baseURL}/ffmpeg-core.wasm`,
-        });
-        console.log("ffmpeg loaded");
-    }
-
-    async function readFile(file) {
-        return new Promise((resolve) => {
-            const fileReader = new FileReader();
-
-            fileReader.onload = () => {
-                const { result } = fileReader;
-                if (result instanceof ArrayBuffer) {
-                    resolve(new Uint8Array(result));
-                }
-            };
-            fileReader.readAsArrayBuffer(file);
-        });
-    }
-
-    async function trimVideo(video) {
-        const videoData = await readFile(video);
-        await ffmpeg.writeFile("input.mp4", videoData);
-        //await ffmpeg.exec();
     }
 
     // Basically a proxy for sendChosenWords()
@@ -221,12 +194,11 @@
         // Create new session key to match this upload to the file in s3
         sessionKey = Date.now();
 
-        let file = files[0];
         console.log("Uploading file...");
         showToastAlert("Uploading file...");
         try {
             loading = true;
-            await createFile(file, sessionKey);
+            await createFile(trimmedFile, sessionKey);
             startAudioProcessing();
         } catch (error) {
             console.error("Error:", error);
@@ -328,7 +300,7 @@
 
     // Check if input is video/audio and set accordingly
     function checkInput() {
-        if (files[0].type == "video/mp4") {
+        if (sourceFile.type == "video/mp4") {
             audioOnly = false;
             isVideo = true;
         } else {
@@ -360,15 +332,7 @@
 
 <Toast bind:messages={$toastMessages} duration={3000} />
 
-<input
-    class="file-input w-full max-w-sm mt-2"
-    accept="audio/wav, video/mp4"
-    bind:files
-    id="source"
-    name="source"
-    type="file"
-    on:change={checkInput}
-/>
+<FileDropZone bind:sourceFile bind:trimmedFile bind:startTime bind:endTime />
 
 <div class="inline-flex">
     <div class="my-auto mx-1">Audio Only</div>

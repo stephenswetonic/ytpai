@@ -4,12 +4,8 @@
     import { writable } from 'svelte/store';
     import Toast from '$lib/components/Toast.svelte';
     //import RangeSlider from "$lib/components/RangeSlider.svelte";
-    //import Video from "$lib/components/Video.svelte";
 
     const toastMessages = writable([]);
-
-    let start = 0;
-    let end = 100;
 
     let files;
     let sessionKey;
