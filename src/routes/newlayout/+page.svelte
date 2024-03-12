@@ -174,7 +174,6 @@
                             throw new Error("Failed to upload file");
                         }
 
-                        console.log("File uploaded successfully.");
                         showToastAlert("File uploaded successfully.");
                         resolve(); // Resolve the promise when the upload is successful
                     } catch (error) {
@@ -194,7 +193,6 @@
         // Create new session key to match this upload to the file in s3
         sessionKey = Date.now();
 
-        console.log("Uploading file...");
         showToastAlert("Uploading file...");
         try {
             loading = true;
@@ -208,7 +206,6 @@
     // Signal lambda audio analyzer to start processing
     async function startAudioProcessing() {
         try {
-            console.log("Starting audio processing...");
             showToastAlert("Processing audio...");
             // yptaiBackend lambda function
             const postResponse = await fetch(

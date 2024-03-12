@@ -43,19 +43,6 @@
         // Handles click to upload file
         fileInputElement.addEventListener("change", function (event) {
             checkInputFile(event.target.files[0]);
-            // Will need to allow for audio later
-            // if (event.target.files[0].type == "video/mp4") {
-            //     error = "";
-            //     sourceFile = event.target.files[0];
-            //     setVideoSource(sourceFile);
-            // } else if (event.target.files[0].type == "audio/wav") {
-            //     error = "";
-            //     const [file] = event.target.files;
-            //     sourceFile = file;
-            //     setAudioSource(file);
-            // } else {
-            //     error = "Only mp4 is supported";
-            // }
         });
         loadFFmpeg();
     });
@@ -86,21 +73,6 @@
         }
 
         checkInputFile(event.dataTransfer.files[0]);
-
-        // if (event.dataTransfer.files[0].type == "video/mp4") {
-        //     error = "";
-        //     // Will need to allow for audio later
-        //     const [file] = event.dataTransfer.files;
-        //     sourceFile = file;
-        //     setVideoSource(file);
-        // } else if (event.dataTransfer.files[0].type == "audio/wav") {
-        //     error = "";
-        //     const [file] = event.dataTransfer.files;
-        //     sourceFile = file;
-        //     setAudioSource(file);
-        // } else {
-        //     error = "Only mp4 is supported.";
-        // }
     }
 
     // Sets the src attribute of the video element for preview
@@ -176,7 +148,7 @@
         await ffmpeg.exec([
             "-ss",
             formatTimeFfmpeg(startTime),
-            "-t",
+            "-to",
             formatTimeFfmpeg(endTime),
             "-i",
             "input" + fileExtension,
@@ -208,18 +180,17 @@
 
     // Calculate hours, minutes, and remaining seconds for ffmpeg
     function formatTimeFfmpeg(seconds) {
-        const hours = Math.floor(seconds / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60);
-        const remainingSeconds = seconds % 60;
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const roundedSeconds = Math.round(seconds % 60); // Round the seconds
+    const paddedHours = hours.toString().padStart(2, "0");
+    const paddedMinutes = minutes.toString().padStart(2, "0");
+    const paddedSeconds = roundedSeconds.toString().padStart(2, "0"); // Pad and round the seconds
 
-        // Pad single-digit values with leading zeros
-        const paddedHours = hours.toString().padStart(2, "0");
-        const paddedMinutes = minutes.toString().padStart(2, "0");
-        const paddedSeconds = remainingSeconds.toString().padStart(2, "0");
+    // Construct the time format HH:MM:SS
+    return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`;
+}
 
-        // Construct the time format HH:MM:SS
-        return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`;
-    }
 
     // Called when video/audio element finishes loading
     function handleLoadMetaData(htmlMediaElement) {
