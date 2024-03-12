@@ -1,26 +1,28 @@
 # SentenceMixer AI
 
 A free, anonymous tool for sentence mixing audio and video! Think Youtube poop or SFM style without manual editing.
-Voice analysis done via Vosk AI models in the cloud. My goal is to keep this free to use and without registration.
-Drag on drop doesn't really work on mobile. I may create a different UI for mobile.
+Voice analysis done via Vosk AI models in the cloud on AWS Lambda. My goal is to keep this free to use and without registration.
+Drag on drop doesn't really work on mobile, so I'm open so solutions for that. I'm actively working on improvements like more supported file types.
+Feel free to open an issue for suggestions.
 
 ## Demo
 [Demo on Vercel](https://sentencemixerai.vercel.app/)
 
 ## Usage
-1. Choose .wav or .mp4 file
-2. Optionally turn on Big Model or Audio Only
-3. Hit analyze
-4. Filter words and drop them into "Words To Combine" as you like
-5. Or, drag final words directly from "Generated Words"
-6. Hit generate
-7. Preview or download the clip
+1. Drag and drop .wav or .mp4 file or click to pick file.
+2. Use the media trimmer to trim the length of the file. This way, you can process shorter clips at a time.
+3. Hit analyze.
+4. Filter words from the generated words.
+5. Or, drag words directly from "Generated Words"
+6. Hit generate (with the option to generate as audio only).
+7. Preview or download the clip.
 
 ## Change Log
 - 7/26/23: Added multi language support, only small models for Spanish, French, Russian, and German.
 - 2/26/24: AWS Lambda backend testing
 - 2/28/24: AWS lambda backend online
 - 3/4/24: Big model for English enabled
+- 3/11/24: New drag and drop zone for picking files + media trimmer added.
 
 ## Language Models
 - English
