@@ -328,8 +328,8 @@
         on:dragover|preventDefault={() => {}}
         data-state={state}
         class={dragging
-            ? "dropdrag hover:cursor-pointer"
-            : "drop hover:cursor-pointer"}
+            ? "dropdrag hover:cursor-pointer my-2"
+            : "drop hover:cursor-pointer my-2"}
     >
         {#if state == "loading"}
             <p in:fade>Loading FFmpeg...</p>

@@ -322,8 +322,9 @@
         ></path></svg
     >
     <span
-        >New drag and drop zone and media trimmer added! Working on supporting more file types. Files that
-        take longer than 5 minutes to process will time out for now.</span
+        >New drag and drop zone and media trimmer added! Working on supporting
+        more file types. Files that take longer than 5 minutes to process will
+        time out for now.</span
     >
 </div>
 
@@ -435,16 +436,13 @@
 </h1>
 <div id="generatedWordList"></div>
 
-<h1 class="mt-2 text-xl font-bold tracking-light text-base-content">
-    Filter Words
-</h1>
 <input
     class="input w-full max-w-xl bg-base-200 mt-2"
     bind:value={inputText}
     type="text"
     placeholder="Type here"
 />
-<button class="btn btn-primary" on:click={addWordsFromInput}>Submit</button>
+<button class="btn btn-primary" on:click={addWordsFromInput}>Filter</button>
 
 <h1 class="mt-2 text-xl font-bold tracking-light text-base-content">
     Matched Words
@@ -454,10 +452,10 @@
 <h1
     class="mt-2 text-xl font-bold tracking-light text-base-content inline-block"
 >
-    Words To Combine
+    Words To Mix
 </h1>
-<button class="btn btn-sm btn-primary inline-flex m-1" on:click={clearCombined}
-    >clear</button
+<button class="btn btn-sm btn-primary m-1" on:click={clearCombined}
+    >Clear</button
 >
 <div id="chosenWordList"></div>
 
