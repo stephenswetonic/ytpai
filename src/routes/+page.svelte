@@ -322,9 +322,8 @@
         ></path></svg
     >
     <span
-        >New drag and drop zone and media trimmer added! Working on supporting
-        more file types. Files that take longer than 5 minutes to process will
-        time out for now.</span
+        >New drag and drop zone and media trimmer added! Vosk is slow and not very accurate, so I'm working on moving to Open AI's Whisper. 
+        Files that take longer than 5 minutes to process will time out for now.</span
     >
 </div>
 
