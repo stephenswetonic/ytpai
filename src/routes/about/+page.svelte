@@ -16,6 +16,7 @@
         <li>DaisyUI</li>
         <li>Vosk</li>
         <li>MoviePy</li>
+        <li>FFMPEG Web Assembly</li>
         <li>AWS Lambda</li>
     </ul>
     <div class="my-4 text-2xl font-bold tracking-light text-base-content">Future Work</div>

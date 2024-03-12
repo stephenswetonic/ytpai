@@ -322,7 +322,7 @@
         ></path></svg
     >
     <span
-        >The more accurate "Big Model" for English is now working! Files that
+        >New drag and drop zone and media trimmer added! Working on supporting more file types. Files that
         take longer than 5 minutes to process will time out for now.</span
     >
 </div>
