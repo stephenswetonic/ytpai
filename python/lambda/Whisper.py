@@ -4,7 +4,6 @@ audio = whisper.load_audio("python/lambda/file.wav")
 
 model = whisper.load_model("base", device="cpu")
 
+# list of segments, list of words, {text, start, end}
 result = whisper.transcribe(model, audio, language="en")
-
-import json
-print(json.dumps(result, indent = 2, ensure_ascii = False))
+print(result)

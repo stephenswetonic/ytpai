@@ -115,6 +115,8 @@
             let buffer = await response.arrayBuffer();
             let blob;
             let url;
+
+            //TODO Check actual file types
             if (!audioOnly) {
                 blob = new Blob([buffer], { type: "video/mp4" });
                 url = window.URL.createObjectURL(blob);
@@ -222,6 +224,8 @@
                 },
             );
 
+            console.log(postResponse);
+            
             if (!postResponse.ok) {
                 throw new Error(`HTTP error! Status: ${postResponse.status}`);
             }
@@ -297,7 +301,7 @@
 
     // Check if input is video/audio and set accordingly
     function checkInput() {
-        if (sourceFile.type == "video/mp4") {
+        if (sourceFile.type == "video/mp4" || sourceFile.type == "video/webm" || sourceFile.type == "video/avi") {
             audioOnly = false;
             isVideo = true;
         } else {
@@ -322,7 +326,7 @@
         ></path></svg
     >
     <span
-        >The more accurate "Big Model" for English is now working! Files that
+        >Now using Open AI's Whisper Model! New drag and drop zone and media trimmer added! Files that
         take longer than 5 minutes to process will time out for now.</span
     >
 </div>
@@ -414,7 +418,7 @@
         <span class="loading loading-spinner loading-lg"></span>
     </div>
 {/if}
-<div class="text-sm">Supports audio (.wav) or video (.mp4)</div>
+<div class="text-sm">Supports audio (wav, mp3) or video (mp4, webm, mov)</div>
 
 <ul class="text-sm">
     <li>
@@ -435,16 +439,13 @@
 </h1>
 <div id="generatedWordList"></div>
 
-<h1 class="mt-2 text-xl font-bold tracking-light text-base-content">
-    Filter Words
-</h1>
 <input
     class="input w-full max-w-xl bg-base-200 mt-2"
     bind:value={inputText}
     type="text"
     placeholder="Type here"
 />
-<button class="btn btn-primary" on:click={addWordsFromInput}>Submit</button>
+<button class="btn btn-primary" on:click={addWordsFromInput}>Filter</button>
 
 <h1 class="mt-2 text-xl font-bold tracking-light text-base-content">
     Matched Words
@@ -454,10 +455,10 @@
 <h1
     class="mt-2 text-xl font-bold tracking-light text-base-content inline-block"
 >
-    Words To Combine
+    Words To Mix
 </h1>
-<button class="btn btn-sm btn-primary inline-flex m-1" on:click={clearCombined}
-    >clear</button
+<button class="btn btn-sm btn-primary m-1" on:click={clearCombined}
+    >Clear</button
 >
 <div id="chosenWordList"></div>
 

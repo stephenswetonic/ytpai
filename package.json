@@ -10,6 +10,7 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
 	},
 	"devDependencies": {
+		"@jhubbardsf/svelte-sortablejs": "^1.1.0",
 		"@sveltejs/adapter-auto": "^2.0.0",
 		"@sveltejs/kit": "^1.5.0",
 		"autoprefixer": "^10.4.14",
@@ -29,6 +30,7 @@
 		"@ffmpeg/ffmpeg": "^0.12.10",
 		"@ffmpeg/util": "^0.12.1",
 		"@types/video.js": "^7.3.57",
-		"@vercel/analytics": "^1.2.2"
+		"@vercel/analytics": "^1.2.2",
+		"sortablejs": "^1.15.2"
 	}
 }

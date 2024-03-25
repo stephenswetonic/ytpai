@@ -48,18 +48,20 @@
     });
 
     function checkInputFile(file: File) {
-        if (file.type == "video/mp4") {
+        console.log(file.type);
+        
+        if (file.type == "video/mp4" || file.type == "video/webm" || file.type == "video/avi") {
             error = "";
             sourceFile = file;
             trimmedFile = file;
             setVideoSource(file);
-        } else if (file.type == "audio/wav") {
+        } else if (file.type == "audio/wav" || file.type == "audio/mpeg") {
             error = "";
             sourceFile = file;
             trimmedFile = file;
             setAudioSource(file);
         } else {
-            error = "Only mp4 or wav is supported.";
+            error = "File type not supported.";
         }
     }
 
@@ -309,7 +311,7 @@
 {/if}
 
 <input
-    accept="audio/wav, video/mp4"
+    accept="audio/wav, audio/mpeg, video/mp4, video/webm, video/avi"
     id="fileInput"
     type="file"
     style="display: none;"
