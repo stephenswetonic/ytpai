@@ -3,7 +3,7 @@
 
     <div class="my-1">SentenceMixer AI is a free tool for mashing together words from audio and video into a single clip. Think "Youtube poop" style but without the manual editing.</div>
     <div>Drag on drop doesn't really work on mobile. I may create a different UI for mobile.</div>
-    <div class="my-1">Voice analysis done via Vosk AI models in the cloud. My goal is to keep this free to use and without registration.</div>
+    <div class="my-1">Voice analysis done via Open AI Whisper in the cloud. My goal is to keep this free to use and without registration.</div>
     <div class="my-1">After a long hiatus, the site is back with a new AWS Lambda backend.</div>
 
     <div class="my-4 text-2xl font-bold tracking-light text-base-content">Suggestions?</div>

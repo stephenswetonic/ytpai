@@ -1,7 +1,7 @@
 # SentenceMixer AI
 
 A free, anonymous tool for sentence mixing audio and video! Think Youtube poop or SFM style without manual editing.
-Voice analysis done via Vosk AI models in the cloud on AWS Lambda. My goal is to keep this free to use and without registration.
+Voice analysis done via Open AI Whisper in the cloud on AWS Lambda. My goal is to keep this free to use and without registration.
 Drag on drop doesn't really work on mobile, so I'm open so solutions for that. I'm actively working on improvements like more supported file types.
 Feel free to open an issue for suggestions.
 
@@ -19,12 +19,14 @@ Feel free to open an issue for suggestions.
 
 ## Change Log
 - 7/26/23: Added multi language support, only small models for Spanish, French, Russian, and German.
-- 2/26/24: AWS Lambda backend testing
-- 2/28/24: AWS lambda backend online
-- 3/4/24: Big model for English enabled
+- 2/26/24: AWS Lambda backend testing.
+- 2/28/24: AWS lambda backend online.
+- 3/4/24: Big model for English enabled.
 - 3/11/24: New drag and drop zone for picking files + media trimmer added.
+- 3/25/24: Speech to text processing now done with Open AI Whisper.
 
 ## Language Models
+The model will auto detect many languages, but you can hint at the following languages:
 - English
 - Spanish
 - French
