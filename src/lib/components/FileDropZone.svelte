@@ -49,8 +49,12 @@
 
     function checkInputFile(file: File) {
         console.log(file.type);
-        
-        if (file.type == "video/mp4" || file.type == "video/webm" || file.type == "video/avi") {
+
+        if (
+            file.type == "video/mp4" ||
+            file.type == "video/webm" ||
+            file.type == "video/quicktime"
+        ) {
             error = "";
             sourceFile = file;
             trimmedFile = file;
@@ -87,7 +91,7 @@
     function setAudioSource(audio: File) {
         const fileUrl = URL.createObjectURL(audio);
         audioElement.src = fileUrl;
-        hideAudio = false;        
+        hideAudio = false;
     }
 
     // Load ffmpeg asm module
@@ -165,7 +169,7 @@
         trimmedFile = file;
 
         if (isVideo) {
-            setVideoSource(file); 
+            setVideoSource(file);
         } else {
             setAudioSource(file);
         }
@@ -182,23 +186,22 @@
 
     // Calculate hours, minutes, and remaining seconds for ffmpeg
     function formatTimeFfmpeg(seconds) {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const roundedSeconds = Math.round(seconds % 60); // Round the seconds
-    const paddedHours = hours.toString().padStart(2, "0");
-    const paddedMinutes = minutes.toString().padStart(2, "0");
-    const paddedSeconds = roundedSeconds.toString().padStart(2, "0"); // Pad and round the seconds
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const roundedSeconds = Math.round(seconds % 60); // Round the seconds
+        const paddedHours = hours.toString().padStart(2, "0");
+        const paddedMinutes = minutes.toString().padStart(2, "0");
+        const paddedSeconds = roundedSeconds.toString().padStart(2, "0"); // Pad and round the seconds
 
-    // Construct the time format HH:MM:SS
-    return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`;
-}
-
+        // Construct the time format HH:MM:SS
+        return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`;
+    }
 
     // Called when video/audio element finishes loading
     function handleLoadMetaData(htmlMediaElement) {
         // If htmlElement is showing and totalDuration not set
         // If totalduration is set, we don't want to set again
-        
+
         if (htmlMediaElement && !totalDuration) {
             totalDuration = parseFloat(htmlMediaElement.duration);
         }
@@ -290,8 +293,10 @@
             </label>
 
             <!-- Trim button -->
-            <button class="btn btn-sm btn-primary ml-1" on:click={trimMedia} data-tooltip="Trim media to selected duration"
-                >Trim</button
+            <button
+                class="btn btn-sm btn-primary ml-1"
+                on:click={trimMedia}
+                data-tooltip="Trim media to selected duration">Trim</button
             >
         </div>
     </div>
@@ -311,7 +316,7 @@
 {/if}
 
 <input
-    accept="audio/wav, audio/mpeg, video/mp4, video/webm, video/avi"
+    accept="audio/wav, audio/mpeg, video/mp4, video/webm, video/quicktime"
     id="fileInput"
     type="file"
     style="display: none;"
