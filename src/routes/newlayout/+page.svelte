@@ -73,13 +73,18 @@
     }
 
     function addWordsFromInput() {
-        generatedWordList.items = wordDataOriginal;
+        //generatedWordList.items = wordDataOriginal;
         const wordArray = inputText.split(" ");
 
         let intersection = generatedWordList.items.filter((x) =>
             wordArray.includes(x.word),
         );
+        
         matchedWordList.items = intersection;
+    }
+
+    function refillWords() {
+        generatedWordList.items = wordDataOriginal;
     }
 
     // Basically a proxy for sendChosenWords()
@@ -224,8 +229,6 @@
                 },
             );
 
-            console.log(postResponse);
-
             if (!postResponse.ok) {
                 throw new Error(`HTTP error! Status: ${postResponse.status}`);
             }
@@ -289,7 +292,8 @@
                     minutes += 1;
                 }
                 generatedWordList.items.splice(i, 0, {
-                    id: String(threshold),
+                    id: String(threshold + 0.1),
+                    start: "xyz",
                     end: "xyz",
                     word: minutes + ":" + String(seconds).padStart(2, "0"),
                 });
@@ -428,9 +432,12 @@
     </li>
 </ul>
 
-<h1 class="mt-2 text-xl font-bold tracking-light text-base-content">
+<h1 class="mt-2 text-xl font-bold tracking-light text-base-content inline-block">
     Generated Words
 </h1>
+<button class="btn btn-sm btn-primary m-1" on:click={refillWords}
+    >Refill</button
+>
 <div id="generatedWordList"></div>
 
 <input

@@ -48,8 +48,6 @@
     });
 
     function checkInputFile(file: File) {
-        console.log(file.type);
-
         if (
             file.type == "video/mp4" ||
             file.type == "video/webm" ||
