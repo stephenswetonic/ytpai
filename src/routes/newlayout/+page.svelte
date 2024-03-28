@@ -348,7 +348,8 @@
     bind:value={selectedLanguage}
     class="select select-primary w-full max-w-xs"
 >
-    <option selected value="en">English</option>
+    <option selected value="auto">Auto Detect</option>
+    <option value="en">English</option>
     <option value="es">Spanish</option>
     <option value="fr">French</option>
     <option value="ru">Russian</option>
