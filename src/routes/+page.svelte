@@ -336,7 +336,7 @@
     <span
         >Now using Open AI's Whisper Model! New drag and drop zone and media
         trimmer added! Files that take longer than 5 minutes to process will
-        time out for now.</span
+        time out for now. We're aware of accuracy issues, so I'm looking at settings for the best accuracy/speed tradeoff.</span
     >
 </div>
 
