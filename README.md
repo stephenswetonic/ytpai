@@ -36,10 +36,10 @@ The model will auto detect many languages, but you can hint at the following lan
 ## Examples
 
 Uploading and trimming a video:
-![Main page](static/Mediatrimmer)
+![Main page](static/Mediatrimmer.png)
 
 Generating words:
-![Generated](static/Generatedwords)
+![Generated](static/Generatedwords.png)
 
 Sample Clip:
 [Download](static/sampleclip.mp4)

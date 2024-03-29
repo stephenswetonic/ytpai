@@ -27,7 +27,7 @@
     let videoElement;
     let hideAudio = true;
     let hideVideo = true;
-    let selectedLanguage = "en";
+    let selectedLanguage = "auto";
 
     let generatedWordList;
     let matchedWordList;
@@ -79,7 +79,7 @@
         let intersection = generatedWordList.items.filter((x) =>
             wordArray.includes(x.word),
         );
-        
+
         matchedWordList.items = intersection;
     }
 
@@ -212,6 +212,7 @@
 
     // Signal lambda audio analyzer to start processing
     async function startAudioProcessing() {
+        let startTime = Date.now();
         try {
             showToastAlert("Processing audio...");
             // yptaiBackend lambda function
@@ -244,10 +245,29 @@
             addTimestamps();
             loading = false;
             clearToastMessages();
+
+            let timeTaken = Date.now() - startTime;
+            console.log(formatTime(timeTaken));
         } catch (error) {
             console.error("Error during audio processing:", error);
         }
     }
+
+    function formatTime(milliseconds) {
+        // Convert milliseconds to seconds
+        let totalSeconds = Math.floor(milliseconds / 1000);
+
+        // Calculate minutes and remaining seconds
+        let minutes = Math.floor(totalSeconds / 60);
+        let seconds = totalSeconds % 60;
+
+        // Return formatted string
+        return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    }
+
+    // Example usage:
+    let milliseconds = 150000; // 2 minutes and 30 seconds
+    console.log(formatTime(milliseconds)); // Output: "2:30"
 
     // Try to get processed words from s3
     // delay in ms
@@ -336,7 +356,8 @@
     <span
         >Now using Open AI's Whisper Model! New drag and drop zone and media
         trimmer added! Files that take longer than 5 minutes to process will
-        time out for now.</span
+        time out for now. We're aware of accuracy issues, so I'm looking at
+        settings for the best accuracy/speed tradeoff.</span
     >
 </div>
 
@@ -356,7 +377,10 @@
     <option value="de">German</option>
 </select>
 
-<div class="tooltip" data-tip="Whisper will auto-detect language, but selecting may help for smaller clips.">
+<div
+    class="tooltip"
+    data-tip="Whisper will auto-detect language, but selecting may help for smaller clips."
+>
     <svg
         class="mx-1"
         width="20px"
@@ -365,6 +389,7 @@
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         stroke="#ffffff"
+        transform="translate(0, 5)"
     >
         <g id="SVGRepo_bgCarrier" stroke-width="0" />
         <g
@@ -433,11 +458,12 @@
     </li>
 </ul>
 
-<h1 class="mt-2 text-xl font-bold tracking-light text-base-content inline-block">
+<h1
+    class="mt-2 text-xl font-bold tracking-light text-base-content inline-block"
+>
     Generated Words
 </h1>
-<button class="btn btn-sm btn-primary m-1" on:click={refillWords}
-    >Refill</button
+<button class="btn btn-sm btn-primary m-1" on:click={refillWords}>Refill</button
 >
 <div id="generatedWordList"></div>
 
