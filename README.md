@@ -35,14 +35,13 @@ The model will auto detect many languages, but you can hint at the following lan
 
 ## Examples
 
-Output after analysis:
-![Main page](static/mainpage.png)
+Uploading and trimming a video:
+![Main page](static/Mediatrimmer)
 
+Generating words:
+![Generated](static/Generatedwords)
 
-Generating Clip:
-![Generated](static/generate.png)
-
-Final Clip:
+Sample Clip:
 [Download](static/sampleclip.mp4)
 
 
