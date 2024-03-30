@@ -28,7 +28,7 @@ Feel free to open an issue for suggestions.
 
 ## Languages
 The model will auto detect many languages. You can select a specific language to help it detect the language for clips shorter than 30 seconds.
-To see all available languages, see ![languages](python/lambda/languages.py)
+To see all available languages, see [languages.py](python/lambda/languages.py)
 
 ## Examples
 
