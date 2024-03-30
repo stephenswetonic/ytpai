@@ -24,14 +24,11 @@ Feel free to open an issue for suggestions.
 - 3/4/24: Big model for English enabled.
 - 3/11/24: New drag and drop zone for picking files + media trimmer added.
 - 3/25/24: Speech to text processing now done with Open AI Whisper.
+- 3/30/24: All languages supported by Whisper added.
 
-## Language Models
-The model will auto detect many languages, but you can hint at the following languages:
-- English
-- Spanish
-- French
-- Russian
-- German
+## Languages
+The model will auto detect many languages. You can select a specific language to help it detect the language for clips shorter than 30 seconds.
+To see all available languages, see ![languages](python/lambda/languages.py)
 
 ## Examples
 

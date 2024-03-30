@@ -27,7 +27,7 @@
     let videoElement;
     let hideAudio = true;
     let hideVideo = true;
-    let selectedLanguage = "en";
+    let selectedLanguage = "auto";
 
     let generatedWordList;
     let matchedWordList;
@@ -79,7 +79,7 @@
         let intersection = generatedWordList.items.filter((x) =>
             wordArray.includes(x.word),
         );
-        
+
         matchedWordList.items = intersection;
     }
 
@@ -212,6 +212,7 @@
 
     // Signal lambda audio analyzer to start processing
     async function startAudioProcessing() {
+        let startTime = Date.now();
         try {
             showToastAlert("Processing audio...");
             // yptaiBackend lambda function
@@ -244,10 +245,29 @@
             addTimestamps();
             loading = false;
             clearToastMessages();
+
+            let timeTaken = Date.now() - startTime;
+            console.log(formatTime(timeTaken));
         } catch (error) {
             console.error("Error during audio processing:", error);
         }
     }
+
+    function formatTime(milliseconds) {
+        // Convert milliseconds to seconds
+        let totalSeconds = Math.floor(milliseconds / 1000);
+
+        // Calculate minutes and remaining seconds
+        let minutes = Math.floor(totalSeconds / 60);
+        let seconds = totalSeconds % 60;
+
+        // Return formatted string
+        return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    }
+
+    // Example usage:
+    let milliseconds = 150000; // 2 minutes and 30 seconds
+    console.log(formatTime(milliseconds)); // Output: "2:30"
 
     // Try to get processed words from s3
     // delay in ms
@@ -336,7 +356,8 @@
     <span
         >Now using Open AI's Whisper Model! New drag and drop zone and media
         trimmer added! Files that take longer than 5 minutes to process will
-        time out for now. We're aware of accuracy issues, so I'm looking at settings for the best accuracy/speed tradeoff.</span
+        time out for now. We're aware of accuracy issues, so I'm looking at
+        settings for the best accuracy/speed tradeoff.</span
     >
 </div>
 
@@ -348,14 +369,113 @@
     bind:value={selectedLanguage}
     class="select select-primary w-full max-w-xs"
 >
-    <option selected value="en">English</option>
-    <option value="es">Spanish</option>
-    <option value="fr">French</option>
-    <option value="ru">Russian</option>
+    <option selected value="auto">Auto Detect</option>
+    <option value="en">English</option>
+    <option value="zh">Chinese</option>
     <option value="de">German</option>
+    <option value="es">Spanish</option>
+    <option value="ru">Russian</option>
+    <option value="ko">Korean</option>
+    <option value="fr">French</option>
+    <option value="ja">Japanese</option>
+    <option value="pt">Portuguese</option>
+    <option value="tr">Turkish</option>
+    <option value="pl">Polish</option>
+    <option value="ca">Catalan</option>
+    <option value="nl">Dutch</option>
+    <option value="ar">Arabic</option>
+    <option value="sv">Swedish</option>
+    <option value="it">Italian</option>
+    <option value="id">Indonesian</option>
+    <option value="hi">Hindi</option>
+    <option value="fi">Finnish</option>
+    <option value="vi">Vietnamese</option>
+    <option value="he">Hebrew</option>
+    <option value="uk">Ukrainian</option>
+    <option value="el">Greek</option>
+    <option value="ms">Malay</option>
+    <option value="cs">Czech</option>
+    <option value="ro">Romanian</option>
+    <option value="da">Danish</option>
+    <option value="hu">Hungarian</option>
+    <option value="ta">Tamil</option>
+    <option value="no">Norwegian</option>
+    <option value="th">Thai</option>
+    <option value="ur">Urdu</option>
+    <option value="hr">Croatian</option>
+    <option value="bg">Bulgarian</option>
+    <option value="lt">Lithuanian</option>
+    <option value="la">Latin</option>
+    <option value="mi">Maori</option>
+    <option value="ml">Malayalam</option>
+    <option value="cy">Welsh</option>
+    <option value="sk">Slovak</option>
+    <option value="te">Telugu</option>
+    <option value="fa">Persian</option>
+    <option value="lv">Latvian</option>
+    <option value="bn">Bengali</option>
+    <option value="sr">Serbian</option>
+    <option value="az">Azerbaijani</option>
+    <option value="sl">Slovenian</option>
+    <option value="kn">Kannada</option>
+    <option value="et">Estonian</option>
+    <option value="mk">Macedonian</option>
+    <option value="br">Breton</option>
+    <option value="eu">Basque</option>
+    <option value="is">Icelandic</option>
+    <option value="hy">Armenian</option>
+    <option value="ne">Nepali</option>
+    <option value="mn">Mongolian</option>
+    <option value="bs">Bosnian</option>
+    <option value="kk">Kazakh</option>
+    <option value="sq">Albanian</option>
+    <option value="sw">Swahili</option>
+    <option value="gl">Galician</option>
+    <option value="mr">Marathi</option>
+    <option value="pa">Punjabi</option>
+    <option value="si">Sinhala</option>
+    <option value="km">Khmer</option>
+    <option value="sn">Shona</option>
+    <option value="yo">Yoruba</option>
+    <option value="so">Somali</option>
+    <option value="af">Afrikaans</option>
+    <option value="oc">Occitan</option>
+    <option value="ka">Georgian</option>
+    <option value="be">Belarusian</option>
+    <option value="tg">Tajik</option>
+    <option value="sd">Sindhi</option>
+    <option value="gu">Gujarati</option>
+    <option value="am">Amharic</option>
+    <option value="yi">Yiddish</option>
+    <option value="lo">Lao</option>
+    <option value="uz">Uzbek</option>
+    <option value="fo">Faroese</option>
+    <option value="ht">Haitian creole</option>
+    <option value="ps">Pashto</option>
+    <option value="tk">Turkmen</option>
+    <option value="nn">Nynorsk</option>
+    <option value="mt">Maltese</option>
+    <option value="sa">Sanskrit</option>
+    <option value="lb">Luxembourgish</option>
+    <option value="my">Myanmar</option>
+    <option value="bo">Tibetan</option>
+    <option value="tl">Tagalog</option>
+    <option value="mg">Malagasy</option>
+    <option value="as">Assamese</option>
+    <option value="tt">Tatar</option>
+    <option value="haw">Hawaiian</option>
+    <option value="ln">Lingala</option>
+    <option value="ha">Hausa</option>
+    <option value="ba">Bashkir</option>
+    <option value="jw">Javanese</option>
+    <option value="su">Sundanese</option>
+    <option value="yue">Cantonese</option>
 </select>
 
-<div class="tooltip" data-tip="Whisper will auto-detect language, but selecting may help for smaller clips.">
+<div
+    class="tooltip"
+    data-tip="Whisper will auto-detect language, but selecting may help for smaller clips."
+>
     <svg
         class="mx-1"
         width="20px"
@@ -364,6 +484,7 @@
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         stroke="#ffffff"
+        transform="translate(0, 5)"
     >
         <g id="SVGRepo_bgCarrier" stroke-width="0" />
         <g
@@ -432,11 +553,12 @@
     </li>
 </ul>
 
-<h1 class="mt-2 text-xl font-bold tracking-light text-base-content inline-block">
+<h1
+    class="mt-2 text-xl font-bold tracking-light text-base-content inline-block"
+>
     Generated Words
 </h1>
-<button class="btn btn-sm btn-primary m-1" on:click={refillWords}
-    >Refill</button
+<button class="btn btn-sm btn-primary m-1" on:click={refillWords}>Refill</button
 >
 <div id="generatedWordList"></div>
 
