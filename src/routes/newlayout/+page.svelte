@@ -4,6 +4,7 @@
     import { writable } from "svelte/store";
     import Toast from "$lib/components/Toast.svelte";
     import FileDropZone from "$lib/components/FileDropZone.svelte";
+    import Sortable from 'sortablejs';
 
     const toastMessages = writable([]);
 
@@ -39,6 +40,10 @@
     }
 
     onMount(() => {
+
+        var el = document.getElementById('items');
+        var sortable = Sortable.create(el);
+
         audioElement = document.getElementById("generatedAudio");
         videoElement = document.getElementById("generatedVideo");
 
@@ -253,8 +258,8 @@
         }
     }
 
+    // Convert milliseconds to seconds
     function formatTime(milliseconds) {
-        // Convert milliseconds to seconds
         let totalSeconds = Math.floor(milliseconds / 1000);
 
         // Calculate minutes and remaining seconds
@@ -264,10 +269,6 @@
         // Return formatted string
         return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
     }
-
-    // Example usage:
-    let milliseconds = 150000; // 2 minutes and 30 seconds
-    console.log(formatTime(milliseconds)); // Output: "2:30"
 
     // Try to get processed words from s3
     // delay in ms
@@ -679,3 +680,9 @@
         class="btn btn-primary inline-flex mb-4">Download</a
     >
 {/if}
+
+<ul id="items">
+	<li>item 1</li>
+	<li>item 2</li>
+	<li>item 3</li>
+</ul>
