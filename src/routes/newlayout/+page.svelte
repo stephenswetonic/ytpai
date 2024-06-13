@@ -4,7 +4,8 @@
     import { writable } from "svelte/store";
     import Toast from "$lib/components/Toast.svelte";
     import FileDropZone from "$lib/components/FileDropZone.svelte";
-    import Sortable from 'sortablejs';
+    import { Sortable, MultiDrag } from "sortablejs";
+    import { json } from "@sveltejs/kit";
 
     const toastMessages = writable([]);
 
@@ -40,10 +41,6 @@
     }
 
     onMount(() => {
-
-        var el = document.getElementById('items');
-        var sortable = Sortable.create(el);
-
         audioElement = document.getElementById("generatedAudio");
         videoElement = document.getElementById("generatedVideo");
 
@@ -246,6 +243,7 @@
 
             // Add words to the UI
             generatedWordList.items = resultJson;
+            
             wordDataOriginal = resultJson;
             addTimestamps();
             loading = false;
@@ -340,6 +338,9 @@
         }
     }
 </script>
+
+
+
 
 <div role="alert" class="alert">
     <svg
@@ -654,6 +655,7 @@
         </svg>
     </div>
 </div>
+
 {#if loadingGenerate}
     <div class="inline-flex h-full align-middle">
         <span class="loading loading-spinner loading-lg"></span>
@@ -680,9 +682,3 @@
         class="btn btn-primary inline-flex mb-4">Download</a
     >
 {/if}
-
-<ul id="items">
-	<li>item 1</li>
-	<li>item 2</li>
-	<li>item 3</li>
-</ul>

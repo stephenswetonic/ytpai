@@ -1,0 +1,1190 @@
+[
+    {
+        "id": "0",
+        "start": 0,
+        "end": 0.46,
+        "word": "Remember"
+    },
+    {
+        "id": "1",
+        "start": 0.46,
+        "end": 0.78,
+        "word": "who"
+    },
+    {
+        "id": "2",
+        "start": 0.78,
+        "end": 0.96,
+        "word": "we"
+    },
+    {
+        "id": "3",
+        "start": 0.96,
+        "end": 1.28,
+        "word": "are."
+    },
+    {
+        "id": "4",
+        "start": 1.54,
+        "end": 1.6,
+        "word": "We're"
+    },
+    {
+        "id": "5",
+        "start": 1.6,
+        "end": 1.7,
+        "word": "the"
+    },
+    {
+        "id": "6",
+        "start": 1.7,
+        "end": 2.04,
+        "word": "United"
+    },
+    {
+        "id": "7",
+        "start": 2.04,
+        "end": 2.58,
+        "word": "States"
+    },
+    {
+        "id": "8",
+        "start": 2.58,
+        "end": 2.9,
+        "word": "of"
+    },
+    {
+        "id": "9",
+        "start": 2.9,
+        "end": 3.4,
+        "word": "America,"
+    },
+    {
+        "id": "10",
+        "start": 3.78,
+        "end": 4.24,
+        "word": "and"
+    },
+    {
+        "id": "11",
+        "start": 4.24,
+        "end": 4.46,
+        "word": "there's"
+    },
+    {
+        "id": "12",
+        "start": 4.46,
+        "end": 4.78,
+        "word": "nothing"
+    },
+    {
+        "id": "13",
+        "start": 4.78,
+        "end": 5.08,
+        "word": "beyond"
+    },
+    {
+        "id": "14",
+        "start": 5.08,
+        "end": 5.24,
+        "word": "our"
+    },
+    {
+        "id": "15",
+        "start": 5.24,
+        "end": 5.78,
+        "word": "capacity"
+    },
+    {
+        "id": "16",
+        "start": 5.78,
+        "end": 5.96,
+        "word": "when"
+    },
+    {
+        "id": "17",
+        "start": 5.96,
+        "end": 6.08,
+        "word": "we"
+    },
+    {
+        "id": "18",
+        "start": 6.08,
+        "end": 6.2,
+        "word": "do"
+    },
+    {
+        "id": "19",
+        "start": 6.2,
+        "end": 6.32,
+        "word": "it"
+    },
+    {
+        "id": "20",
+        "start": 6.32,
+        "end": 6.66,
+        "word": "together."
+    },
+    {
+        "id": "21",
+        "start": 7.24,
+        "end": 7.48,
+        "word": "God"
+    },
+    {
+        "id": "22",
+        "start": 7.48,
+        "end": 7.78,
+        "word": "bless"
+    },
+    {
+        "id": "23",
+        "start": 7.78,
+        "end": 8.02,
+        "word": "you"
+    },
+    {
+        "id": "24",
+        "start": 8.02,
+        "end": 8.3,
+        "word": "all"
+    },
+    {
+        "id": "25",
+        "start": 8.3,
+        "end": 8.44,
+        "word": "and"
+    },
+    {
+        "id": "26",
+        "start": 8.44,
+        "end": 8.54,
+        "word": "may"
+    },
+    {
+        "id": "27",
+        "start": 8.54,
+        "end": 8.8,
+        "word": "God"
+    },
+    {
+        "id": "28",
+        "start": 8.8,
+        "end": 9.18,
+        "word": "protect"
+    },
+    {
+        "id": "29",
+        "start": 9.18,
+        "end": 9.5,
+        "word": "our"
+    },
+    {
+        "id": "30",
+        "start": 9.5,
+        "end": 9.78,
+        "word": "troops."
+    },
+    {
+        "id": "31",
+        "start": 10.22,
+        "end": 10.34,
+        "word": "We"
+    },
+    {
+        "id": "32",
+        "start": 10.34,
+        "end": 10.66,
+        "word": "can"
+    },
+    {
+        "id": "33",
+        "start": 10.66,
+        "end": 10.98,
+        "word": "get"
+    },
+    {
+        "id": "34",
+        "start": 10.98,
+        "end": 11.3,
+        "word": "this"
+    },
+    {
+        "id": "35",
+        "start": 11.3,
+        "end": 11.66,
+        "word": "done."
+    },
+    {
+        "id": "36",
+        "start": 12.84,
+        "end": 13.02,
+        "word": "Thank"
+    },
+    {
+        "id": "37",
+        "start": 13.02,
+        "end": 13.24,
+        "word": "you,"
+    },
+    {
+        "id": "38",
+        "start": 13.28,
+        "end": 13.5,
+        "word": "thank"
+    },
+    {
+        "id": "39",
+        "start": 13.5,
+        "end": 13.7,
+        "word": "you,"
+    },
+    {
+        "id": "40",
+        "start": 13.8,
+        "end": 13.94,
+        "word": "thank"
+    },
+    {
+        "id": "41",
+        "start": 13.94,
+        "end": 14.14,
+        "word": "you."
+    },
+    {
+        "id": "42",
+        "start": 14.22,
+        "end": 14.3,
+        "word": "I"
+    },
+    {
+        "id": "43",
+        "start": 14.3,
+        "end": 14.5,
+        "word": "mean"
+    },
+    {
+        "id": "44",
+        "start": 14.5,
+        "end": 14.7,
+        "word": "it."
+    },
+    {
+        "id": "45",
+        "start": 15.38,
+        "end": 15.62,
+        "word": "Thank"
+    },
+    {
+        "id": "46",
+        "start": 15.62,
+        "end": 16.36,
+        "word": "you."
+    },
+    {
+        "id": "47",
+        "start": 17.640000000000004,
+        "end": 18.12,
+        "word": "Now,"
+    },
+    {
+        "id": "48",
+        "start": 18.28,
+        "end": 18.3,
+        "word": "as"
+    },
+    {
+        "id": "49",
+        "start": 18.3,
+        "end": 18.8,
+        "word": "some"
+    },
+    {
+        "id": "50",
+        "start": 18.8,
+        "end": 18.94,
+        "word": "of"
+    },
+    {
+        "id": "51",
+        "start": 18.94,
+        "end": 19,
+        "word": "you"
+    },
+    {
+        "id": "52",
+        "start": 19,
+        "end": 19.2,
+        "word": "know,"
+    },
+    {
+        "id": "53",
+        "start": 19.4,
+        "end": 19.54,
+        "word": "I'd"
+    },
+    {
+        "id": "54",
+        "start": 19.54,
+        "end": 19.74,
+        "word": "usually"
+    },
+    {
+        "id": "55",
+        "start": 19.74,
+        "end": 20,
+        "word": "come"
+    },
+    {
+        "id": "56",
+        "start": 20,
+        "end": 20.2,
+        "word": "down"
+    },
+    {
+        "id": "57",
+        "start": 20.2,
+        "end": 20.34,
+        "word": "and"
+    },
+    {
+        "id": "58",
+        "start": 20.34,
+        "end": 20.5,
+        "word": "say"
+    },
+    {
+        "id": "59",
+        "start": 20.5,
+        "end": 20.72,
+        "word": "hi"
+    },
+    {
+        "id": "60",
+        "start": 20.72,
+        "end": 20.84,
+        "word": "to"
+    },
+    {
+        "id": "61",
+        "start": 20.84,
+        "end": 21.06,
+        "word": "Oliver,"
+    },
+    {
+        "id": "62",
+        "start": 21.2,
+        "end": 21.26,
+        "word": "they"
+    },
+    {
+        "id": "63",
+        "start": 21.26,
+        "end": 21.54,
+        "word": "tell"
+    },
+    {
+        "id": "64",
+        "start": 21.54,
+        "end": 21.88,
+        "word": "me"
+    },
+    {
+        "id": "65",
+        "start": 21.88,
+        "end": 22.56,
+        "word": "there's"
+    },
+    {
+        "id": "66",
+        "start": 22.56,
+        "end": 22.66,
+        "word": "a"
+    },
+    {
+        "id": "67",
+        "start": 22.66,
+        "end": 23.04,
+        "word": "storm"
+    },
+    {
+        "id": "68",
+        "start": 23.04,
+        "end": 23.34,
+        "word": "coming"
+    },
+    {
+        "id": "69",
+        "start": 23.34,
+        "end": 23.62,
+        "word": "in."
+    },
+    {
+        "id": "70",
+        "start": 24.400000000000002,
+        "end": 24.76,
+        "word": "Is"
+    },
+    {
+        "id": "71",
+        "start": 24.76,
+        "end": 24.94,
+        "word": "that"
+    },
+    {
+        "id": "72",
+        "start": 24.94,
+        "end": 25.16,
+        "word": "right?"
+    },
+    {
+        "id": "73",
+        "start": 25.8,
+        "end": 25.98,
+        "word": "Is"
+    },
+    {
+        "id": "74",
+        "start": 25.98,
+        "end": 26.1,
+        "word": "that"
+    },
+    {
+        "id": "75",
+        "start": 26.1,
+        "end": 26.38,
+        "word": "still"
+    },
+    {
+        "id": "76",
+        "start": 26.38,
+        "end": 26.52,
+        "word": "the"
+    },
+    {
+        "id": "77",
+        "start": 26.52,
+        "end": 26.78,
+        "word": "deal?"
+    },
+    {
+        "id": "78",
+        "start": 29.64,
+        "end": 30,
+        "word": "That's"
+    },
+    {
+        "id": "79",
+        "start": 30,
+        "end": 30.08,
+        "word": "the"
+    },
+    {
+        "id": "80",
+        "start": 30.08,
+        "end": 30.3,
+        "word": "truth."
+    },
+    {
+        "id": "81",
+        "start": 30.44,
+        "end": 30.52,
+        "word": "Now,"
+    },
+    {
+        "id": "82",
+        "start": 30.6,
+        "end": 30.76,
+        "word": "don't"
+    },
+    {
+        "id": "83",
+        "start": 30.76,
+        "end": 30.98,
+        "word": "make"
+    },
+    {
+        "id": "84",
+        "start": 30.98,
+        "end": 31.12,
+        "word": "a"
+    },
+    {
+        "id": "85",
+        "start": 31.12,
+        "end": 31.38,
+        "word": "lie."
+    },
+    {
+        "id": "86",
+        "start": 33.06,
+        "end": 33.42,
+        "word": "As"
+    },
+    {
+        "id": "87",
+        "start": 33.42,
+        "end": 33.78,
+        "word": "that"
+    },
+    {
+        "id": "88",
+        "start": 33.78,
+        "end": 34.1,
+        "word": "scene"
+    },
+    {
+        "id": "89",
+        "start": 34.1,
+        "end": 34.38,
+        "word": "in"
+    },
+    {
+        "id": "90",
+        "start": 34.38,
+        "end": 34.7,
+        "word": "John"
+    },
+    {
+        "id": "91",
+        "start": 34.7,
+        "end": 35,
+        "word": "Wayne"
+    },
+    {
+        "id": "92",
+        "start": 35,
+        "end": 35.18,
+        "word": "movie,"
+    },
+    {
+        "id": "93",
+        "start": 35.38,
+        "end": 35.56,
+        "word": "don't"
+    },
+    {
+        "id": "94",
+        "start": 35.56,
+        "end": 35.72,
+        "word": "make"
+    },
+    {
+        "id": "95",
+        "start": 35.72,
+        "end": 35.9,
+        "word": "me"
+    },
+    {
+        "id": "96",
+        "start": 35.9,
+        "end": 35.98,
+        "word": "a"
+    },
+    {
+        "id": "97",
+        "start": 35.98,
+        "end": 36.22,
+        "word": "dog"
+    },
+    {
+        "id": "98",
+        "start": 36.22,
+        "end": 36.58,
+        "word": "face"
+    },
+    {
+        "id": "99",
+        "start": 36.58,
+        "end": 37.12,
+        "word": "why"
+    },
+    {
+        "id": "100",
+        "start": 37.12,
+        "end": 37.36,
+        "word": "and"
+    },
+    {
+        "id": "101",
+        "start": 37.36,
+        "end": 37.64,
+        "word": "pony"
+    },
+    {
+        "id": "102",
+        "start": 37.64,
+        "end": 37.98,
+        "word": "soldier."
+    },
+    {
+        "id": "103",
+        "start": 39.96,
+        "end": 40.32,
+        "word": "All"
+    },
+    {
+        "id": "104",
+        "start": 40.32,
+        "end": 40.52,
+        "word": "right,"
+    },
+    {
+        "id": "105",
+        "start": 40.66,
+        "end": 40.82,
+        "word": "well,"
+    },
+    {
+        "id": "106",
+        "start": 41.02,
+        "end": 41.14,
+        "word": "I'll"
+    },
+    {
+        "id": "107",
+        "start": 41.14,
+        "end": 41.28,
+        "word": "tell"
+    },
+    {
+        "id": "108",
+        "start": 41.28,
+        "end": 41.4,
+        "word": "you"
+    },
+    {
+        "id": "109",
+        "start": 41.4,
+        "end": 41.7,
+        "word": "what,"
+    },
+    {
+        "id": "110",
+        "start": 42.3,
+        "end": 42.9,
+        "word": "here's"
+    },
+    {
+        "id": "111",
+        "start": 42.9,
+        "end": 43,
+        "word": "what"
+    },
+    {
+        "id": "112",
+        "start": 43,
+        "end": 43.12,
+        "word": "I'm"
+    },
+    {
+        "id": "113",
+        "start": 43.12,
+        "end": 43.2,
+        "word": "going"
+    },
+    {
+        "id": "114",
+        "start": 43.2,
+        "end": 43.28,
+        "word": "to"
+    },
+    {
+        "id": "115",
+        "start": 43.28,
+        "end": 43.44,
+        "word": "do."
+    },
+    {
+        "id": "116",
+        "start": 44.1,
+        "end": 44.24,
+        "word": "I'm"
+    },
+    {
+        "id": "117",
+        "start": 44.24,
+        "end": 44.3,
+        "word": "going"
+    },
+    {
+        "id": "118",
+        "start": 44.3,
+        "end": 44.38,
+        "word": "to"
+    },
+    {
+        "id": "119",
+        "start": 44.38,
+        "end": 44.58,
+        "word": "ask"
+    },
+    {
+        "id": "120",
+        "start": 44.58,
+        "end": 44.82,
+        "word": "the"
+    },
+    {
+        "id": "121",
+        "start": 44.82,
+        "end": 45,
+        "word": "White"
+    },
+    {
+        "id": "122",
+        "start": 45,
+        "end": 45.18,
+        "word": "House"
+    },
+    {
+        "id": "123",
+        "start": 45.18,
+        "end": 45.34,
+        "word": "of"
+    },
+    {
+        "id": "124",
+        "start": 45.34,
+        "end": 45.74,
+        "word": "Toggers"
+    },
+    {
+        "id": "125",
+        "start": 45.74,
+        "end": 45.88,
+        "word": "to"
+    },
+    {
+        "id": "126",
+        "start": 45.88,
+        "end": 46,
+        "word": "come"
+    },
+    {
+        "id": "127",
+        "start": 46,
+        "end": 46.2,
+        "word": "up,"
+    },
+    {
+        "id": "128",
+        "start": 46.84,
+        "end": 46.96,
+        "word": "and"
+    },
+    {
+        "id": "129",
+        "start": 46.96,
+        "end": 47.06,
+        "word": "all"
+    },
+    {
+        "id": "130",
+        "start": 47.06,
+        "end": 47.24,
+        "word": "I'm"
+    },
+    {
+        "id": "131",
+        "start": 47.24,
+        "end": 47.34,
+        "word": "going"
+    },
+    {
+        "id": "132",
+        "start": 47.34,
+        "end": 47.4,
+        "word": "to"
+    },
+    {
+        "id": "133",
+        "start": 47.4,
+        "end": 47.5,
+        "word": "do"
+    },
+    {
+        "id": "134",
+        "start": 47.5,
+        "end": 47.62,
+        "word": "is"
+    },
+    {
+        "id": "135",
+        "start": 47.62,
+        "end": 47.78,
+        "word": "I'm"
+    },
+    {
+        "id": "136",
+        "start": 47.78,
+        "end": 47.86,
+        "word": "going"
+    },
+    {
+        "id": "137",
+        "start": 47.86,
+        "end": 47.94,
+        "word": "to"
+    },
+    {
+        "id": "138",
+        "start": 47.94,
+        "end": 48.28,
+        "word": "stand."
+    },
+    {
+        "id": "139",
+        "start": 48.28,
+        "end": 48.82,
+        "word": "I"
+    },
+    {
+        "id": "140",
+        "start": 48.82,
+        "end": 49.18,
+        "word": "can't,"
+    },
+    {
+        "id": "141",
+        "start": 49.24,
+        "end": 49.42,
+        "word": "I"
+    },
+    {
+        "id": "142",
+        "start": 49.42,
+        "end": 49.66,
+        "word": "can't,"
+    },
+    {
+        "id": "143",
+        "start": 49.66,
+        "end": 49.68,
+        "word": "I"
+    },
+    {
+        "id": "144",
+        "start": 49.68,
+        "end": 49.68,
+        "word": "usually"
+    },
+    {
+        "id": "145",
+        "start": 49.68,
+        "end": 49.98,
+        "word": "shake"
+    },
+    {
+        "id": "146",
+        "start": 49.98,
+        "end": 50.5,
+        "word": "everybody's"
+    },
+    {
+        "id": "147",
+        "start": 50.5,
+        "end": 50.74,
+        "word": "hand,"
+    },
+    {
+        "id": "148",
+        "start": 51.18,
+        "end": 51.44,
+        "word": "but"
+    },
+    {
+        "id": "149",
+        "start": 51.44,
+        "end": 51.68,
+        "word": "I'm"
+    },
+    {
+        "id": "150",
+        "start": 51.68,
+        "end": 51.76,
+        "word": "going"
+    },
+    {
+        "id": "151",
+        "start": 51.76,
+        "end": 51.78,
+        "word": "to"
+    },
+    {
+        "id": "152",
+        "start": 51.78,
+        "end": 52.12,
+        "word": "stand"
+    },
+    {
+        "id": "153",
+        "start": 52.12,
+        "end": 52.32,
+        "word": "in"
+    },
+    {
+        "id": "154",
+        "start": 52.32,
+        "end": 52.52,
+        "word": "front"
+    },
+    {
+        "id": "155",
+        "start": 52.52,
+        "end": 52.7,
+        "word": "of"
+    },
+    {
+        "id": "156",
+        "start": 52.7,
+        "end": 52.84,
+        "word": "each"
+    },
+    {
+        "id": "157",
+        "start": 52.84,
+        "end": 53.26,
+        "word": "section."
+    },
+    {
+        "id": "158",
+        "start": 53.42,
+        "end": 53.48,
+        "word": "No,"
+    },
+    {
+        "id": "159",
+        "start": 53.52,
+        "end": 53.58,
+        "word": "I"
+    },
+    {
+        "id": "160",
+        "start": 53.58,
+        "end": 53.76,
+        "word": "really"
+    },
+    {
+        "id": "161",
+        "start": 53.76,
+        "end": 53.98,
+        "word": "mean"
+    },
+    {
+        "id": "162",
+        "start": 53.98,
+        "end": 54.2,
+        "word": "it."
+    },
+    {
+        "id": "163",
+        "start": 54.68,
+        "end": 54.78,
+        "word": "And"
+    },
+    {
+        "id": "164",
+        "start": 54.78,
+        "end": 55,
+        "word": "then,"
+    },
+    {
+        "id": "165",
+        "start": 55.32,
+        "end": 55.78,
+        "word": "and"
+    },
+    {
+        "id": "166",
+        "start": 55.78,
+        "end": 55.96,
+        "word": "if"
+    },
+    {
+        "id": "167",
+        "start": 55.96,
+        "end": 56.04,
+        "word": "you"
+    },
+    {
+        "id": "168",
+        "start": 56.04,
+        "end": 56.2,
+        "word": "can"
+    },
+    {
+        "id": "169",
+        "start": 56.2,
+        "end": 56.38,
+        "word": "see"
+    },
+    {
+        "id": "170",
+        "start": 56.38,
+        "end": 56.5,
+        "word": "the"
+    },
+    {
+        "id": "171",
+        "start": 56.5,
+        "end": 56.78,
+        "word": "camera,"
+    },
+    {
+        "id": "172",
+        "start": 56.8,
+        "end": 57,
+        "word": "they"
+    },
+    {
+        "id": "173",
+        "start": 57,
+        "end": 57.14,
+        "word": "can"
+    },
+    {
+        "id": "174",
+        "start": 57.14,
+        "end": 57.38,
+        "word": "see"
+    },
+    {
+        "id": "175",
+        "start": 57.38,
+        "end": 57.64,
+        "word": "you."
+    },
+    {
+        "id": "176",
+        "start": 58.06,
+        "end": 58.48,
+        "word": "And"
+    },
+    {
+        "id": "177",
+        "start": 58.48,
+        "end": 59.16,
+        "word": "it's"
+    },
+    {
+        "id": "178",
+        "start": 59.16,
+        "end": 59.28,
+        "word": "the"
+    },
+    {
+        "id": "179",
+        "start": 59.28,
+        "end": 59.48,
+        "word": "least"
+    },
+    {
+        "id": "180",
+        "start": 59.48,
+        "end": 60.1,
+        "word": "consul,"
+    },
+    {
+        "id": "181",
+        "start": 60.16,
+        "end": 60.38,
+        "word": "consul"
+    },
+    {
+        "id": "182",
+        "start": 60.38,
+        "end": 60.62,
+        "word": "part"
+    },
+    {
+        "id": "183",
+        "start": 60.62,
+        "end": 60.76,
+        "word": "of"
+    },
+    {
+        "id": "184",
+        "start": 60.76,
+        "end": 60.92,
+        "word": "this"
+    },
+    {
+        "id": "185",
+        "start": 60.92,
+        "end": 61.06,
+        "word": "whole"
+    },
+    {
+        "id": "186",
+        "start": 61.06,
+        "end": 61.36,
+        "word": "meeting"
+    },
+    {
+        "id": "187",
+        "start": 61.36,
+        "end": 61.64,
+        "word": "for"
+    },
+    {
+        "id": "188",
+        "start": 61.64,
+        "end": 61.76,
+        "word": "you."
+    },
+    {
+        "id": "189",
+        "start": 62.22,
+        "end": 62.3,
+        "word": "I"
+    },
+    {
+        "id": "190",
+        "start": 62.3,
+        "end": 62.62,
+        "word": "promise."
+    },
+    {
+        "id": "191",
+        "start": 63.52,
+        "end": 63.66,
+        "word": "All"
+    },
+    {
+        "id": "192",
+        "start": 63.66,
+        "end": 63.92,
+        "word": "right."
+    },
+    {
+        "id": "193",
+        "start": 64.58,
+        "end": 65.02,
+        "word": "God"
+    },
+    {
+        "id": "194",
+        "start": 65.02,
+        "end": 65.38,
+        "word": "save"
+    },
+    {
+        "id": "195",
+        "start": 65.38,
+        "end": 65.6,
+        "word": "the"
+    },
+    {
+        "id": "196",
+        "start": 65.6,
+        "end": 65.84,
+        "word": "Queen,"
+    },
+    {
+        "id": "197",
+        "start": 65.88,
+        "end": 66.14,
+        "word": "man."
+    }
+]
