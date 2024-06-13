@@ -355,10 +355,8 @@
         ></path></svg
     >
     <span
-        >Now using Open AI's Whisper Model! New drag and drop zone and media
-        trimmer added! Files that take longer than 5 minutes to process will
-        time out for now. We're aware of accuracy issues, so I'm looking at
-        settings for the best accuracy/speed tradeoff.</span
+        >Now using Open AI's Whisper Model! I'm reworking the UI into something more manageable for selecting/dragging words.
+        Then I want to try extracting phonemes and a better backend. Stay tuned!</span
     >
 </div>
 
