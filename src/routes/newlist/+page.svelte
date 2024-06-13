@@ -48,6 +48,7 @@
                     group: {
                         name: "foo",
                         put: false,
+						pull: "clone"
                     },
                     direction: "horizontal",
                     delay: 200,

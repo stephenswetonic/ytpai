@@ -72,11 +72,6 @@
         chosenWordList.items = [];
     }
 
-    function logwords() {
-        console.log(wordDataOriginal);
-        
-    }
-
     function addWordsFromInput() {
         //generatedWordList.items = wordDataOriginal;
         const wordArray = inputText.split(" ");
@@ -363,8 +358,6 @@
 <Toast bind:messages={$toastMessages} duration={3000} />
 
 <FileDropZone bind:sourceFile bind:trimmedFile bind:startTime bind:endTime />
-
-<button class="btn" on:click={logwords}>Log</button>
 
 <select
     bind:value={selectedLanguage}
