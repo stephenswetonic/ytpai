@@ -10,6 +10,7 @@
     let chosenWordsContainer;
     let matchedWordsContainer;
     let inputText;
+    let selectedGroupingValue = "20";
 
     onMount(() => {
         Sortable.mount(new MultiDrag());
@@ -149,7 +150,7 @@
 
     export function fillWords(words) {
         generatedWords = words;
-        groupedWords = groupWordsByTime(generatedWords, 10);
+        groupedWords = groupWordsByTime(generatedWords, Number(selectedGroupingValue));
         createGroupSortables();
     }
 
@@ -189,13 +190,36 @@
             );
         }
     }
+
+    function changeGroupingValue() {
+        groupedWords = groupWordsByTime(generatedWords, Number(selectedGroupingValue));
+        createGroupSortables();
+    }
 </script>
 
 {#if generatedWords.length > 0}
-    <h1 class="mt-2 text-xl font-bold tracking-light text-base-content">
+<div class="flex items-center justify-between">
+    <h1 class="text-xl font-bold tracking-light text-base-content">
         Generated Words
     </h1>
-    <div class="generatedWords border border-white rounded-lg">
+    <div class="flex items-center">
+        <p class="text-xs font-bold tracking-light text-base-content mr-2 whitespace-nowrap">Group By</p>
+        <select 
+            bind:value={selectedGroupingValue}
+            on:change={changeGroupingValue}
+            class="select select-primary w-full max-w-xs"
+            name="groupingSelect" id="groupingSelect">
+            <option value="10">10 seconds</option>
+            <option selected value="20">20 seconds</option>
+            <option value="30">30 seconds</option>
+            <option value="40">40 seconds</option>
+            <option value="50">50 seconds</option>
+            <option value="60">60 seconds</option>
+        </select>
+    </div>
+</div>
+
+    <div class="generatedWords border border-white rounded-lg mt-2">
         {#each Object.keys(groupedWords) as key}
             <div
                 class="container horizontal container-{key} mb-2"

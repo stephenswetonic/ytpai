@@ -13,10 +13,6 @@
     let endTime;
     let sessionKey;
     let wordDataOriginal = [];
-    let wordData = [];
-    let matchedWords = [];
-    let wordsToCombine = [];
-    let inputText = "";
     let loading = false;
     let loadingGenerate = false;
     let audioOnly = true;
@@ -259,35 +255,6 @@
         return await ping(); // Start the initial ping
     }
 
-    // Adds placeholders in the word list to give reference to time
-    // The 'end' value is set to 'xyz' to discriminate them
-    function addTimestamps() {
-        let seconds = 0;
-        let minutes = 0;
-        let pointer;
-        let step = 10;
-        let threshold = step;
-
-        for (let i = 0; i < generatedWords.items.length; i++) {
-            pointer = generatedWords.items[i];
-            if (Number(pointer["id"]) > threshold) {
-                seconds += step;
-                if (seconds == 60) {
-                    seconds = 0;
-                    minutes += 1;
-                }
-                generatedWords.items.splice(i, 0, {
-                    id: String(threshold + 0.1),
-                    start: "xyz",
-                    end: "xyz",
-                    word: minutes + ":" + String(seconds).padStart(2, "0"),
-                });
-                generatedWords.items = generatedWords.items;
-                threshold += step;
-            }
-        }
-    }
-
     // Check if input is video/audio and set accordingly
     function checkInput() {
         if (
@@ -304,9 +271,6 @@
         }
     }
 </script>
-
-
-
 
 <div role="alert" class="alert">
     <svg
