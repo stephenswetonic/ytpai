@@ -1,5 +1,5 @@
 <script>
-    import { Sortable, MultiDrag } from "sortablejs";
+    import Sortable, { MultiDrag } from "sortablejs";
     import { onMount, afterUpdate } from "svelte";
     import wordJsonSample from "$lib/wordJsonSample.json";
 
