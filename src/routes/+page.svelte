@@ -1,9 +1,9 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import List from "$lib/components/List.svelte";
     import { writable } from "svelte/store";
     import Toast from "$lib/components/Toast.svelte";
     import FileDropZone from "$lib/components/FileDropZone.svelte";
-    import DraggableZones from "$lib/components/DraggableZones.svelte";
 
     const toastMessages = writable([]);
 
@@ -29,9 +29,9 @@
     let hideVideo = true;
     let selectedLanguage = "auto";
 
-    let generatedWords;
-    let chosenWords;
-    let draggableZonesComponent;
+    let generatedWordList;
+    let matchedWordList;
+    let chosenWordList;
 
     // Runs when sourceFile changes
     $: if (sourceFile) {
@@ -42,6 +42,20 @@
         audioElement = document.getElementById("generatedAudio");
         videoElement = document.getElementById("generatedVideo");
 
+        generatedWordList = new List({
+            target: document.getElementById("generatedWordList"),
+            props: { items: wordData },
+        });
+
+        matchedWordList = new List({
+            target: document.getElementById("matchedWordList"),
+            props: { items: matchedWords },
+        });
+
+        chosenWordList = new List({
+            target: document.getElementById("chosenWordList"),
+            props: { items: wordsToCombine },
+        });
     });
 
     const showToastAlert = (msg) => {
@@ -54,9 +68,28 @@
         toastMessages.set([]); // Clear the toast messages
     };
 
+    function clearCombined() {
+        chosenWordList.items = [];
+    }
+
+    function addWordsFromInput() {
+        //generatedWordList.items = wordDataOriginal;
+        const wordArray = inputText.split(" ");
+
+        let intersection = generatedWordList.items.filter((x) =>
+            wordArray.includes(x.word),
+        );
+
+        matchedWordList.items = intersection;
+    }
+
+    function refillWords() {
+        generatedWordList.items = wordDataOriginal;
+    }
+
     // Basically a proxy for sendChosenWords()
     function generate() {
-        const wordsToCombineJson = JSON.stringify(chosenWords);
+        const wordsToCombineJson = JSON.stringify(chosenWordList.items);
         sendChosenWords(wordsToCombineJson);
     }
 
@@ -207,11 +240,9 @@
             const resultJson = await result.json();
 
             // Add words to the UI
-            generatedWords = resultJson;
-            draggableZonesComponent.fillWords(resultJson);
-            
+            generatedWordList.items = resultJson;
             wordDataOriginal = resultJson;
-            //addTimestamps();
+            addTimestamps();
             loading = false;
             clearToastMessages();
 
@@ -268,21 +299,21 @@
         let step = 10;
         let threshold = step;
 
-        for (let i = 0; i < generatedWords.items.length; i++) {
-            pointer = generatedWords.items[i];
+        for (let i = 0; i < generatedWordList.items.length; i++) {
+            pointer = generatedWordList.items[i];
             if (Number(pointer["id"]) > threshold) {
                 seconds += step;
                 if (seconds == 60) {
                     seconds = 0;
                     minutes += 1;
                 }
-                generatedWords.items.splice(i, 0, {
+                generatedWordList.items.splice(i, 0, {
                     id: String(threshold + 0.1),
                     start: "xyz",
                     end: "xyz",
                     word: minutes + ":" + String(seconds).padStart(2, "0"),
                 });
-                generatedWords.items = generatedWords.items;
+                generatedWordList.items = generatedWordList.items;
                 threshold += step;
             }
         }
@@ -305,9 +336,6 @@
     }
 </script>
 
-
-
-
 <div role="alert" class="alert">
     <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -322,8 +350,8 @@
         ></path></svg
     >
     <span
-        >Now using Open AI's Whisper Model! The reworked drag and drop UI has been added.
-        Next, I want to try extracting phonemes and a better backend. Stay tuned!</span
+        >Now using Open AI's Whisper Model! I'm reworking the UI into something more manageable for selecting/dragging words.
+        Then I want to try extracting phonemes and a better backend. Stay tuned!</span
     >
 </div>
 
@@ -507,11 +535,49 @@
 
 <ul class="text-sm">
     <li>
-        To multi drag, click words before dragging.
+        To multi drag with the mouse use <code>ctrl + click</code> or
+        <code>cmd + click</code> to add items before dragging.
+    </li>
+    <li>
+        To multi drag with keyboard, tab to items and use <code
+            >ctrl + shift</code
+        >
+        or <code>cmd + shift</code> to add items before entering "drag mode" by
+        hitting <code>space</code>
     </li>
 </ul>
 
-<DraggableZones bind:this={draggableZonesComponent} bind:chosenWords={chosenWords}/>
+<h1
+    class="mt-2 text-xl font-bold tracking-light text-base-content inline-block"
+>
+    Generated Words
+</h1>
+<button class="btn btn-sm btn-primary m-1" on:click={refillWords}>Refill</button
+>
+<div id="generatedWordList"></div>
+
+<input
+    class="input w-full max-w-xl bg-base-200 mt-2"
+    bind:value={inputText}
+    type="text"
+    placeholder="Type here"
+/>
+<button class="btn btn-primary" on:click={addWordsFromInput}>Filter</button>
+
+<h1 class="mt-2 text-xl font-bold tracking-light text-base-content">
+    Matched Words
+</h1>
+<div id="matchedWordList"></div>
+
+<h1
+    class="mt-2 text-xl font-bold tracking-light text-base-content inline-block"
+>
+    Words To Mix
+</h1>
+<button class="btn btn-sm btn-primary m-1" on:click={clearCombined}
+    >Clear</button
+>
+<div id="chosenWordList"></div>
 
 <button class="btn btn-primary btn-wide mt-4" on:click={generate}
     >Generate</button
@@ -581,7 +647,6 @@
         </svg>
     </div>
 </div>
-
 {#if loadingGenerate}
     <div class="inline-flex h-full align-middle">
         <span class="loading loading-spinner loading-lg"></span>
