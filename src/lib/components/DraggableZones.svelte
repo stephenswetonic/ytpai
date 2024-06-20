@@ -40,13 +40,13 @@
                 scrollSpeed: 10,
                 bubbleScroll: true,
 
-                onEnd: (evt) => {
-                    handleDragEnd(
-                        evt,
-                        chosenWords,
-                        groupedWords[evt.from.dataset.group],
-                    );
-                },
+                // onEnd: (evt) => {
+                //     handleDragEnd(
+                //         evt,
+                //         chosenWords,
+                //         groupedWords[evt.from.dataset.group],
+                //     );
+                // },
             });
         }
     }
@@ -59,6 +59,7 @@
                     put: false,
                     pull: "clone",
                 },
+                sort: false,
                 direction: "horizontal",
                 delay: 200,
                 delayOnTouchOnly: true,
@@ -71,9 +72,10 @@
                 bubbleScroll: true,
 
                 //not needed?
-                onEnd: (evt) => {
-                    handleDragEnd(evt, matchedWords, chosenWords);
-                },
+                // onEnd: (evt) => {
+                //     console.log("matched words onend");
+                //     handleDragEnd(evt, matchedWords, chosenWords[evt.from.dataset.group]);
+                // },
             });
         }
     }
@@ -89,6 +91,7 @@
                         put: false,
                         pull: "clone",
                     },
+                    sort: false,
                     direction: "horizontal",
                     delay: 200,
                     delayOnTouchOnly: true,
@@ -100,9 +103,8 @@
                     scrollSpeed: 10,
                     bubbleScroll: true,
 
-                    //not needed?
                     onEnd: (evt) => {
-                        handleDragEnd(evt, groupedWords[key], chosenWords);
+                        handleDragEnd(evt, groupedWords[key], chosenWords[evt.from.dataset.group]);
                     },
                 });
                 // @ts-ignore
@@ -130,22 +132,32 @@
     }
 
     function moveItems(fromList, toList, evt) {
-        const movedItems = evt.items.map((item) => {
-            const index = item.dataset.index;
-            return fromList[index];
-        });
+        let movedItems = [];
+        let singleItem = false;
 
-        // Remove moved items from the original list
-        for (let i = movedItems.length - 1; i >= 0; i--) {
-            const index = evt.oldIndicies[i].index;
-            fromList.splice(index, 1);
+        // If a single unselected item is dragged, evt is different
+        if (evt.items.length > 0) {
+
+            movedItems = evt.items.map((item) => {
+                const index = item.dataset.index;
+                return fromList[index];
+            });
+        } else {
+            singleItem = true;
+            movedItems.push(fromList[evt.oldIndex]);
         }
 
         // Insert moved items into the new list at the appropriate position
         evt.newIndicies.forEach((el, ix) => {
             const insertIndex = evt.newIndex + ix;
-            if (movedItems[ix]) toList.splice(insertIndex, 0, movedItems[ix]);
+            if (movedItems[ix]) {
+                toList.splice(insertIndex, 0, movedItems[ix]);
+            }
         });
+
+        if (singleItem) {
+            toList.splice(evt.newIndex, 0, movedItems[0]);
+        }
     }
 
     export function fillWords(words) {

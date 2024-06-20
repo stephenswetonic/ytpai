@@ -13,10 +13,10 @@
     let endTime;
     let sessionKey;
     let wordDataOriginal = [];
-    let wordData = [];
-    let matchedWords = [];
-    let wordsToCombine = [];
-    let inputText = "";
+    // let wordData = [];
+    // let matchedWords = [];
+    // let wordsToCombine = [];
+    // let inputText = "";
     let loading = false;
     let loadingGenerate = false;
     let audioOnly = true;
@@ -587,6 +587,9 @@
         <span class="loading loading-spinner loading-lg"></span>
     </div>
 {/if}
+
+<button class="btn btn-primary" on:click={() => {console.log(chosenWords);
+}}>log chosen words</button>
 
 <audio class="my-2" controls src="" id="generatedAudio" hidden={hideAudio}>
 </audio>
