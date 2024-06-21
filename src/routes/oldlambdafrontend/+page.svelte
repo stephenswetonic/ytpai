@@ -13,6 +13,10 @@
     let endTime;
     let sessionKey;
     let wordDataOriginal = [];
+    // let wordData = [];
+    // let matchedWords = [];
+    // let wordsToCombine = [];
+    // let inputText = "";
     let loading = false;
     let loadingGenerate = false;
     let audioOnly = true;
@@ -37,6 +41,7 @@
     onMount(() => {
         audioElement = document.getElementById("generatedAudio");
         videoElement = document.getElementById("generatedVideo");
+
     });
 
     const showToastAlert = (msg) => {
@@ -176,18 +181,14 @@
     async function startAudioProcessing() {
         let startTime = Date.now();
         try {
-            showToastAlert("Processing audio...");            
+            showToastAlert("Processing audio...");
+            // yptaiBackend lambda function
             const postResponse = await fetch(
-                "https://stag-thankful-buck.ngrok-free.app/analyze",
-
+                "https://o3dmvj0dij.execute-api.us-east-1.amazonaws.com/audioanalyzer",
                 {
                     method: "POST",
-                    mode: "cors",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
                     body: JSON.stringify({
-                        sessionKey: String(sessionKey),
+                        sessionKey: sessionKey,
                         isVideo: isVideo,
                         audioOnly: audioOnly,
                         useBigModel: useBigModel,
@@ -200,12 +201,15 @@
                 throw new Error(`HTTP error! Status: ${postResponse.status}`);
             }
 
-            let resultJson = await postResponse.json();
+            // Ping S3 until the results are retrieved or timeout
+            // Set at 5 min timeout
+            const result = await pingWordsJson(sessionKey, 60, 5000);
+            const resultJson = await result.json();
 
             // Add words to the UI
-            generatedWords = resultJson.body;
-            draggableZonesComponent.fillWords(resultJson.body);
-
+            generatedWords = resultJson;
+            draggableZonesComponent.fillWords(resultJson);
+            
             wordDataOriginal = resultJson;
             //addTimestamps();
             loading = false;
@@ -230,6 +234,60 @@
         return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
     }
 
+    // Try to get processed words from s3
+    // delay in ms
+    async function pingWordsJson(sessionKey, maxAttempts, delay) {
+        let attempts = 0;
+
+        async function ping() {
+            attempts++;
+
+            const response = await fetch(
+                "https://sam-app-s3uploadbucket-qkgqfgtltuzq.s3.amazonaws.com/" +
+                    sessionKey +
+                    ".json",
+            );
+            if (response.ok) {
+                return response; // File successfully received
+            } else if (attempts < maxAttempts) {
+                await new Promise((resolve) => setTimeout(resolve, delay)); // Retry after delay
+                return await ping();
+            } else {
+                return null;
+            }
+        }
+        return await ping(); // Start the initial ping
+    }
+
+    // Adds placeholders in the word list to give reference to time
+    // The 'end' value is set to 'xyz' to discriminate them
+    function addTimestamps() {
+        let seconds = 0;
+        let minutes = 0;
+        let pointer;
+        let step = 10;
+        let threshold = step;
+
+        for (let i = 0; i < generatedWords.items.length; i++) {
+            pointer = generatedWords.items[i];
+            if (Number(pointer["id"]) > threshold) {
+                seconds += step;
+                if (seconds == 60) {
+                    seconds = 0;
+                    minutes += 1;
+                }
+                generatedWords.items.splice(i, 0, {
+                    id: String(threshold + 0.1),
+                    start: "xyz",
+                    end: "xyz",
+                    word: minutes + ":" + String(seconds).padStart(2, "0"),
+                });
+                generatedWords.items = generatedWords.items;
+                threshold += step;
+            }
+        }
+    }
+
     // Check if input is video/audio and set accordingly
     function checkInput() {
         if (
@@ -247,6 +305,9 @@
     }
 </script>
 
+
+
+
 <div role="alert" class="alert">
     <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -261,9 +322,8 @@
         ></path></svg
     >
     <span
-        >Now using WhisperX on an RTX 3080 for faster processing and more accurate results.
-         The server is in the US west coast, so distance will vary your processing time.
-         Next, I want to try extracting phonemes. Stay tuned!</span
+        >Now using Open AI's Whisper Model! The reworked drag and drop UI has been added.
+        Next, I want to try extracting phonemes and a better backend. Stay tuned!</span
     >
 </div>
 
@@ -446,10 +506,12 @@
 <div class="text-sm">Supports audio (wav, mp3) or video (mp4, webm, mov)</div>
 
 <ul class="text-sm">
-    <li>To multi drag, click words before dragging.</li>
+    <li>
+        To multi drag, click words before dragging.
+    </li>
 </ul>
 
-<DraggableZones bind:this={draggableZonesComponent} bind:chosenWords />
+<DraggableZones bind:this={draggableZonesComponent} bind:chosenWords={chosenWords}/>
 
 <button class="btn btn-primary btn-wide mt-4" on:click={generate}
     >Generate</button
@@ -525,6 +587,9 @@
         <span class="loading loading-spinner loading-lg"></span>
     </div>
 {/if}
+
+<button class="btn btn-primary" on:click={() => {console.log(chosenWords);
+}}>log chosen words</button>
 
 <audio class="my-2" controls src="" id="generatedAudio" hidden={hideAudio}>
 </audio>
