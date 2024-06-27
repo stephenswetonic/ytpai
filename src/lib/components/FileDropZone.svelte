@@ -205,6 +205,16 @@
         }
     }
 
+    function closeVideo() {
+        videoElement.src = "";
+        hideVideo = true;
+    }
+
+    function closeAudio() {
+        audioElement.src = "";
+        hideAudio = true;
+    }
+
     function handleClick() {
         fileInputElement.click();
     }
@@ -234,25 +244,73 @@
     }
 </script>
 
-<!-- svelte-ignore a11y-media-has-caption -->
-<video
-    class=" max-w-xl mt-2 mx-auto"
-    src=""
-    id="sourceVideo"
-    controls
-    hidden={hideVideo}
-    on:loadedmetadata={() => handleLoadMetaData(videoElement)}
-></video>
+<div class="relative max-w-xl mt-2 mx-auto flex items-center justify-between">
+    <!-- Video Element -->
+    <!-- svelte-ignore a11y-media-has-caption -->
+    <video
+        src=""
+        id="sourceVideo"
+        controls
+        class="w-full"
+        hidden={hideVideo}
+        on:loadedmetadata={() => handleLoadMetaData(videoElement)}
+    ></video>
 
-<audio
-    class="max-w-xl mt-2 mx-auto"
-    id="sourceAudio"
-    controls
-    src=""
-    hidden={hideAudio}
-    on:loadedmetadata={() => handleLoadMetaData(audioElement)}
->
-</audio>
+    <!-- Audio Element -->
+    <audio
+        src=""
+        id="sourceAudio"
+        controls
+        class="w-full"
+        hidden={hideAudio}
+        on:loadedmetadata={() => handleLoadMetaData(audioElement)}
+    ></audio>
+
+    {#if !hideVideo }
+        <!-- Close button for Video Element -->
+        <button class="btn btn-ghost btn-sm absolute top-0 right-0 mt-2 mr-2 z-10"
+                on:click={closeVideo}
+        >
+            <svg
+                width="20px"
+                height="20px"
+                viewBox="0 0 512 512"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path
+                    d="M443.6,387.1L312.4,255.4l131.5-130c5.4-5.4,5.4-14.2,0-19.6l-37.4-37.6c-2.6-2.6-6.1-4-9.8-4c-3.7,0-7.2,1.5-9.8,4  L256,197.8L124.9,68.3c-2.6-2.6-6.1-4-9.8-4c-3.7,0-7.2,1.5-9.8,4L68,105.9c-5.4,5.4-5.4,14.2,0,19.6l131.5,130L68.4,387.1  c-2.6,2.6-4.1,6.1-4.1,9.8c0,3.7,1.4,7.2,4.1,9.8l37.4,37.6c2.7,2.7,6.2,4.1,9.8,4.1c3.5,0,7.1-1.3,9.8-4.1L256,313.1l130.7,131.1  c2.7,2.7,6.2,4.1,9.8,4.1c3.5,0,7.1-1.3,9.8-4.1l37.4-37.6c2.6-2.6,4.1-6.1,4.1-9.8C447.7,393.2,446.2,389.7,443.6,387.1z"
+                    fill="#ff0000"
+                />
+            </svg>
+        </button>
+    {/if}
+
+    {#if !hideAudio}
+        <!-- Close button for Audio Element -->
+        <button class="btn btn-ghost btn-sm z-10"
+                style="margin-right: 10px;"
+                on:click={closeAudio}
+        >
+            <svg
+                width="20px"
+                height="20px"
+                viewBox="0 0 512 512"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path
+                    d="M443.6,387.1L312.4,255.4l131.5-130c5.4-5.4,5.4-14.2,0-19.6l-37.4-37.6c-2.6-2.6-6.1-4-9.8-4c-3.7,0-7.2,1.5-9.8,4  L256,197.8L124.9,68.3c-2.6-2.6-6.1-4-9.8-4c-3.7,0-7.2,1.5-9.8,4L68,105.9c-5.4,5.4-5.4,14.2,0,19.6l131.5,130L68.4,387.1  c-2.6,2.6-4.1,6.1-4.1,9.8c0,3.7,1.4,7.2,4.1,9.8l37.4,37.6c2.7,2.7,6.2,4.1,9.8,4.1c3.5,0,7.1-1.3,9.8-4.1L256,313.1l130.7,131.1  c2.7,2.7,6.2,4.1,9.8,4.1c3.5,0,7.1-1.3,9.8-4.1l37.4-37.6c2.6-2.6,4.1-6.1,4.1-9.8C447.7,393.2,446.2,389.7,443.6,387.1z"
+                    fill="#ff0000"
+                />
+            </svg>
+        </button>
+    {/if}
+
+</div>
+
+
+
+
+
 
 {#if !hideVideo || !hideAudio}
     <div class="max-w-xl mx-auto">
@@ -323,6 +381,7 @@
 {#if hideVideo && hideAudio}
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <!-- svelte-ignore a11y-mouse-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
         on:drop|preventDefault={handleDrop}
         on:dragenter={handleDragenter}

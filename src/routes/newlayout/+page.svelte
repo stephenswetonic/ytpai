@@ -18,14 +18,14 @@
     let audioOnly = true;
     let isVideo = false;
     let audioOnlyDisabled = false;
-    let useBigModel = false;
     let audioElement;
     let videoElement;
     let hideAudio = true;
     let hideVideo = true;
+    let replaceWordsToMix = false;
     let selectedLanguage = "auto";
 
-    let generatedWords;
+    let generatedWords = [];
     let chosenWords;
     let draggableZonesComponent;
 
@@ -190,7 +190,6 @@
                         sessionKey: String(sessionKey),
                         isVideo: isVideo,
                         audioOnly: audioOnly,
-                        useBigModel: useBigModel,
                         lang: selectedLanguage,
                     }),
                 },
@@ -201,10 +200,19 @@
             }
 
             let resultJson = await postResponse.json();
+            let newWords = resultJson.body;
+
+            generatedWords = newWords;
 
             // Add words to the UI
-            generatedWords = resultJson.body;
-            draggableZonesComponent.fillWords(resultJson.body);
+            // if (replaceWordsToMix) {
+            //     generatedWords = newWords;
+            // } else {
+            //     // Create a tab..
+            //     generatedWords = generatedWords.concat(newWords);
+            // }
+            
+            draggableZonesComponent.fillWords(generatedWords);
 
             wordDataOriginal = resultJson;
             //addTimestamps();
@@ -435,8 +443,19 @@
     </svg>
 </div>
 
-<button class="btn btn-primary" on:click|preventDefault={upload}>Analyze</button
+<button class="btn btn-primary inline-block mr-4" on:click|preventDefault={upload}>Analyze</button
 >
+
+<!-- <div class="inline-flex">
+<div class="my-auto mr-2">Replace Current Words</div>
+<input
+type="checkbox"
+class="toggle toggle-lg inline-flex"
+bind:checked={replaceWordsToMix}
+/>
+</div> -->
+
+
 
 {#if loading}
     <div class="inline-flex h-full align-middle">
