@@ -11,8 +11,11 @@
 	},
 	"devDependencies": {
 		"@jhubbardsf/svelte-sortablejs": "^1.1.0",
+		"@skeletonlabs/skeleton": "^2.10.1",
+		"@skeletonlabs/tw-plugin": "^0.4.0",
 		"@sveltejs/adapter-auto": "^2.0.0",
 		"@sveltejs/kit": "^1.5.0",
+		"@types/node": "^20.14.9",
 		"autoprefixer": "^10.4.14",
 		"daisyui": "^4.7.3",
 		"postcss": "^8.4.24",

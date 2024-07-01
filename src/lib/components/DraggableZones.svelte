@@ -12,6 +12,8 @@
     let inputText;
     let selectedGroupingValue = "20";
 
+    let sourceID;
+
     onMount(() => {
         Sortable.mount(new MultiDrag());
         createChosenWordsSortable();

@@ -4,6 +4,7 @@
     import Toast from "$lib/components/Toast.svelte";
     import FileDropZone from "$lib/components/FileDropZone.svelte";
     import DraggableZones from "$lib/components/DraggableZones.svelte";
+    import { TabGroup, Tab } from '@skeletonlabs/skeleton';
 
     const toastMessages = writable([]);
 
@@ -11,7 +12,7 @@
     let trimmedFile;
     let startTime;
     let endTime;
-    let sessionKey;
+    let sourceID;
     let wordDataOriginal = [];
     let loading = false;
     let loadingGenerate = false;
@@ -25,7 +26,15 @@
     let replaceWordsToMix = false;
     let selectedLanguage = "auto";
 
-    let generatedWords = [];
+    let tabSet: number = 0;
+      // Array of tabs with labels and content
+  let tabs = [
+    { id: 0, label: 'Label 1', content: 'Tab panel 1 contents' },
+    { id: 1, label: 'Label 2', content: 'Tab panel 2 contents' },
+    { id: 2, label: 'Label 3', content: 'Tab panel 3 contents' }
+    // Add more tabs as needed
+  ];
+
     let chosenWords;
     let draggableZonesComponent;
 
@@ -71,7 +80,7 @@
                     },
                     body: JSON.stringify({
                         chosenWords: chosenWords,
-                        sessionKey: sessionKey,
+                        sessionKey: sourceID,
                         isVideo: isVideo,
                         audioOnly: audioOnly,
                     }),
@@ -160,12 +169,12 @@
     // Uploads file to S3 and starts processing audio
     async function upload() {
         // Create new session key to match this upload to the file in s3
-        sessionKey = Date.now();
+        sourceID = Date.now();
 
         showToastAlert("Uploading file...");
         try {
             loading = true;
-            await createFile(trimmedFile, sessionKey);
+            await createFile(trimmedFile, sourceID);
             startAudioProcessing();
         } catch (error) {
             console.error("Error:", error);
@@ -187,7 +196,7 @@
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        sessionKey: String(sessionKey),
+                        sessionKey: String(sourceID),
                         isVideo: isVideo,
                         audioOnly: audioOnly,
                         lang: selectedLanguage,
@@ -200,17 +209,7 @@
             }
 
             let resultJson = await postResponse.json();
-            let newWords = resultJson.body;
-
-            generatedWords = newWords;
-
-            // Add words to the UI
-            // if (replaceWordsToMix) {
-            //     generatedWords = newWords;
-            // } else {
-            //     // Create a tab..
-            //     generatedWords = generatedWords.concat(newWords);
-            // }
+            let generatedWords = resultJson.body;
             
             draggableZonesComponent.fillWords(generatedWords);
 
@@ -253,6 +252,10 @@
             audioOnlyDisabled = true;
         }
     }
+
+    function handleTabChange(id) {
+    tabSet = id;
+  }
 </script>
 
 <div role="alert" class="alert">
@@ -446,14 +449,14 @@
 <button class="btn btn-primary inline-block mr-4" on:click|preventDefault={upload}>Analyze</button
 >
 
-<!-- <div class="inline-flex">
+<div class="inline-flex">
 <div class="my-auto mr-2">Replace Current Words</div>
 <input
 type="checkbox"
 class="toggle toggle-lg inline-flex"
 bind:checked={replaceWordsToMix}
 />
-</div> -->
+</div>
 
 
 
@@ -467,6 +470,31 @@ bind:checked={replaceWordsToMix}
 <ul class="text-sm">
     <li>To multi drag, click words before dragging.</li>
 </ul>
+
+
+
+<TabGroup>
+    <!-- Iterate over tabs array -->
+    {#each tabs as tab}
+      <Tab
+        bind:group={tabSet}
+        name={`tab${tab.id}`}
+        value={tab.id}
+        on:change={() => handleTabChange(tab.id)}>
+        {tab.label}
+      </Tab>
+    {/each}
+  
+    <!-- Tab Panels -->
+    <svelte:fragment slot="panel">
+      {#each tabs as tab}
+        {#if tabSet === tab.id}
+          {tab.content}
+        {/if}
+      {/each}
+    </svelte:fragment>
+  </TabGroup>
+			
 
 <DraggableZones bind:this={draggableZonesComponent} bind:chosenWords />
 
