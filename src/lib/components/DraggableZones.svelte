@@ -73,11 +73,10 @@
                 scrollSpeed: 10,
                 bubbleScroll: true,
 
-                //not needed?
-                // onEnd: (evt) => {
-                //     console.log("matched words onend");
-                //     handleDragEnd(evt, matchedWords, chosenWords[evt.from.dataset.group]);
-                // },
+                onEnd: (evt) => {
+                    console.log("matched words onend");
+                    handleDragEnd(evt, matchedWords, chosenWords);
+                },
             });
         }
     }
@@ -106,7 +105,11 @@
                     bubbleScroll: true,
 
                     onEnd: (evt) => {
-                        handleDragEnd(evt, groupedWords[key], chosenWords[evt.from.dataset.group]);
+                        handleDragEnd(
+                            evt,
+                            groupedWords[key],
+                            chosenWords[evt.from.dataset.group],
+                        );
                     },
                 });
                 // @ts-ignore
@@ -139,7 +142,6 @@
 
         // If a single unselected item is dragged, evt is different
         if (evt.items.length > 0) {
-
             movedItems = evt.items.map((item) => {
                 const index = item.dataset.index;
                 return fromList[index];
@@ -164,7 +166,10 @@
 
     export function fillWords(words) {
         generatedWords = words;
-        groupedWords = groupWordsByTime(generatedWords, Number(selectedGroupingValue));
+        groupedWords = groupWordsByTime(
+            generatedWords,
+            Number(selectedGroupingValue),
+        );
         createGroupSortables();
     }
 
@@ -186,6 +191,7 @@
     }
 
     function addWordsFromInput() {
+        clearMatchedWords();
         const wordArray = inputText.toLowerCase().split(" ");
 
         let intersection = generatedWords.filter((x) =>
@@ -205,33 +211,67 @@
         }
     }
 
+    function clearMatchedWords() {
+        matchedWords = [];
+        matchedWords = [...matchedWords];
+        while (matchedWordsContainer.lastElementChild) {
+            matchedWordsContainer.removeChild(
+                matchedWordsContainer.lastElementChild,
+            );
+        }
+    }
+
     function changeGroupingValue() {
-        groupedWords = groupWordsByTime(generatedWords, Number(selectedGroupingValue));
+        groupedWords = groupWordsByTime(
+            generatedWords,
+            Number(selectedGroupingValue),
+        );
         createGroupSortables();
+    }
+
+    function handleKeyDown(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            addWordsFromInput();
+        }
+    }
+
+    function logMatched() {
+        console.log(matchedWords);
+    }
+
+    function logChosen() {
+        console.log(chosenWords);
     }
 </script>
 
 {#if generatedWords.length > 0}
-<div class="flex items-center justify-between">
-    <h1 class="text-xl font-bold tracking-light text-base-content">
-        Generated Words
-    </h1>
-    <div class="flex items-center">
-        <p class="text-xs font-bold tracking-light text-base-content mr-2 whitespace-nowrap">Group By</p>
-        <select 
-            bind:value={selectedGroupingValue}
-            on:change={changeGroupingValue}
-            class="select select-primary w-full max-w-xs"
-            name="groupingSelect" id="groupingSelect">
-            <option value="10">10 seconds</option>
-            <option selected value="20">20 seconds</option>
-            <option value="30">30 seconds</option>
-            <option value="40">40 seconds</option>
-            <option value="50">50 seconds</option>
-            <option value="60">60 seconds</option>
-        </select>
+    <div class="flex items-center justify-between">
+        <h1 class="text-xl font-bold tracking-light text-base-content">
+            Generated Words
+        </h1>
+        <div class="flex items-center">
+            <p
+                class="text-xs font-bold tracking-light text-base-content mr-2 whitespace-nowrap"
+            >
+                Group By
+            </p>
+            <select
+                bind:value={selectedGroupingValue}
+                on:change={changeGroupingValue}
+                class="select select-primary w-full max-w-xs"
+                name="groupingSelect"
+                id="groupingSelect"
+            >
+                <option value="10">10 seconds</option>
+                <option selected value="20">20 seconds</option>
+                <option value="30">30 seconds</option>
+                <option value="40">40 seconds</option>
+                <option value="50">50 seconds</option>
+                <option value="60">60 seconds</option>
+            </select>
+        </div>
     </div>
-</div>
 
     <div class="generatedWords border border-white rounded-lg mt-2">
         {#each Object.keys(groupedWords) as key}
@@ -253,6 +293,7 @@
         bind:value={inputText}
         type="text"
         placeholder="Type here"
+        on:keydown={handleKeyDown}
     />
     <button class="btn btn-primary" on:click={addWordsFromInput}>Filter</button>
 
@@ -302,6 +343,11 @@
         box-sizing: border-box;
         border-left: 1px solid #ff3e00 !important;
         box-shadow: 0px 5px 5px 0 rgb(0 0 0 / 10%);
+    }
+
+    input::selection {
+        background: #339; /* Change this color to a visible one */
+        color: #fff; /* Ensure the text color contrasts with the background */
     }
 
     .chosenWords {
