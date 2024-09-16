@@ -279,6 +279,7 @@
 
 <FileDropZone bind:sourceFile bind:trimmedFile bind:startTime bind:endTime />
 
+
 <select
     bind:value={selectedLanguage}
     class="select select-primary w-full max-w-xs"

@@ -34,7 +34,7 @@
                 direction: "horizontal",
                 delay: 200,
                 delayOnTouchOnly: true,
-                multiDrag: true,
+                multiDrag: false,
                 selectedClass: "selected",
                 scroll: true,
                 forceAutoScrollFallback: false,
@@ -42,13 +42,15 @@
                 scrollSpeed: 10,
                 bubbleScroll: true,
 
-                // onEnd: (evt) => {
-                //     handleDragEnd(
-                //         evt,
-                //         chosenWords,
-                //         groupedWords[evt.from.dataset.group],
-                //     );
-                // },
+                onEnd: (evt) => {
+                    console.log("chosen words onend");
+                    // handleDragEnd(
+                    //     evt,
+                    //     chosenWords,
+                    //     chosenWords,
+                    // );
+                    reorder(chosenWords, evt);
+                },
             });
         }
     }
@@ -151,6 +153,20 @@
             movedItems.push(fromList[evt.oldIndex]);
         }
 
+        // Remove the items from the original list
+        if (fromList == toList) {
+            if (singleItem) {
+                fromList.splice(evt.oldIndex, 1);
+            } else {
+                movedItems.forEach((item) => {
+                    const index = fromList.indexOf(item);
+                    if (index > -1) {
+                        fromList.splice(index, 1);
+                    }
+                });
+            }
+        }
+
         // Insert moved items into the new list at the appropriate position
         evt.newIndicies.forEach((el, ix) => {
             const insertIndex = evt.newIndex + ix;
@@ -161,6 +177,56 @@
 
         if (singleItem) {
             toList.splice(evt.newIndex, 0, movedItems[0]);
+        }
+    }
+
+    // Currently broken for multidrag
+    function reorder(chosenWords, evt) {
+        let movedItems = [];
+        let singleItem = false;
+
+        // Get moved item(s)
+        if (evt.items.length > 0) {
+            movedItems = evt.items.map((item) => {
+                const index = item.dataset.index;
+                return chosenWords[index];
+            });
+        } else {
+            singleItem = true;
+            movedItems.push(chosenWords[evt.oldIndex]);
+        }
+
+        //Remove
+        if (singleItem) {
+            chosenWords.splice(evt.oldIndex, 1);
+        } else {
+            movedItems.forEach((item, ix) => {
+                console.log(item);
+                console.log(evt.oldIndicies[ix].index);
+                
+                const index = chosenWords.indexOf(item);
+                console.log(index);
+                
+                if (index > -1) {
+                    let deleted = chosenWords.splice(index, 1);
+                    console.log(deleted);
+                    
+                }
+            });
+        }
+
+
+
+        // Insert moved items into the new list at the appropriate position
+        evt.newIndicies.forEach((el, ix) => {
+            const insertIndex = evt.newIndex + ix;
+            if (movedItems[ix]) {
+                chosenWords.splice(insertIndex, 0, movedItems[ix]);
+            }
+        });
+
+        if (singleItem) {
+            chosenWords.splice(evt.newIndex, 0, movedItems[0]);
         }
     }
 
@@ -323,6 +389,8 @@
 <button class="btn btn-sm btn-primary m-1" on:click={clearChosenWords}
     >Clear</button
 >
+
+<button on:click={logChosen}> log chosen </button>
 
 <div class="chosenWords border border-white rounded-lg">
     <div class="container horizontal" bind:this={chosenWordsContainer}>
