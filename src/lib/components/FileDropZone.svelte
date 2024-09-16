@@ -199,8 +199,7 @@
     function handleLoadMetaData(htmlMediaElement) {
         // If htmlElement is showing and totalDuration not set
         // If totalduration is set, we don't want to set again
-
-        if (htmlMediaElement && !totalDuration) {
+        if (htmlMediaElement) {
             totalDuration = parseFloat(htmlMediaElement.duration);
         }
     }
@@ -208,11 +207,13 @@
     function closeVideo() {
         videoElement.src = "";
         hideVideo = true;
+        fileInputElement.value = "";
     }
 
     function closeAudio() {
         audioElement.src = "";
         hideAudio = true;
+        fileInputElement.value = "";
     }
 
     function handleClick() {
@@ -330,7 +331,7 @@
                 <input
                     type="text"
                     class="grow w-12 p-1"
-                    placeholder="Daisy"
+                    placeholder="Start Time"
                     value={formatTime(startTime)}
                     on:change={(event) => updateStartHandle(event)}
                 />
@@ -342,7 +343,7 @@
                 <input
                     type="text"
                     class="grow w-12 p-1"
-                    placeholder="Daisy"
+                    placeholder="End Time"
                     value={formatTime(endTime)}
                     on:change={(event) => updateEndHandle(event)}
                 />
