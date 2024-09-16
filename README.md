@@ -1,19 +1,18 @@
 # SentenceMixer AI
 
 A free, anonymous tool for sentence mixing audio and video! Think Youtube poop or SFM style without manual editing.
-Voice analysis done via Open AI Whisper in the cloud on AWS Lambda. My goal is to keep this free to use and without registration.
-Drag on drop doesn't really work on mobile, so I'm open so solutions for that. I'm actively working on improvements like more supported file types.
+Voice analysis done via WhisperX on an RTX 3080. My goal is to keep this free to use and without registration.
 Feel free to open an issue for suggestions.
 
 ## Demo
 [Demo on Vercel](https://sentencemixerai.vercel.app/)
 
 ## Usage
-1. Drag and drop .wav or .mp4 file or click to pick file.
+1. Drag and drop an audio or video file or click to pick file.
 2. Use the media trimmer to trim the length of the file. This way, you can process shorter clips at a time.
 3. Hit analyze.
 4. Filter words from the generated words.
-5. Or, drag words directly from "Generated Words"
+5. Or, drag words directly from "Generated Words" into "Words to Mix"
 6. Hit generate (with the option to generate as audio only).
 7. Preview or download the clip.
 
