@@ -21,10 +21,14 @@ Feel free to open an issue for suggestions.
 - 7/26/23: Added multi language support, only small models for Spanish, French, Russian, and German.
 - 2/26/24: AWS Lambda backend testing.
 - 2/28/24: AWS lambda backend online.
-- 3/4/24: Big model for English enabled.
+- 3/4/24:  Big model for English enabled.
 - 3/11/24: New drag and drop zone for picking files + media trimmer added.
 - 3/25/24: Speech to text processing now done with Open AI Whisper.
 - 3/30/24: All languages supported by Whisper added.
+- 5/30/24: New backend using WhisperX on RTX 3080.
+- 9/15/24: Fixed bug that ignored words dragged from 'matched words'
+           Improved overall search field experience.
+           Disabled multidrag on 'words to mix' due to bug.
 
 ## Languages
 The model will auto detect many languages. You can select a specific language to help it detect the language for clips shorter than 30 seconds.

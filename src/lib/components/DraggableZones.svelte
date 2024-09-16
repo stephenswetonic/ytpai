@@ -390,7 +390,7 @@
     >Clear</button
 >
 
-<button on:click={logChosen}> log chosen </button>
+<!-- <button on:click={logChosen}> log chosen </button> -->
 
 <div class="chosenWords border border-white rounded-lg">
     <div class="container horizontal" bind:this={chosenWordsContainer}>

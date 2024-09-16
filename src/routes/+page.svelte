@@ -270,8 +270,7 @@
     >
     <span
         >Now using WhisperX on an RTX 3080 for faster processing and more accurate results.
-         The server is in the US west coast, so distance will vary your processing time.
-         Next, I want to try extracting phonemes. Stay tuned!</span
+         The server is in the US west coast, so distance will vary your processing time.</span
     >
 </div>
 
