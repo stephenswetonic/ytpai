@@ -4,9 +4,9 @@
     import Toast from "$lib/components/Toast.svelte";
     import FileDropZone from "$lib/components/FileDropZone.svelte";
     import DraggableZones from "$lib/components/DraggableZones.svelte";
+    import { _serverStatus } from '../stores/serverStatus';
 
     const toastMessages = writable([]);
-
     let sourceFile;
     let trimmedFile;
     let startTime;
@@ -38,6 +38,7 @@
         audioElement = document.getElementById("generatedAudio");
         videoElement = document.getElementById("generatedVideo");
     });
+
 
     const showToastAlert = (msg) => {
         if (msg.trim() !== "") {
@@ -273,6 +274,23 @@
          The server is in the US west coast, so distance will vary your processing time.</span
     >
 </div>
+
+{#if $_serverStatus === 'down'}
+<div role="alert" class="alert alert-error">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6 shrink-0 stroke-current"
+      fill="none"
+      viewBox="0 0 24 24">
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <span>The server is currently down. Please try again later.</span>
+  </div>
+{/if}
 
 <Toast bind:messages={$toastMessages} duration={3000} />
 

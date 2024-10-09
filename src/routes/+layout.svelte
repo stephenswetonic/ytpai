@@ -3,6 +3,7 @@
     import { dev } from '$app/environment';
     import { inject } from '@vercel/analytics';
     import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
+    import { _serverStatus } from '../stores/serverStatus';
     injectSpeedInsights();
     inject({ mode: dev ? 'development' : 'production' });
 </script>
@@ -17,16 +18,28 @@
     </div>
 </div>
 
-<div class="layout-footer">
-
-</div>
+<footer class="footer bg-base-300 text-base-content p-4">
+    <aside>
+      <p>Copyright © {new Date().getFullYear()} - All right reserved. &nbsp;&nbsp;&nbsp; Server Status 
+        <span class="dot {$_serverStatus === 'up' ? 'green' : 'red'}"></span></p>
+    </aside>
+</footer>
 
 <style>
     .logotext {
         font-family: 'Audiowide', cursive;
     }
-    .layout-footer {
-        width: 100%;
-        height: 100px;
+    .dot {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-left: 5px;
+    }
+    .green {
+        background-color: #00ff00;
+    }
+    .red {
+        background-color: #ff0000;
     }
 </style>
