@@ -22,3 +22,5 @@
     <a class="btn rounded mr-2 font-medium hover:cursor-pointer" href="https://github.com/stephenswetonic">Github</a>
     <a class="btn rounded mr-2 font-medium hover:cursor-pointer" href="https://www.linkedin.com/in/stephen-swetonic-095a04133/">LinkedIn</a>
 </div>
+
+<a href='https://ko-fi.com/E1E616MPXB' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi5.png?v=6' alt='Buy Me a Coffee at ko-fi.com' /></a>

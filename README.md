@@ -7,6 +7,9 @@ Feel free to open an issue for suggestions.
 ## Demo
 [Demo on Vercel](https://sentencemixerai.vercel.app/)
 
+## Local Version
+[sentencemixerai](https://github.com/stephenswetonic/sentencemixerai)
+
 ## Usage
 1. Drag and drop an audio or video file or click to pick file.
 2. Use the media trimmer to trim the length of the file. This way, you can process shorter clips at a time.
@@ -43,5 +46,8 @@ Generating words:
 
 Sample Clip:
 [Download](static/sampleclip.mp4)
+
+### Donations
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/E1E616MPXB)
 
 

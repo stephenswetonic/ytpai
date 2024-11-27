@@ -19,9 +19,13 @@
 </div>
 
 <footer class="footer bg-base-300 text-base-content p-4">
-    <aside>
-      <p>Copyright © {new Date().getFullYear()} - All right reserved. &nbsp;&nbsp;&nbsp; Server Status 
-        <span class="dot {$_serverStatus === 'up' ? 'green' : 'red'}"></span></p>
+    <aside class="flex items-center space-x-4">
+      <p>
+        Copyright © {new Date().getFullYear()} - All rights reserved.
+        &nbsp;&nbsp;&nbsp; Server Status
+        <span class="dot {$_serverStatus === 'up' ? 'green' : 'red'}"></span>
+      </p>
+      <a href="https://ko-fi.com/E1E616MPXB"><img src="https://storage.ko-fi.com/cdn/kofi5.png?v=6" height="36" style="border:0px;height:36px;" alt="Ko-fi Icon" /></a>
     </aside>
 </footer>
 
